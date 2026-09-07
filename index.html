@@ -167,7 +167,7 @@ section{padding:54px 0}
   display:block;
   color:var(--text);
 }
-.media{margin:0}
+.media{margin:0;position:relative}
 .media video{
   display:block;
   width:100%;
@@ -177,6 +177,20 @@ section{padding:54px 0}
   border:1px solid var(--line);
   border-radius:8px;
 }
+.media .placeholder{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  aspect-ratio:16/9;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  background:var(--soft);
+  color:#9a9a94;
+  font-size:14px;
+}
+.media.is-empty video{display:none}
+.media.is-empty .placeholder{display:flex}
 .media figcaption{
   margin-top:8px;
   color:var(--muted);
@@ -390,6 +404,7 @@ footer{
             <video src="media/idol-life.mp4" poster="media/idol-life.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="爱豆收集梦想生活 游玩录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>角色日程推进与 AI 对话生成实机演示</figcaption>
           </figure>
         </div>
@@ -432,6 +447,7 @@ footer{
             <video src="media/werewolf.mp4" poster="media/werewolf.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="AI 狼人杀 对局录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
           </figure>
         </div>
@@ -474,6 +490,7 @@ footer{
             <video src="media/light-shadow.mp4" poster="media/light-shadow.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="光与影 关卡演示录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>推动光源，同时改变光灵与影灵的可行路径</figcaption>
           </figure>
         </div>
@@ -661,6 +678,15 @@ footer{
 </section>
 
 </main>
+
+<script>
+// 没有对应视频文件时，用占位框代替空播放器（视频一旦放进 media/ 就自动恢复）
+document.querySelectorAll('.media video').forEach(function (v) {
+  var probe = new Image();
+  probe.onerror = function () { v.parentNode.classList.add('is-empty'); };
+  probe.src = v.getAttribute('poster');
+});
+</script>
 
 <footer>
   <div class="container">
