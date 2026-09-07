@@ -147,7 +147,7 @@ section{padding:54px 0}
 }
 .project-grid{
   display:grid;
-  grid-template-columns:1.15fr .85fr;
+  grid-template-columns:1fr 1fr;
   gap:24px;
 }
 .keypoints{
@@ -156,13 +156,32 @@ section{padding:54px 0}
   color:#43433f;
 }
 .keypoints li{margin:7px 0}
-.evidence{
+.result{
+  margin:18px 0 0;
   border-left:2px solid var(--soft);
-  padding-left:18px;
+  padding-left:14px;
   color:var(--muted);
   font-size:14px;
 }
-.evidence strong{color:var(--text)}
+.result strong{
+  display:block;
+  color:var(--text);
+}
+.media{margin:0}
+.media video{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+.media figcaption{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
+}
 .links{
   margin-top:20px;
   display:flex;
@@ -173,6 +192,15 @@ section{padding:54px 0}
   font-size:14px;
   color:var(--accent);
   font-weight:650;
+}
+.links a.todo{
+  color:#9a9a94;
+  font-weight:500;
+  pointer-events:none;
+}
+.links a.todo::after{
+  content:"（待补充）";
+  font-size:12px;
 }
 .other-grid{
   display:grid;
@@ -355,18 +383,21 @@ footer{
               <li>结合角色素材包搭建可自定义捏脸系统，并使用 Gemini 生成游戏内角色、美术及场景素材。</li>
               <li>技术栈：React 19 / TypeScript / Vite / Tailwind CSS v4。</li>
             </ul>
+            <p class="result"><strong>结果</strong>2000+ 用户体验，出现社交媒体自发传播。</p>
           </div>
-          <div class="evidence">
-            <strong>结果</strong><br>
-            2000+ 用户体验，出现社交媒体自发传播。<br><br>
-            <strong>作品集详情页建议重点</strong><br>
-            系统架构图 / 对话生成流程 / 角色状态数据结构 / prompt 设计 / 成本控制 / 失败案例与迭代。
-          </div>
+          <figure class="media">
+            <!-- TODO 视频：录屏放到 media/idol-life.mp4，封面图放到 media/idol-life.jpg -->
+            <video src="media/idol-life.mp4" poster="media/idol-life.jpg"
+                   controls muted loop playsinline preload="none"
+                   aria-label="爱豆收集梦想生活 游玩录像"></video>
+            <figcaption>角色日程推进与 AI 对话生成实机演示</figcaption>
+          </figure>
         </div>
 
         <div class="links">
-          <a href="#">试玩 →</a>
-          <a href="#">策划案 →</a>
+          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
+          <a class="todo" href="#">试玩 →</a>
+          <a class="todo" href="#">策划案 →</a>
         </div>
       </article>
 
@@ -396,15 +427,19 @@ footer{
               <li>重点研究 AI 的 herd behavior、信息污染与错误推理问题。</li>
             </ul>
           </div>
-          <div class="evidence">
-            <strong>详情页建议重点</strong><br>
-            Agent Architecture / Memory / Suspicion / Vote Logic / Prompt Structure / 对局日志。
-          </div>
+          <figure class="media">
+            <!-- TODO 视频：录屏放到 media/werewolf.mp4，封面图放到 media/werewolf.jpg -->
+            <video src="media/werewolf.mp4" poster="media/werewolf.jpg"
+                   controls muted loop playsinline preload="none"
+                   aria-label="AI 狼人杀 对局录像"></video>
+            <figcaption>11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
+          </figure>
         </div>
 
         <div class="links">
-          <a href="#">试玩 Demo →</a>
-          <a href="#">系统设计 →</a>
+          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
+          <a class="todo" href="#">试玩 →</a>
+          <a class="todo" href="#">策划案 →</a>
         </div>
       </article>
 
@@ -434,15 +469,19 @@ footer{
               <li>最终目标是让两个角色同时抵达各自终点。</li>
             </ul>
           </div>
-          <div class="evidence">
-            <strong>这个项目的作用</strong><br>
-            证明我不仅做 AI 产品，也能够从核心机制、玩家学习曲线与关卡节奏出发做纯玩法设计。
-          </div>
+          <figure class="media">
+            <!-- TODO 视频：录屏放到 media/light-shadow.mp4，封面图放到 media/light-shadow.jpg -->
+            <video src="media/light-shadow.mp4" poster="media/light-shadow.jpg"
+                   controls muted loop playsinline preload="none"
+                   aria-label="光与影 关卡演示录像"></video>
+            <figcaption>推动光源，同时改变光灵与影灵的可行路径</figcaption>
+          </figure>
         </div>
 
         <div class="links">
-          <a href="#">Playable Build →</a>
-          <a href="#">关卡设计文档 →</a>
+          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
+          <a class="todo" href="#">试玩 →</a>
+          <a class="todo" href="#">策划案 →</a>
         </div>
       </article>
 
