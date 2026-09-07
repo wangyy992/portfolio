@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status AI 拆解：生成式 AI 进入 gameplay 之后｜王禹尧</title>
+<meta name="description" content="当生成式 AI 从开发工具变成 gameplay 本体：角色一致性、分层记忆、推理成本对 F2P 经济模型的冲击，以及确定性模拟与生成层的职责划分。">
+<link rel="stylesheet" href="analysis.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#analysis">← 返回作品集</a>
+    <div class="kicker">游戏拆解 / 04</div>
+    <h1>Status AI 与 AI-native gameplay</h1>
+    <p class="sub">当生成式 AI 从开发工具变成玩法本体，真正的约束是什么</p>
+
+    <p class="thesis">
+      <b>核心论点</b>
+      AI-native 游戏的难点不在「AI 能不能聊得像人」——这一关早就过了。
+      难点在四个结构性约束：<strong>人格一致性、长期记忆、推理成本、叙事可控性</strong>。
+      其中推理成本是最被低估的一个：它让游戏的边际成本<strong>不再趋近于零</strong>，
+      从而直接推翻了 F2P「少数付费用户补贴大量免费用户」的经济模型基础。
+      这不是工程问题，是商业模式问题。
+    </p>
+
+    <dl class="metabar">
+      <div><dt>案例</dt><dd>Status AI（AI 社交模拟）</dd></div>
+      <div><dt>议题</dt><dd>生成式 AI 作为 gameplay 本体</dd></div>
+      <div><dt>分析视角</dt><dd>系统架构 / 单位经济 / 内容设计</dd></div>
+      <div><dt>交叉验证</dt><dd>我自己的两个 AI 游戏项目</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#q">01　我想回答的问题</a></li>
+      <li><a href="#what">02　案例：Status AI</a></li>
+      <li><a href="#four">03　四个结构性约束</a></li>
+      <li><a href="#consistency">04　一致性：人格漂移</a></li>
+      <li><a href="#memory">05　记忆：为什么必须分层</a></li>
+      <li><a href="#cost">06　成本：边际成本不再为零</a></li>
+      <li><a href="#control">07　可控性：职责划分</a></li>
+      <li><a href="#novelty">08　生成内容的新鲜感衰减</a></li>
+      <li><a href="#mine">09　我在自己项目里的验证</a></li>
+      <li><a href="#verdict">10　我的判断</a></li>
+      <li><a href="#data">11　核实清单与来源</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <section id="q">
+      <h2><span>01</span>我想回答的问题</h2>
+      <p>
+        生成式 AI 进入游戏行业有两个层次，它们经常被混为一谈：
+      </p>
+      <ul>
+        <li>
+          <strong>作为开发工具</strong>——用 AI 生成美术资源、配音、代码、关卡草稿。
+          这一层的影响是成本和产能，产品形态本身不变。
+        </li>
+        <li>
+          <strong>作为 gameplay 本体</strong>——AI 在<em>玩家游玩的当下</em>实时生成内容，
+          玩家体验的核心就是与生成系统交互。这一层改变的是产品形态本身。
+        </li>
+      </ul>
+      <p>
+        第一层已经在大规模落地，讨论得也充分。这篇拆解只关心第二层，
+        因为它引入了传统游戏设计方法论完全没有处理过的问题。
+      </p>
+      <p>我想回答的是：</p>
+      <ol>
+        <li>把 LLM 放进 gameplay 循环，会引入哪些<strong>传统游戏没有的约束</strong>？</li>
+        <li>这些约束里，哪些是工程问题（会随模型进步自然消解），哪些是<strong>结构问题</strong>（不会）？</li>
+        <li>这类产品的商业模式，为什么不能照搬现有的 F2P 或买断制？</li>
+      </ol>
+      <p>
+        我做过两个 AI-native 的项目（一个 AI 驱动的沙盒养成，一个 1 人对 11 个 AI Agent 的狼人杀），
+        这篇的判断有相当一部分来自那两个项目里踩过的坑，会在第 09 节交叉验证。
+      </p>
+    </section>
+
+    <section id="what">
+      <h2><span>02</span>案例：Status AI</h2>
+      <div class="callout risk">
+        <span class="label">产品描述需核实 — 发布前必须校对本节</span>
+        <p>
+          我对这款产品的了解主要来自公开信息，无法确认它当前版本的具体机制。
+          本节的产品描述<strong>必须由我实际体验后重写</strong>，
+          并核对：具体玩法循环、AI 角色的行为范围、付费结构、当前用户规模。
+          <strong>本文第 03–08 节的框架分析不依赖这些细节</strong>，
+          但如果要在作品集里放这一节，产品事实必须准确。
+        </p>
+      </div>
+      <p>
+        就我理解，Status AI 属于「AI 社交模拟」这一类产品：
+        玩家进入一个由 AI 角色构成的社交网络，发布内容、获得 AI 的反应（评论、私信、关注），
+        在一个完全由生成内容构成的社交环境里扮演某种身份。
+      </p>
+      <p>
+        它之所以值得作为案例，是因为它把 AI 推到了最极端的位置：
+        <strong>这个产品的全部内容都是生成的，没有任何预写内容作为兜底。</strong>
+        传统游戏里 AI 通常只负责边角（NPC 闲聊），核心内容仍是手工制作的；
+        而这类产品一旦生成层出问题，就没有任何东西可以退回去。
+        这让它成为观察四个结构性约束的最佳样本——所有问题都被放大到无法回避。
+      </p>
+    </section>
+
+    <section id="four">
+      <h2><span>03</span>四个结构性约束</h2>
+      <p>
+        先给出总览。关键的判断是最后一列：<strong>哪些会被模型进步自然解决，哪些不会。</strong>
+        这决定了一个团队该把力气花在哪。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>约束</th><th>具体表现</th><th>性质</th><th>会被模型进步解决吗</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>一致性</b></td>
+            <td>角色人格漂移、设定自相矛盾</td>
+            <td>工程 + 设计</td>
+            <td>部分会。但只要生成是概率性的，漂移就永远存在，需要系统层约束</td>
+          </tr>
+          <tr>
+            <td><b>记忆</b></td>
+            <td>忘记之前发生的事、或记错</td>
+            <td>工程</td>
+            <td>大部分会。上下文窗口和检索能力在持续改善</td>
+          </tr>
+          <tr>
+            <td><b>成本</b></td>
+            <td>每次交互都产生真实推理开销</td>
+            <td><b>结构</b></td>
+            <td><b>不会。</b>单价会降，但边际成本永远大于零，经济模型的性质不变</td>
+          </tr>
+          <tr>
+            <td><b>可控性</b></td>
+            <td>叙事高潮无法编排、体验质量方差大</td>
+            <td><b>结构</b></td>
+            <td><b>不会。</b>可控性与生成自由度是此消彼长的，这是定义上的冲突</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p class="pull">
+        会被模型进步解决的，不要投入架构去硬扛；不会被解决的，必须在设计阶段就绕开。
+      </p>
+      <p>
+        这个区分很实际。2023 年很多团队花大力气做的上下文压缩方案，
+        在上下文窗口扩大几十倍之后基本作废了——那是在解一道会自己消失的题。
+        而成本和可控性这两条，无论模型怎么进步都必须由产品设计来回答。
+      </p>
+    </section>
+
+    <section id="consistency">
+      <h2><span>04</span>一致性：人格漂移</h2>
+      <p>
+        人格漂移是指：一个被设定为「内向、寡言、不信任陌生人」的角色，
+        在几十轮对话之后，说话方式逐渐变成了模型的默认语气——热情、周全、乐于助人。
+      </p>
+
+      <h3>为什么会漂移</h3>
+      <p>
+        因为角色设定在上下文里的<strong>相对权重是持续下降的</strong>。
+        对话开始时，上下文里只有角色卡，它占据了全部注意力；
+        进行到第 50 轮时，上下文里是角色卡加上 50 轮对话记录，
+        角色卡的占比被稀释到很小的比例。
+      </p>
+      <p>
+        更糟的是自我强化：一旦角色说了一句偏离设定的话，这句话进入了历史记录，
+        成为「这个角色会这样说话」的证据，下一轮生成会参考它，偏离进一步扩大。
+        <em>漂移不是随机游走，是有正反馈的单向过程。</em>
+      </p>
+
+      <h3>三种对策及其代价</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>做法</th><th>原理</th><th>代价</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>角色卡重申</b></td>
+            <td>每次请求都把角色设定重新放进上下文，且放在靠近末尾的位置</td>
+            <td>每次请求都要付这部分 token 的钱，成本随交互次数线性累加</td>
+          </tr>
+          <tr>
+            <td><b>状态化人格</b></td>
+            <td>把人格拆成可量化的状态（对玩家的信任度、当前情绪、关系阶段），由游戏系统维护，每次注入当前值</td>
+            <td>设计成本高，需要定义状态的变化规则；但这些规则本身可以成为玩法</td>
+          </tr>
+          <tr>
+            <td><b>输出校验与重试</b></td>
+            <td>生成后用规则或小模型检查是否违反设定，违反则重新生成</td>
+            <td>延迟翻倍、成本翻倍，且校验规则本身很难写全</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout take">
+        <span class="label">我的判断</span>
+        <p>
+          第二种是唯一能同时解决问题和创造价值的做法。
+          前两种把一致性当成<strong>要修的 bug</strong>，第三种把它当成<strong>要设计的系统</strong>。
+        </p>
+        <p>
+          当「信任度」是一个由游戏系统持有、会随玩家行为升降、并且被注入到每次生成里的真实数值时，
+          它既保证了角色不会漂移（因为人格由确定性系统而非对话历史决定），
+          又变成了玩家能感知、能影响、能追求的<strong>玩法目标</strong>。
+          一致性问题在这里不是被压制的，而是被转化成了游戏机制。
+        </p>
+      </div>
+    </section>
+
+    <section id="memory">
+      <h2><span>05</span>记忆：为什么必须分层</h2>
+      <p>
+        朴素方案是把所有历史塞进上下文。这在短会话里可行，在长期养成类产品里必然崩溃：
+        成本随历史长度线性增长，而注意力会被大量无关信息稀释——
+        <em>上下文越长，模型越容易忽略其中真正关键的那几条。</em>
+      </p>
+      <p>实际可用的结构是分层的：</p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>层</th><th>存什么</th><th>形式</th><th>取用方式</th></tr></thead>
+        <tbody>
+          <tr><td><b>近期</b></td><td>最近若干轮交互</td><td>原文保留</td><td>每次全量注入</td></tr>
+          <tr><td><b>中期</b></td><td>本段剧情/本周发生的事</td><td>压缩成摘要</td><td>每次注入摘要</td></tr>
+          <tr><td><b>长期</b></td><td>关系数值、重大事件、人物设定变更</td><td><b>结构化字段，不是文本</b></td><td>按需查询，只取相关项</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        第三层是最关键的设计决策。<strong>长期记忆不应该以自然语言存储。</strong>
+      </p>
+      <p>
+        如果长期记忆是一段文本（「玩家在上个月帮助过她，她很感激」），
+        那么它只能被整体注入或整体丢弃，无法被查询、无法被游戏系统读取、无法用来驱动别的机制。
+      </p>
+      <p>
+        如果它是结构化的（<code>好感度: 72</code>、<code>关键事件: [生日礼物, 争吵-未和解]</code>），
+        那么它同时可以：被精确注入生成上下文、被 UI 展示给玩家、
+        被其他系统作为条件读取（比如触发事件）、被回归测试验证。
+        <em>结构化记忆同时服务于生成层和游戏系统，文本记忆只服务于生成层。</em>
+      </p>
+
+      <div class="callout risk">
+        <span class="label">检索带来的新问题</span>
+        <p>
+          引入检索后会出现<strong>信息污染</strong>：检索到了不相关的记忆并注入上下文，
+          导致角色说出莫名其妙的话（比如在轻松的对话里突然提起一件无关的旧事）。
+          这个问题在玩家眼里的表现是「AI 很怪」，但根因在检索的精度，不在生成。
+        </p>
+        <p>
+          我在做多 Agent 项目时观察到它的一个变体：一个 Agent 的错误推断被写入记忆后，
+          会被后续检索反复取出，逐渐变成这个 Agent 认定的「事实」，
+          并通过发言传播给其他 Agent。<strong>错误在系统内会累积和扩散，而不是被冲刷掉。</strong>
+        </p>
+      </div>
+    </section>
+
+    <section id="cost">
+      <h2><span>06</span>成本：边际成本不再为零</h2>
+      <p>
+        这是我认为整个 AI-native 品类里最被低估、也最不可能被技术进步消解的约束。
+      </p>
+
+      <h3>传统游戏的经济学前提</h3>
+      <p>
+        传统游戏的内容是<strong>预先制作</strong>的。一旦做完，
+        第 1 个玩家和第 100 万个玩家消费同样内容的边际成本几乎相同——接近于零（只有带宽和服务器）。
+      </p>
+      <p>整个 F2P 模型建立在这个前提上：</p>
+      <ul>
+        <li>免费用户的边际成本≈0，所以可以无限接纳</li>
+        <li>大量免费用户构成社交环境和竞争池，这本身是产品价值的一部分</li>
+        <li>少数付费用户的收入覆盖全部固定成本</li>
+        <li><strong>玩得越多的用户越有价值，因为他们的成本不增加而付费概率增加</strong></li>
+      </ul>
+
+      <h3>AI-native 打破了这个前提</h3>
+      <p>
+        每一次对话、每一个生成的事件、每一条 AI 的评论，都对应一次真实的推理开销。
+        成本结构变成：
+      </p>
+      <div class="callout">
+        <span class="label" style="color:var(--accent)">成本公式</span>
+        <p style="margin:0">
+          <code>总成本 ≈ 活跃用户数 × 人均交互次数 × 每次交互的 token 量 × 单价</code>
+        </p>
+      </div>
+      <p>
+        注意第二项。它意味着：<strong>用户玩得越多，成本越高。</strong>
+      </p>
+
+      <p class="pull">
+        在传统 F2P 里，最活跃的用户是最有价值的；在 AI-native 里，最活跃的用户同时是最贵的。
+      </p>
+
+      <p>
+        这个反转是根本性的。它导致了几个直接后果：
+      </p>
+      <ol>
+        <li>
+          <strong>纯免费 + 无限畅玩不成立。</strong>
+          必须有额度限制、体力机制、或订阅制。而额度限制本身会伤害沉浸——
+          玩家正投入时被告知「今日次数已用完」，是对体验最粗暴的打断。
+        </li>
+        <li>
+          <strong>病毒式增长可能是灾难。</strong>
+          传统产品用户暴涨是纯粹的好消息；这类产品用户暴涨意味着成本同步暴涨，
+          如果变现没跟上，增长越快死得越快。
+        </li>
+        <li>
+          <strong>「优化 token 消耗」是产品工作，不是技术优化。</strong>
+          上下文裁剪、摘要压缩、按场景选择不同规格的模型、把能用规则做的事从 LLM 里拿出来——
+          这些直接决定单位经济能否成立，属于产品的核心设计，不是上线后的性能调优。
+        </li>
+      </ol>
+
+      <div class="callout take">
+        <span class="label">推论</span>
+        <p>
+          「模型会越来越便宜」不能解决这个问题，只能缓解它。
+          因为单价下降的同时，玩家对生成质量和长度的期待也在上升，
+          而更好的体验通常意味着更长的上下文和更强的模型。
+          <strong>历史上每一次算力成本下降，都被更高的质量期待吃掉了大部分。</strong>
+          真正的解法在设计层：<em>减少必须调用生成的次数</em>，而不是让每次调用更便宜。
+        </p>
+      </div>
+    </section>
+
+    <section id="control">
+      <h2><span>07</span>可控性：职责划分</h2>
+      <p>
+        生成的自由度和体验的可控性在定义上是冲突的：
+        如果输出完全可预测，它就不是生成；如果完全不可预测，就无法设计体验。
+      </p>
+      <p>具体的痛点是：</p>
+      <ul>
+        <li><strong>叙事高潮无法编排。</strong>传统游戏能精确控制「玩家在第 3 小时会经历一次背叛」，生成式做不到。</li>
+        <li><strong>质量方差大。</strong>同一个玩家的两次会话，一次精彩一次平庸，而平庸的那次可能就是流失点。</li>
+        <li><strong>无法回归测试。</strong>改了 prompt 之后，无法确定是否破坏了别的场景。</li>
+      </ul>
+
+      <h3>唯一可行的架构：确定性持有状态，生成层只负责表达</h3>
+      <p>
+        我在自己的项目里最终收敛到的结构，也是我认为这个品类的通用解：
+      </p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="确定性模拟层与生成层的职责划分架构图" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+
+          <rect x="392" y="8" width="176" height="176" rx="9" fill="#eaf0f3" stroke="#365f73" stroke-dasharray="4 4"/>
+          <text x="480" y="30" font-size="11.5" fill="#365f73" text-anchor="middle" font-weight="700">生成层（不可预测）</text>
+
+          <g stroke="#deded8" fill="#fafaf8">
+            <rect x="0"   y="72" width="168" height="62" rx="7"/>
+            <rect x="208" y="72" width="160" height="62" rx="7"/>
+            <rect x="592" y="72" width="168" height="62" rx="7"/>
+          </g>
+          <rect x="410" y="72" width="140" height="62" rx="7" fill="#ffffff" stroke="#365f73" stroke-width="1.5"/>
+
+          <g font-size="13" fill="#171717" text-anchor="middle">
+            <text x="84"  y="97">游戏状态</text>
+            <text x="84"  y="116" font-size="11.5" fill="#6e6e6a">时间 / 关系 / 日程</text>
+            <text x="288" y="97">上下文构造</text>
+            <text x="288" y="116" font-size="11.5" fill="#6e6e6a">裁剪 · 摘要 · 注入</text>
+            <text x="480" y="97" font-weight="700" fill="#365f73">LLM 生成</text>
+            <text x="480" y="116" font-size="11.5" fill="#365f73">对话 / 剧情</text>
+            <text x="676" y="97">结构化解析</text>
+            <text x="676" y="116" font-size="11.5" fill="#6e6e6a">校验 · 拒绝 · 写回</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar4)">
+            <path d="M168,103 L203,103"/>
+            <path d="M368,103 L405,103"/>
+            <path d="M550,103 L587,103"/>
+            <path d="M676,134 L676,205 Q676,217 664,217 L96,217 Q84,217 84,205 L84,139"/>
+          </g>
+
+          <g font-size="11.5" fill="#6e6e6a" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="380" y="212" text-anchor="middle">只有通过校验的结构化字段才能改写世界状态</text>
+          </g>
+          <g font-size="11" fill="#8a8a84" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="98" y="170" text-anchor="start">唯一真相源</text>
+          </g>
+        </svg>
+        <figcaption>
+          世界状态<strong>永远由确定性系统持有</strong>，LLM 不持有任何状态。
+          生成的内容必须通过结构化解析和校验，才能写回状态——校验层是整个架构的闸门。
+        </figcaption>
+      </figure>
+
+      <p>这个划分带来四个具体收益：</p>
+      <ol>
+        <li><strong>世界状态永远连续可信。</strong>即使某次生成完全失败，游戏状态也不会被破坏，最坏情况是这次对话质量差。</li>
+        <li><strong>规则可被验证。</strong>关系数值、事件触发、时间推进都是确定性逻辑，可以写单元测试。</li>
+        <li><strong>叙事节奏可编排。</strong>由确定性系统决定「现在该发生一个冲突」，LLM 只负责把这个冲突表达得生动。<em>编排权在系统手里，表达权在模型手里。</em></li>
+        <li><strong>成本可控。</strong>能用规则解决的事不调用 LLM，直接减少第 06 节公式里的调用次数。</li>
+      </ol>
+      <p>
+        反过来说，最危险的做法是<strong>让 LLM 持有状态</strong>——
+        把「她现在对你的好感度」这件事交给模型从对话历史里自己推断。
+        这样做在 demo 阶段效果惊艳，但状态会随对话漂移、无法被 UI 展示、无法被测试、无法被别的系统读取，
+        产品复杂度一上去就会崩。
+      </p>
+    </section>
+
+    <section id="novelty">
+      <h2><span>08</span>生成内容的新鲜感衰减</h2>
+      <p>
+        有一个直觉是错的：既然 AI 能生成无限内容，那么内容消耗问题就被解决了。
+      </p>
+      <p>实际观察到的是相反的现象：<strong>生成内容的新鲜感衰减，可能比手工内容更快。</strong></p>
+
+      <h3>原因：多样性是表层的</h3>
+      <p>
+        生成内容在<em>措辞层面</em>几乎不重复——每次说的话都不一样。
+        但在<em>结构层面</em>高度重复：起承转合的方式、情绪的表达套路、
+        回应玩家的模式，往往收敛到少数几种。
+      </p>
+      <p>
+        玩家在前几小时感受到的是措辞的多样性，所以觉得惊艳；
+        玩到几十小时后感知会下沉到结构层，于是突然意识到
+        「它其实一直在做同一件事」。<strong>这个认知一旦发生，是不可逆的</strong>——
+        玩家从此把生成内容看作模式，而不是内容。
+      </p>
+      <p>
+        手工内容不会这样。手工内容在措辞和结构上都有限，
+        但它的每一个转折都是被专门设计的，玩家不会产生「看穿套路」的时刻，
+        只会产生「玩完了」的时刻。这两种结束方式对 IP 的长期价值完全不同：
+        <em>「玩完了」的玩家会期待续作，「看穿了」的玩家不会。</em>
+      </p>
+
+      <div class="callout take">
+        <span class="label">设计推论</span>
+        <p>
+          既然结构层的多样性无法靠生成本身获得，就必须由<strong>确定性系统提供</strong>。
+          让世界事件、角色关系变化、剧情转折由游戏系统按设计好的规则产生，
+          LLM 只负责把这些已经具备结构多样性的事件表达出来。
+        </p>
+        <p>
+          这和第 07 节的架构是同一个结论的两面：
+          <strong>结构由系统给，表达由模型给。</strong>
+          这既是可控性的要求，也是内容长期新鲜度的要求。
+        </p>
+      </div>
+    </section>
+
+    <section id="mine">
+      <h2><span>09</span>我在自己项目里的验证</h2>
+      <div class="callout field">
+        <span class="label">待填写 — 发布前必须替换或删除本块</span>
+        <p>
+          这一节是这篇拆解的证据核心：上面所有论断我都在自己的两个项目里遇到过，
+          有真实的实现和数据。这是外部拆解无法提供的部分，<strong>也是这篇最应该展开写的地方</strong>。计划写：
+        </p>
+        <p style="margin-top:12px"><b>来自《爱豆收集梦想生活》（2000+ 用户）：</b></p>
+        <ul>
+          <li>确定性模拟层实际持有哪些状态，<b>贴出角色状态的数据结构</b>——直接印证第 07 节的架构图</li>
+          <li>上下文裁剪的具体策略，以及裁剪前后的<b>实测 token 消耗对比</b>——这是第 06 节最有力的证据</li>
+          <li>人均单次会话的推理成本估算，以及 2000 用户规模下的实际月成本——用真实数字说明第 06 节的经济模型问题</li>
+          <li>结构化输出的 schema 与校验失败率：模型多久返回一次无法解析的结果，是怎么兜底的</li>
+          <li>遇到过的人格漂移案例，以及改用状态化人格后的效果对比（第 04 节）</li>
+        </ul>
+        <p style="margin-top:12px"><b>来自《AI 狼人杀》（1 人 vs 11 Agent）：</b></p>
+        <ul>
+          <li>herd behavior 的具体观测：<b>贴一段对局日志</b>，展示跟票是怎么发生的</li>
+          <li>信息污染的实例：一个 Agent 的错误推断如何经由记忆和发言扩散到其他 Agent（第 05 节）</li>
+          <li>不同人格 prompt 对投票行为的影响，如果做过对照，<b>给出量化对比</b></li>
+        </ul>
+        <p style="margin-top:12px">
+          写作提示：这一节写好了，整篇拆解的性质就从「我读了很多资料」变成
+          <b>「我做过，我知道」</b>——这是这篇相对前三篇最大的优势，务必写足。
+        </p>
+      </div>
+    </section>
+
+    <section id="verdict">
+      <h2><span>10</span>我的判断</h2>
+      <ol>
+        <li>
+          <strong>一致性和记忆是工程问题，会随模型进步大幅缓解。</strong>
+          不值得为它们设计过重的架构，但一致性应该顺手转化成玩法（状态化人格）而不是单纯压制。
+        </li>
+        <li>
+          <strong>成本是结构问题，决定商业模式。</strong>
+          这类产品不能照搬 F2P。要么订阅制，要么把生成调用严格限制在高价值时刻，
+          用确定性内容承担日常体验。<em>设计的目标不是让每次调用更便宜，是让必须调用的次数更少。</em>
+        </li>
+        <li>
+          <strong>可控性是结构问题，决定架构。</strong>
+          确定性系统持有状态与叙事编排权，LLM 只负责表达。
+          任何让模型持有状态的设计，在 demo 之后都会付出代价。
+        </li>
+        <li>
+          <strong>「AI 能生成无限内容」是个陷阱。</strong>
+          无限的是措辞，不是结构。长期新鲜度仍然要靠设计出来的结构多样性，
+          这件事 AI 目前给不了。
+        </li>
+      </ol>
+      <p class="pull">
+        AI-native 游戏真正的设计工作，不是让 AI 做更多事，而是精确地决定 AI 不做哪些事。
+      </p>
+    </section>
+
+    <section id="data">
+      <h2><span>11</span>核实清单与来源</h2>
+      <div class="callout risk">
+        <span class="label">发布前必须完成</span>
+        <p>
+          <strong>第 02 节的 Status AI 产品描述必须由我实际体验后重写。</strong>
+          本文的框架分析（03–08 节）不依赖该产品的具体细节，但作品集里出现的产品事实必须准确——
+          面试官很可能自己也用过这个产品。
+        </p>
+      </div>
+      <div class="todo-data">
+        <span class="label">待补充</span>
+        <ul>
+          <li>Status AI 的实际玩法循环、AI 角色的能力边界、付费结构、用户规模与融资信息</li>
+          <li>同类产品的横向对比（AI 陪伴 / AI 社交模拟赛道的其他产品），用于说明第 06 节的成本约束是行业共性而非个案</li>
+          <li>主流模型的当前定价，用于第 06 节的成本测算——<b>定价变动频繁，引用时必须标注日期</b></li>
+          <li>第 09 节我自己项目的全部实测数据（token 消耗、成本、校验失败率、对局日志）</li>
+        </ul>
+      </div>
+      <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
+        说明：本文写于 2026 年 9 月。AI 相关的成本与能力边界变化极快，
+        任何涉及模型能力和价格的论断都应标注时间点。第 03 节表格中「会不会被模型进步解决」的判断，
+        建议每半年重新检视一次。
+      </p>
+    </section>
+
+  </article>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>游戏拆解 04 · Status AI 与 AI-native gameplay · 王禹尧</div>
+    <div><a href="../index.html#analysis">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="analysis.js"></script>
+</body>
+</html>

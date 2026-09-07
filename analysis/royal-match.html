@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Match 拆解：把失败做成主战场｜王禹尧</title>
+<meta name="description" content="Royal Match 的留存与商业化结构拆解：失败体验设计、难度曲线与卡关的商业角色、Booster 的两个决策时点、Meta 层的情绪分工，以及广告一致性对买量效率的影响。">
+<link rel="stylesheet" href="analysis.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#analysis">← 返回作品集</a>
+    <div class="kicker">游戏拆解 / 03</div>
+    <h1>Royal Match</h1>
+    <p class="sub">红海品类里，后来者靠什么后来居上</p>
+
+    <p class="thesis">
+      <b>核心论点</b>
+      Royal Match 几乎没有玩法创新——三消的核心规则是行业公共资产。
+      它的胜负手在两个地方：一是<strong>把「失败」而不是「通关」当成主战场来设计</strong>，
+      因为失败才是玩家在这个游戏里最高频经历的事件；
+      二是<strong>把 meta 层严格限制为纯正反馈</strong>，不引入第二个失败点，让情绪曲线单向可控。
+      在一个成熟到没有玩法红利的品类里，竞争维度已经从「玩法创新」转移到「体验打磨 + 买量效率」。
+    </p>
+
+    <dl class="metabar">
+      <div><dt>开发 / 发行</dt><dd>Dream Games（土耳其 · 伊斯坦布尔）</dd></div>
+      <div><dt>上线</dt><dd>2021 年</dd></div>
+      <div><dt>品类</dt><dd>三消 + 装修 Meta</dd></div>
+      <div><dt>分析视角</dt><dd>留存结构 / 商业化 / 数值节奏</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#q">01　我想回答的问题</a></li>
+      <li><a href="#loop">02　最高频事件是失败</a></li>
+      <li><a href="#fail">03　失败体验的设计</a></li>
+      <li><a href="#curve">04　卡关的商业角色</a></li>
+      <li><a href="#booster">05　Booster 的两个决策时点</a></li>
+      <li><a href="#meta">06　Meta 层的情绪分工</a></li>
+      <li><a href="#retention">07　留存机制</a></li>
+      <li><a href="#ua">08　买量效率才是真正的护城河</a></li>
+      <li><a href="#transfer">09　可迁移的结论</a></li>
+      <li><a href="#field">10　我的自测记录</a></li>
+      <li><a href="#data">11　数据与来源</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <section id="q">
+      <h2><span>01</span>我想回答的问题</h2>
+      <p>
+        三消是移动游戏里最红海的品类。《Candy Crush Saga》从 2012 年起长期占据畅销榜前列，
+        规则已经被完全公开、被无数产品复刻，玩法层面没有任何秘密可言。
+      </p>
+      <p>
+        Dream Games 成立于 2019 年，2021 年推出 Royal Match，
+        用一款<strong>在玩法上几乎没有任何新东西</strong>的三消，进入了这个被认为早已固化的市场，
+        并成为头部产品之一。
+      </p>
+      <p>这件事本身就构成了一个值得拆的问题：</p>
+      <ol>
+        <li>当玩法不再是差异化来源时，<strong>差异化到底发生在哪一层？</strong></li>
+        <li>一个成熟品类的用户，为什么会从用了多年的产品迁移到新产品？迁移成本是被什么抵消的？</li>
+        <li>它的商业化和竞品在结构上有什么不同，还是说<strong>结构相同、只是执行更细</strong>？</li>
+      </ol>
+      <p>
+        我的结论偏向第三个答案，但「执行更细」是个没有信息量的说法。
+        这篇要做的是把「细」拆成可以描述、可以迁移的具体机制。
+      </p>
+    </section>
+
+    <section id="loop">
+      <h2><span>02</span>最高频事件是失败</h2>
+      <p>
+        拆解一个循环，第一步不是画出所有节点，而是问：<strong>玩家在这个循环里最常经历的是哪一步？</strong>
+        因为设计资源应该按事件频次分配，而不是按事件的「重要性感觉」分配。
+      </p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 280" role="img" aria-label="Royal Match 关卡循环示意图，失败为最高频节点" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+
+          <g stroke="#deded8" fill="#fafaf8">
+            <rect x="0"   y="104" width="118" height="54" rx="7"/>
+            <rect x="148" y="104" width="100" height="54" rx="7"/>
+            <rect x="278" y="104" width="96"  height="54" rx="7"/>
+            <rect x="430" y="18"  width="180" height="54" rx="7"/>
+          </g>
+          <rect x="430" y="190" width="180" height="54" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+
+          <g font-size="13" fill="#171717" text-anchor="middle">
+            <text x="59"  y="136">进入关卡</text>
+            <text x="198" y="136">游玩</text>
+            <text x="326" y="136">判定</text>
+            <text x="520" y="41">通关 → 奖励</text>
+            <text x="520" y="59" font-size="11.5" fill="#6e6e6a">推进城堡装修</text>
+            <text x="520" y="213" font-weight="700" fill="#365f73">失败</text>
+            <text x="520" y="231" font-size="11.5" fill="#365f73">消耗体力 / 续关决策</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
+            <path d="M118,131 L143,131"/>
+            <path d="M248,131 L273,131"/>
+            <path d="M374,118 L396,118 Q408,118 408,106 L408,57 Q408,45 420,45 L425,45"/>
+            <path d="M374,146 L396,146 Q408,146 408,158 L408,205 Q408,217 420,217 L425,217"/>
+          </g>
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none">
+            <path d="M610,45 L688,45 Q700,45 700,57 L700,236"/>
+            <path d="M610,217 L688,217 Q700,217 700,229 L700,236"/>
+          </g>
+          <path d="M700,236 L700,254 Q700,266 688,266 L71,266 Q59,266 59,254 L59,163"
+                stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar3)"/>
+
+          <g font-size="11.5" fill="#6e6e6a" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="400" y="88" text-anchor="middle">低频</text>
+          </g>
+          <g font-size="11.5" fill="#365f73" font-weight="700" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="400" y="185" text-anchor="middle">高频</text>
+          </g>
+        </svg>
+        <figcaption>
+          在一个设计良好的三消里，玩家在单个关卡上的<strong>失败次数远多于通关次数</strong>。
+          按频次分配设计资源，失败态才是主战场。
+        </figcaption>
+      </figure>
+
+      <p>
+        这一点是整篇拆解的地基。绝大多数关于三消的讨论集中在「关卡怎么设计才好玩」，
+        但如果玩家在一个关卡上平均要失败若干次才能过，那么他在游戏里的大部分时间，
+        实际经历的是<em>「我又没过」</em>这个状态。
+      </p>
+      <p class="pull">
+        决定留存的不是通关那一刻有多爽，而是没通关那一刻有多不难受。
+      </p>
+      <p>
+        通关的快感是<strong>品类自带的</strong>——任何三消消除时都爽，这没有差异化空间。
+        失败的难受程度<strong>是可以设计的</strong>，而且各家差异很大。
+        Royal Match 的核心竞争力，我认为集中在这里。
+      </p>
+    </section>
+
+    <section id="fail">
+      <h2><span>03</span>失败体验的设计</h2>
+      <p>失败态由四个连续的环节组成，每个环节都可以单独优化：</p>
+
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>环节</th><th>玩家在想什么</th><th>设计目标</th><th>做错的后果</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>1. 失败瞬间的反馈</b></td>
+            <td>「啊，差一点」</td>
+            <td>弱化惩罚感，强调「差得很少」</td>
+            <td>沉重的失败音效 + 惩罚性动画 = 直接的负情绪，累积成卸载</td>
+          </tr>
+          <tr>
+            <td><b>2. 再试的摩擦</b></td>
+            <td>「还要点几下才能重来」</td>
+            <td>路径尽可能短，减少中断感</td>
+            <td>回到关卡列表再点进来，节奏断裂，玩家意识到「我在浪费时间」</td>
+          </tr>
+          <tr>
+            <td><b>3. 资源约束</b></td>
+            <td>「我还剩几条命」</td>
+            <td>制造稀缺感，但不制造挫败</td>
+            <td>体力过紧 = 强制下线；过松 = 失去付费与回访动机</td>
+          </tr>
+          <tr>
+            <td><b>4. 续关选择</b></td>
+            <td>「要不要花钱多几步」</td>
+            <td>在情绪峰值处提供出口</td>
+            <td>价格或时机不对 = 玩家感到被勒索，信任受损</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>「差一点」是被制造出来的</h3>
+      <p>
+        第 1 环节里最关键的机制是：<strong>让失败尽可能显示为「几乎成功」</strong>。
+        当玩家步数耗尽时，界面呈现的是「还差 N 个目标」，而不是「你失败了」。
+        当 N 很小时，玩家的归因是「运气差一点」而不是「我不行」。
+      </p>
+      <p>
+        这个差别在心理学上是<strong>外归因与内归因</strong>的差别，
+        而它直接决定了下一步行为：外归因导向「再试一次」，内归因导向「这游戏不适合我」。
+        <em>失败界面的信息呈现方式，实质上是在引导玩家的归因方向。</em>
+      </p>
+
+      <h3>体力系统的真实作用</h3>
+      <p>
+        体力（生命值）常被理解为纯粹的付费卡点。我认为它有一个更重要的作用：
+        <strong>强制中断连续失败。</strong>
+      </p>
+      <p>
+        连续失败会导致情绪的单调恶化。如果没有任何约束，
+        一个卡关的玩家可能连续失败十几次，最终以极差的情绪状态离开——
+        而这个离开是<em>不可逆的</em>，因为最后一次会话的情绪决定了他是否还会回来。
+      </p>
+      <p>
+        体力耗尽强制中断了这个过程。它把玩家推离游戏时，
+        玩家的状态是「我没体力了」（外部原因）而不是「我过不去」（能力原因）。
+        这是一次<strong>体面的退出</strong>，它保护了下一次回访的意愿。
+      </p>
+
+      <div class="callout take">
+        <span class="label">我的判断</span>
+        <p>
+          体力系统的设计目标不该只用「付费转化」来评估，
+          还应该看<strong>「体力耗尽后的次日回访率」</strong>。
+          如果一个体力设计带来了短期付费提升但降低了次日回访，它是亏的。
+          很多产品把体力当成收费闸门来调，忽略了它同时是一个情绪保护装置。
+        </p>
+      </div>
+    </section>
+
+    <section id="curve">
+      <h2><span>04</span>卡关的商业角色</h2>
+      <p>
+        卡关在三消里是一个<strong>被主动设计的商业事件</strong>，不是设计失误。
+        它是付费的主要触发点：玩家只有在「想过又过不去」时才会考虑买道具。
+      </p>
+      <p>但卡关同时也是流失的主要来源。所以真正的设计问题是：</p>
+
+      <p class="pull">
+        卡多久，玩家会付费；卡多久，玩家会走——这两个阈值之间的窗口有多宽？
+      </p>
+
+      <h3>难度的锯齿结构</h3>
+      <p>
+        成熟三消的难度曲线不是平滑上升的，而是锯齿状的：
+      </p>
+      <ul>
+        <li><strong>一段容易的关卡</strong>——建立节奏，累积「我很顺」的感觉，同时补充资源</li>
+        <li><strong>一个明显更难的关卡</strong>——制造卡点，触发付费决策</li>
+        <li><strong>紧接着一段容易的关卡</strong>——过掉硬关后立刻给予释放，把情绪拉回正值</li>
+      </ul>
+      <p>
+        第三段是最容易被忽略、也最关键的。硬关之后如果紧跟另一个硬关，
+        玩家会形成「后面只会越来越难」的预期，这个预期是流失的直接原因。
+        <em>硬关后的轻松段，作用是重置玩家对难度趋势的判断。</em>
+      </p>
+
+      <h3>硬关与 Meta 奖励节点的对齐</h3>
+      <p>
+        更进一步的设计是让硬关的位置和 meta 层的奖励节点<strong>对齐</strong>：
+        在玩家即将完成一个装修区域、即将拿到一个可见的成果时，放一个硬关。
+      </p>
+      <p>
+        这利用的是<strong>目标临近效应</strong>（goal-gradient effect）：
+        越接近目标，投入意愿越强。同样一个道具，在「随便哪一关」卖和在
+        「差一关就能看到新房间落成」时卖，转化率完全不同。
+      </p>
+      <p>
+        这也解释了 meta 层为什么要把进度做得<em>高度可视</em>——
+        装修的进度条、待完成的区域、马上要变样的场景，
+        都是在把「还差多少」这件事持续呈现给玩家，为临近效应提供燃料。
+      </p>
+
+      <div class="callout risk">
+        <span class="label">这里的伦理边界</span>
+        <p>
+          目标临近效应是一个中性的设计工具，但它的应用有明显的滥用空间：
+          如果硬关的难度是<strong>动态针对付费意愿高的玩家</strong>调高的，
+          那就从「设计节奏」滑向了「定向榨取」。
+          区别在于难度是<em>对所有玩家一致</em>还是<em>因人而异</em>。
+          我个人的判断线画在这里：可以设计卡点，不可以针对个人调整卡点强度。
+        </p>
+      </div>
+    </section>
+
+    <section id="booster">
+      <h2><span>05</span>Booster 的两个决策时点</h2>
+      <p>
+        三消的道具体系分成两类，它们的差别不在效果，而在<strong>玩家做购买决策时掌握的信息量</strong>。
+        这个差别决定了它们完全不同的商业角色。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>关前道具</th><th>关内道具</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>决策时点</b></td><td>进入关卡前</td><td>眼看要失败时</td></tr>
+          <tr><td><b>玩家掌握的信息</b></td><td>少：不知道这关难不难、棋盘会怎么生成</td><td>多：清楚地看到差几步、缺什么</td></tr>
+          <tr><td><b>心理状态</b></td><td>预防性投资，理性</td><td>止损，情绪化</td></tr>
+          <tr><td><b>付费意愿</b></td><td>较低</td><td>峰值</td></tr>
+          <tr><td><b>商业角色</b></td><td>培养道具使用习惯，抬高长期客单</td><td>直接的收入来源</td></tr>
+          <tr><td><b>风险</b></td><td>玩家觉得「用了也不一定过，浪费」</td><td>过度使用会让玩家感到被勒索</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>免费发放的作用是建立效用认知</h3>
+      <p>
+        新手期大量免费发放道具，通常被理解为「让玩家爽一下」。
+        我认为它的真实作用更具体：<strong>让玩家亲身体验道具的效用值。</strong>
+      </p>
+      <p>
+        一个玩家如果从未用过某个道具，他无法评估它值不值那个价——
+        面对购买选项时，他的默认判断是「不确定，那就不买」。
+        免费发放解决的是这个信息问题：用过之后，玩家心里有了
+        「这个道具大概能帮我多消掉多少」的量化认知，
+        后续的付费决策才从「要不要冒险」变成「值不值这个价」。
+      </p>
+      <p>
+        <em>这是一个把不确定性转化为价格判断的过程。</em>
+        所以免费发放的关键不是数量，而是<strong>是否覆盖了每一种道具至少一次</strong>——
+        没被体验过的道具，在商店里基本卖不动。
+      </p>
+    </section>
+
+    <section id="meta">
+      <h2><span>06</span>Meta 层的情绪分工</h2>
+      <p>
+        Royal Match 的 meta 是城堡装修：通关获得星星 / 资源，用来推进国王城堡各区域的修缮。
+        这个结构和 Playrix 的 Homescapes / Gardenscapes 同源。
+      </p>
+      <p>
+        关于 meta 层，最重要的设计原则我认为是一句话：
+      </p>
+
+      <p class="pull">
+        Meta 层必须是纯正反馈池，不能引入第二个失败点。
+      </p>
+
+      <h3>为什么</h3>
+      <p>
+        玩家的全部挫败都应该集中在三消层。三消层的挫败是有出口的——
+        再试一次、用道具、等体力，路径清晰。
+      </p>
+      <p>
+        如果 meta 层也能失败（比如装修需要经营、有倒计时、资源会损失、决策可能选错），
+        就出现了第二个负情绪源，而且这个负情绪源<strong>往往没有清晰的解决路径</strong>。
+        玩家的情绪曲线从「一个可控的锯齿」变成「两个互相干扰的锯齿」，
+        整体体验的可预测性下降，而可预测性正是休闲品类的核心价值。
+      </p>
+      <p>
+        所以 meta 层在这里承担的功能是单一且明确的：
+      </p>
+      <ul>
+        <li><strong>把抽象的关卡进度转译成可见的成果。</strong>「我过了 30 关」是抽象的，「这个房间变漂亮了」是具体的。</li>
+        <li><strong>提供中期目标。</strong>单关是短期目标，装修区域是中期目标，防止玩家在「过关—过关—过关」中失去方向感。</li>
+        <li><strong>为目标临近效应提供燃料</strong>（见第 04 节）。</li>
+      </ul>
+
+      <h3>Royal Match 的 meta 比同类更轻</h3>
+      <p>
+        相比 Homescapes 系列较重的剧情和角色互动，Royal Match 的 meta 更薄——
+        叙事负担小，装修的选择项少，玩家不需要记住剧情线。
+      </p>
+      <p>
+        这是一个明确的取舍：<strong>牺牲叙事沉浸，换取认知负担的降低。</strong>
+        对一个主要在碎片时间被打开的产品来说，
+        「隔了三天回来还知道自己在干嘛」比「有一个动人的故事」更重要。
+        重剧情 meta 的隐性成本，是它对连续游玩的要求更高。
+      </p>
+    </section>
+
+    <section id="retention">
+      <h2><span>07</span>留存机制</h2>
+      <p>
+        除了关卡本身，Royal Match 的回访理由主要来自周期性活动、赛季通行证和团队 / 竞赛玩法。
+        这些机制的共同点是：<strong>它们不是新玩法，而是给同一个玩法套上新的时限和排名。</strong>
+      </p>
+      <p>关键在于它们各自解决的是不同的回访动机：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>机制</th><th>回访动机的类型</th><th>作用于哪类玩家</th></tr></thead>
+        <tbody>
+          <tr><td><b>限时活动</b></td><td>损失厌恶：不上线就错过</td><td>全体，尤其中低活跃</td></tr>
+          <tr><td><b>赛季通行证</b></td><td>沉没成本：已经买了 / 已经推进了</td><td>付费与高活跃玩家</td></tr>
+          <tr><td><b>竞赛 / 排行</b></td><td>社会比较：不想掉名次</td><td>竞争意愿强的少数玩家，但贡献高时长</td></tr>
+          <tr><td><b>团队协作</b></td><td>社会义务：队友在等</td><td>社交动机强的玩家，显著抬高长期留存</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        <em>社交在这里不是玩法，是回访理由。</em>
+        团队功能不改变三消的任何一步操作，它改变的是玩家「今天要不要打开这个 App」的判断依据——
+        从「我想玩」扩展到「队友需要我」。这是一个成本极低、效果极强的留存杠杆。
+      </p>
+    </section>
+
+    <section id="ua">
+      <h2><span>08</span>买量效率才是真正的护城河</h2>
+      <p>
+        前面七节讲的都是产品内的机制，但它们解释不了一件事：
+        为什么在这个品类里，<strong>做得好的产品有很多，做得大的产品却很少</strong>。
+      </p>
+      <p>
+        因为休闲游戏的竞争本质是一个买量生意。产品的规模上限由一个比值决定：
+      </p>
+      <div class="callout">
+        <span class="label" style="color:var(--accent)">增长的约束条件</span>
+        <p style="margin:0">
+          <code>LTV / CAC &gt; 1</code>　—— 只要这个比值成立且有余量，买量就可以无限加码，
+          规模由资金效率而非产品质量决定；一旦不成立，产品再好也无法扩张。
+        </p>
+      </div>
+      <p>
+        所以真正的问题是：产品内的体验打磨，是怎么传导到这个比值上的？
+      </p>
+
+      <h3>路径一：失败体验 → 早期留存 → LTV</h3>
+      <p>
+        新用户流失最集中的时刻是前几次失败。第 03 节讲的所有细节——
+        归因引导、再试摩擦、体面的退出——直接决定了次日和 7 日留存。
+        而留存是 LTV 最敏感的输入项：早期留存的小幅提升会在 LTV 上被放大。
+      </p>
+
+      <h3>路径二：广告与真实玩法的一致性 → CAC 的有效性</h3>
+      <p>
+        这是我认为最值得单独讲的一点。休闲游戏长期存在一种做法：
+        广告素材展示的是一个和真实玩法无关的小游戏（典型如「拔销子救人」），
+        用它换取极高的点击率。
+      </p>
+      <p>这种做法在账面上很划算，但它的代价被隐藏在漏斗的后半段：</p>
+      <ul>
+        <li>点击率高 → 单次安装成本看起来低</li>
+        <li>但进来的用户想玩的是广告里那个游戏，不是三消</li>
+        <li>→ 次日留存极差，<strong>大量安装是无效的</strong></li>
+        <li>→ 真实的「有效用户获取成本」远高于账面 CAC</li>
+      </ul>
+      <p>
+        Dream Games 在广告上更倾向于展示接近真实玩法的内容。
+        这个选择在短期指标上是吃亏的（点击率更低），但它换来的是
+        <strong>安装用户与产品的匹配度</strong>——进来的人本来就想玩三消。
+      </p>
+      <p class="pull">
+        用假广告买来的用户，留存差是必然的；账面 CAC 低，有效 CAC 反而高。
+      </p>
+      <p>
+        当产品有足够好的留存（路径一）时，它<em>负担得起</em>真实广告带来的更高点击成本；
+        而真实广告带来的高匹配度用户，又进一步抬高整体留存。
+        这两条路径互相强化，形成的复合优势，比任何单点的玩法创新都更难被复制。
+      </p>
+
+      <div class="callout take">
+        <span class="label">回答第 01 节的问题</span>
+        <p>
+          玩家为什么会从用了多年的产品迁移过来？
+          我的答案是：<strong>迁移根本没有大规模发生。</strong>
+          Royal Match 的增量主要不是从 Candy Crush 抢来的存量用户，
+          而是通过更高效的买量，从「本来就会玩三消但还没被转化」的池子里持续获取的新用户。
+          在成熟品类里，<strong>竞争对手不是别的产品，是买量渠道里的出价</strong>。
+          这也是为什么执行细节的复利效应，在这个品类里比玩法创新更值钱。
+        </p>
+      </div>
+    </section>
+
+    <section id="transfer">
+      <h2><span>09</span>可迁移的结论</h2>
+      <ol>
+        <li>
+          <strong>按事件频次分配设计资源。</strong>
+          先统计玩家最常经历的状态是什么，再决定把打磨精力放在哪。
+          很多产品在低频的高光时刻投入过度，在高频的日常状态上敷衍。
+        </li>
+        <li>
+          <strong>失败界面是归因引导装置。</strong>
+          呈现「差一点」而非「你输了」，把归因推向外部，直接影响再试意愿。
+        </li>
+        <li>
+          <strong>约束系统（体力）要同时用留存指标评估，不只用付费指标。</strong>
+          它保护的是最后一次会话的情绪状态。
+        </li>
+        <li>
+          <strong>Meta 层只做正反馈，不做第二个失败点。</strong>
+          挫败必须集中在一个有清晰出口的地方。
+        </li>
+        <li>
+          <strong>短期指标最优的买量策略，往往不是长期最优。</strong>
+          评估广告素材要看安装后留存，不能只看点击率和安装成本。
+        </li>
+      </ol>
+    </section>
+
+    <section id="field">
+      <h2><span>10</span>我的自测记录</h2>
+      <div class="callout field">
+        <span class="label">待填写 — 发布前必须替换或删除本块</span>
+        <p>
+          这篇拆解目前全部是机制推演，缺少一手证据。计划用<strong>自测埋点</strong>补上——
+          这也是我数据分析背景能提供的、比公开资料更有说服力的东西。
+        </p>
+        <p style="margin-top:12px"><b>计划做法：</b>实际游玩前 50–80 关，逐关记录：</p>
+        <ul>
+          <li>关卡号 / 失败次数 / 通关时剩余步数</li>
+          <li>是否使用道具、使用的是关前还是关内道具</li>
+          <li>失败时距离目标还差多少（用于验证第 03 节的「差一点」设计）</li>
+          <li>体力耗尽的关卡位置、以及每次体力耗尽后我实际隔了多久回来</li>
+          <li>装修奖励节点的位置，与硬关位置的相对关系（用于验证第 04 节的对齐假设）</li>
+        </ul>
+        <p style="margin-top:12px"><b>产出：</b>
+          一张<b>「关卡号 × 失败次数」的折线图</b>，叠加 meta 奖励节点的位置标记。
+          如果第 04 节的锯齿结构和对齐假设成立，图上应该能看到失败次数的周期性尖峰，
+          且尖峰位置紧邻奖励节点。<b>如果看不到，就如实写出来并修正本文的论断。</b>
+        </p>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2><span>11</span>数据与来源</h2>
+      <p>本文论证基于机制推演与可公开观察的产品结构，未使用未经核实的数值。</p>
+      <div class="todo-data">
+        <span class="label">待补充（附来源链接）</span>
+        <ul>
+          <li>Royal Match 与 Candy Crush 的月流水与下载量对比曲线 —— 用于第 01 节和第 08 节</li>
+          <li>Dream Games 的融资与估值信息、团队背景（创始成员的 Peak Games 履历）—— 用于第 01 节</li>
+          <li>买量投放规模与素材类型分布 —— 第 08 节最关键的证据，广告素材库可直接观察</li>
+          <li>次留 / 7 留 / 30 留的行业基准与本作水平 —— 用于第 08 节路径一</li>
+          <li>付费渗透率与 ARPPU —— 用于第 05 节</li>
+          <li>第 10 节的自测数据（我自己产出）</li>
+        </ul>
+      </div>
+      <div class="callout risk" style="margin-top:18px">
+        <span class="label">需要核实的具体论断</span>
+        <p>
+          第 08 节关于「Dream Games 的广告素材更接近真实玩法」这一点，
+          我是基于对该品类投放风格的观察得出的，<strong>写入正式版本前需要用广告素材库实际抽样验证</strong>
+          （可用 Meta 广告资源库、SocialPeta、AppGrowing 等，按时间段抽样统计素材类型占比）。
+          如果抽样结果不支持，第 08 节的路径二需要重写。
+        </p>
+      </div>
+      <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
+        建议来源：Sensor Tower / data.ai 行业报告、Meta 广告资源库、Deconstructor of Fun 与 GameRefinery 的公开拆解、Dream Games 官方与投资方公告。
+      </p>
+    </section>
+
+  </article>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>游戏拆解 03 · Royal Match · 王禹尧</div>
+    <div><a href="../index.html#analysis">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="analysis.js"></script>
+</body>
+</html>
