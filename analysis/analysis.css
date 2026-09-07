@@ -234,6 +234,41 @@ figure.diagram figcaption{
 .todo-data ul{margin:0;padding-left:20px;color:var(--muted)}
 .todo-data li{margin:6px 0}
 
+/* 相关拆解 */
+.related{
+  grid-column:2;
+  max-width:760px;
+  margin:0 0 8px;
+  padding-top:26px;
+  border-top:1px solid var(--line);
+}
+.related-title{
+  font-size:11px;
+  letter-spacing:.14em;
+  color:#9a9a94;
+  margin-bottom:14px;
+}
+.related ul{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.related li{margin:0}
+.related a{
+  display:block;
+  padding:13px 15px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:8px;
+  text-decoration:none;
+}
+.related a:hover{border-color:var(--accent)}
+.related b{display:block;font-size:15px;margin-bottom:3px}
+.related span{font-size:13px;color:var(--muted)}
+
 /* 页脚 */
 .doc-foot{
   border-top:1px solid var(--line);
@@ -257,6 +292,8 @@ figure.diagram figcaption{
   .doc h2{font-size:21px}
   .pull{font-size:17px}
   .metabar{gap:0 24px}
+  .related{grid-column:1}
+  .related ul{grid-template-columns:1fr}
 }
 @media print{
   .progress,.toc,.back{display:none}
@@ -264,4 +301,36 @@ figure.diagram figcaption{
   .layout{display:block;padding:0}
   .doc section{page-break-inside:auto}
   .doc h2{page-break-after:avoid}
+}
+
+/* 拆解索引页 */
+.hub{display:grid;gap:16px;max-width:860px;margin:0;padding:40px 0 60px}
+.hub a{
+  display:block;
+  padding:22px 24px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-decoration:none;
+}
+.hub a:hover{border-color:var(--accent)}
+.hub .num{
+  font-size:11px;
+  letter-spacing:.14em;
+  color:var(--accent);
+  font-weight:700;
+}
+.hub h2{margin:8px 0 4px;font-size:23px;letter-spacing:-.025em}
+.hub .sub{margin:0 0 14px;font-size:15px;color:var(--muted)}
+.hub .th{
+  margin:0 0 14px;
+  padding-left:14px;
+  border-left:2px solid var(--soft);
+  font-size:14.5px;
+  color:#3e3e3b;
+}
+.hub .meta{font-size:12.5px;color:#9a9a94}
+@media(max-width:760px){
+  .hub{padding:28px 0 44px}
+  .hub h2{font-size:20px}
 }
