@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio｜个人作品集｜王禹尧</title>
+<style>
+:root{
+  --bg:#f6f6f3;
+  --paper:#ffffff;
+  --text:#171717;
+  --muted:#6e6e6a;
+  --line:#deded8;
+  --soft:#ecece7;
+  --accent:#365f73;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+}
+a{color:inherit;text-decoration:none}
+.container{
+  width:min(1080px,calc(100% - 40px));
+  margin:0 auto;
+}
+header{
+  padding:72px 0 38px;
+  border-bottom:1px solid var(--line);
+}
+.topline{
+  display:flex;
+  justify-content:space-between;
+  gap:24px;
+  align-items:flex-start;
+}
+.name{
+  font-size:42px;
+  line-height:1.1;
+  margin:0 0 12px;
+  letter-spacing:-0.04em;
+  font-weight:750;
+}
+.role{
+  font-size:18px;
+  color:var(--accent);
+  margin-bottom:16px;
+  font-weight:650;
+}
+.intro{
+  max-width:760px;
+  color:var(--muted);
+  font-size:16px;
+  margin:0;
+}
+.contact{
+  text-align:right;
+  color:var(--muted);
+  font-size:14px;
+  white-space:nowrap;
+}
+nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(246,246,243,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+nav .container{
+  display:flex;
+  gap:24px;
+  align-items:center;
+  min-height:52px;
+}
+nav a{
+  font-size:14px;
+  color:var(--muted);
+}
+nav a:hover{color:var(--text)}
+section{padding:54px 0}
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:30px;
+  margin-bottom:24px;
+}
+.section-title h2{
+  margin:0;
+  font-size:26px;
+  letter-spacing:-.02em;
+}
+.section-title p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  max-width:520px;
+}
+.featured{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+.project{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:24px;
+}
+.project-head{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:20px;
+  align-items:start;
+}
+.project h3{
+  margin:0 0 6px;
+  font-size:22px;
+  letter-spacing:-.02em;
+}
+.meta{
+  color:var(--muted);
+  font-size:13px;
+}
+.badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.badge{
+  padding:4px 8px;
+  border-radius:6px;
+  border:1px solid var(--line);
+  background:#fafaf8;
+  font-size:12px;
+  color:#555;
+}
+.summary{
+  margin:18px 0 18px;
+  color:#3e3e3b;
+}
+.project-grid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:24px;
+}
+.keypoints{
+  margin:0;
+  padding-left:18px;
+  color:#43433f;
+}
+.keypoints li{margin:7px 0}
+.evidence{
+  border-left:2px solid var(--soft);
+  padding-left:18px;
+  color:var(--muted);
+  font-size:14px;
+}
+.evidence strong{color:var(--text)}
+.links{
+  margin-top:20px;
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.links a{
+  font-size:14px;
+  color:var(--accent);
+  font-weight:650;
+}
+.other-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+.compact h3{
+  margin:0 0 8px;
+  font-size:18px;
+}
+.compact p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+.case-list{
+  border-top:1px solid var(--line);
+}
+.case-row{
+  display:grid;
+  grid-template-columns:1.15fr 1.6fr auto;
+  gap:24px;
+  align-items:start;
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+.case-row h3{
+  margin:0;
+  font-size:18px;
+}
+.case-row p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+.case-row a{
+  color:var(--accent);
+  font-size:14px;
+  font-weight:650;
+}
+.timeline{
+  border-top:1px solid var(--line);
+}
+.timeline-row{
+  display:grid;
+  grid-template-columns:170px 1fr;
+  gap:28px;
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+}
+.timeline-row .date{
+  color:var(--muted);
+  font-size:13px;
+}
+.timeline-row h3{
+  margin:0 0 5px;
+  font-size:17px;
+}
+.timeline-row p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+.about{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.about-box{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px;
+}
+.about-box h3{
+  margin:0 0 12px;
+  font-size:17px;
+}
+.skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.skill{
+  padding:5px 9px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  font-size:12px;
+  color:#4d4d49;
+  background:#fafaf8;
+}
+footer{
+  border-top:1px solid var(--line);
+  padding:30px 0 46px;
+  color:var(--muted);
+  font-size:13px;
+}
+.note{
+  font-size:12px;
+  color:#8a8a84;
+  margin-top:10px;
+}
+@media(max-width:760px){
+  .topline{display:block}
+  .contact{text-align:left;margin-top:22px;white-space:normal}
+  .project-head{grid-template-columns:1fr}
+  .badges{justify-content:flex-start}
+  .project-grid{grid-template-columns:1fr}
+  .other-grid{grid-template-columns:1fr}
+  .case-row{grid-template-columns:1fr}
+  .timeline-row{grid-template-columns:1fr;gap:6px}
+  .about{grid-template-columns:1fr}
+  nav .container{overflow:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container topline">
+    <div>
+      <h1 class="name">Portfolio｜个人作品集</h1>
+      <div class="role">王禹尧 · 游戏策划 / AI 游戏产品 / 系统策划</div>
+      <p class="intro">
+        统计学与商业数据分析背景，关注 AI-native gameplay、系统设计、UGC 生态与玩家行为数据。
+        希望将玩法机制、AI 生成能力与数据分析方法结合，做出既有新鲜感、又可控可验证的游戏体验。
+      </p>
+    </div>
+    <div class="contact">
+      yuyaow451@163.com<br>
+      13031502707<br>
+      香港 / 上海 / 深圳 / 广州
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <a href="#featured">游戏项目</a>
+    <a href="#analysis">游戏拆解</a>
+    <a href="#game-experience">游戏相关经历</a>
+    <a href="#profile">个人简介</a>
+  </div>
+</nav>
+
+<main>
+
+<section id="featured">
+  <div class="container">
+    <div class="section-title">
+      <h2>游戏项目</h2>
+      <p>优先展示我真正做过、能够继续讲清楚设计过程与结果的项目。</p>
+    </div>
+
+    <div class="featured">
+
+      <article class="project">
+        <div class="project-head">
+          <div>
+            <h3>爱豆收集梦想生活｜AI 驱动沙盒养成游戏</h3>
+            <div class="meta">独立产品设计 / 全栈开发 · Web · 2026</div>
+          </div>
+          <div class="badges">
+            <span class="badge">AI Gameplay</span>
+            <span class="badge">Simulation</span>
+            <span class="badge">System Design</span>
+          </div>
+        </div>
+
+        <p class="summary">
+          Tomodachi-Life 风格的俯视沙盒养成游戏。核心采用“确定性模拟 + 生成式 AI”混合架构：
+          游戏系统管理时间、角色状态、日程和关系数值，LLM 只负责生成当前情境下的对话与剧情，
+          以提升内容自由度，同时保证世界状态连续、规则可控。
+        </p>
+
+        <div class="project-grid">
+          <div>
+            <ul class="keypoints">
+              <li>设计角色关系、世界事件、虚拟社交平台、角色创建等核心系统。</li>
+              <li>通过结构化 AI 输出，将生成内容解析并写回关系、事件与游戏状态。</li>
+              <li>使用 DeepSeek，并通过上下文裁剪降低 token 消耗与响应成本。</li>
+              <li>技术栈：React 19 / TypeScript / Vite / Tailwind CSS v4。</li>
+            </ul>
+          </div>
+          <div class="evidence">
+            <strong>结果</strong><br>
+            2000+ 用户体验，出现社交媒体自发传播。<br><br>
+            <strong>作品集详情页建议重点</strong><br>
+            系统架构图 / 对话生成流程 / 角色状态数据结构 / prompt 设计 / 成本控制 / 失败案例与迭代。
+          </div>
+        </div>
+
+        <div class="links">
+          <a href="#">试玩 Demo →</a>
+          <a href="#">项目详情 →</a>
+          <a href="#">GitHub →</a>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-head">
+          <div>
+            <h3>AI 狼人杀｜1 名玩家 vs 11 个 AI Agent</h3>
+            <div class="meta">独立设计开发 · Multi-Agent Social Deduction · 2026</div>
+          </div>
+          <div class="badges">
+            <span class="badge">Multi-Agent</span>
+            <span class="badge">Social Deduction</span>
+            <span class="badge">AI Behavior</span>
+          </div>
+        </div>
+
+        <p class="summary">
+          玩家独自进入 12 人狼人杀对局，其余 11 个位置由 AI Agent 控制。重点不是“AI 会聊天”，
+          而是让每个 Agent 拥有角色信息、记忆、怀疑、立场与行为决策，形成真实的多人社交推理体验。
+        </p>
+
+        <div class="project-grid">
+          <div>
+            <ul class="keypoints">
+              <li>拆分公开信息、身份私有信息与 Agent 局部记忆。</li>
+              <li>探索不同人格与角色 prompt 对发言、投票、跟票和欺骗行为的影响。</li>
+              <li>重点研究 AI 的 herd behavior、信息污染与错误推理问题。</li>
+            </ul>
+          </div>
+          <div class="evidence">
+            <strong>详情页建议重点</strong><br>
+            Agent Architecture / Memory / Suspicion / Vote Logic / Prompt Structure / 对局日志。
+          </div>
+        </div>
+
+        <div class="links">
+          <a href="#">试玩 Demo →</a>
+          <a href="#">系统设计 →</a>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-head">
+          <div>
+            <h3>光与影｜双角色机关解谜</h3>
+            <div class="meta">玩法设计 / 关卡设计 · WIP</div>
+          </div>
+          <div class="badges">
+            <span class="badge">Puzzle</span>
+            <span class="badge">Level Design</span>
+            <span class="badge">Core Mechanic</span>
+          </div>
+        </div>
+
+        <p class="summary">
+          全黑场景中，灯可以被推动、开关与遮挡。光灵只能走在光照区域，影灵依赖阴影前进。
+          玩家每一次移动灯光，都会同时改变两个角色的可行路径：一个人的路打开，另一个人的路可能随之断开。
+        </p>
+
+        <div class="project-grid">
+          <div>
+            <ul class="keypoints">
+              <li>以“同一环境状态对两个角色产生相反影响”作为核心机制。</li>
+              <li>关卡按开关灯 → 推灯 → 遮挡 → 多光源逐步增加复杂度。</li>
+              <li>最终目标是让两个角色同时抵达各自终点。</li>
+            </ul>
+          </div>
+          <div class="evidence">
+            <strong>这个项目的作用</strong><br>
+            证明我不仅做 AI 产品，也能够从核心机制、玩家学习曲线与关卡节奏出发做纯玩法设计。
+          </div>
+        </div>
+
+        <div class="links">
+          <a href="#">Playable Build →</a>
+          <a href="#">关卡设计文档 →</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="other">
+  <div class="container">
+    <div class="section-title">
+      <h2>其他项目</h2>
+      <p>控制篇幅，只保留一句定位与当前进度。</p>
+    </div>
+
+    <div class="other-grid">
+      <div class="project compact">
+        <h3>鲁荣渔号题材叙事解谜</h3>
+        <p>以封闭空间、碎片信息、人物关系与时间线重构为核心，探索环境叙事与信息不可靠性。当前处于叙事结构与谜题原型阶段。</p>
+      </div>
+      <div class="project compact">
+        <h3>72 小时跑酷原型</h3>
+        <p>快速完成移动、失败反馈与关卡节奏的最小闭环，用于展示快速原型、scope 控制与基础 game feel 调整能力。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="container">
+    <div class="section-title">
+      <h2>游戏拆解</h2>
+      <p>不是“写游戏介绍”，而是围绕一个具体产品问题形成观点。</p>
+    </div>
+
+    <div class="case-list">
+      <div class="case-row">
+        <h3>蛋仔派对</h3>
+        <p>从 Party Game 到 UGC 平台：内容供给、推荐分发、社交关系、创作者生态与商业化如何形成闭环。</p>
+        <a href="#">阅读全文 →</a>
+      </div>
+
+      <div class="case-row">
+        <h3>锈湖</h3>
+        <p>低成本独立游戏如何依靠辨识度极高的美术、非线性叙事、符号复用与玩家 theorycrafting 形成长期 IP 传播。</p>
+        <a href="#">阅读全文 →</a>
+      </div>
+
+      <div class="case-row">
+        <h3>Royal Match</h3>
+        <p>从关卡难度、失败体验、Booster、Meta progression 与付费节点拆解成熟休闲游戏的留存与商业化结构。</p>
+        <a href="#">阅读全文 →</a>
+      </div>
+
+      <div class="case-row">
+        <h3>Status AI</h3>
+        <p>当生成式 AI 从开发工具进入 gameplay：AI 角色、动态内容、长期记忆、角色一致性与推理成本如何共同影响体验。</p>
+        <a href="#">阅读全文 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="game-experience">
+  <div class="container">
+    <div class="section-title">
+      <h2>游戏相关经历</h2>
+      <p>高玩经历、校园游戏社群运营与海外独立游戏研究。</p>
+    </div>
+    <div class="timeline">
+        <div class="timeline-row">
+          <div class="date">2020 — 至今</div>
+          <div>
+            <h3>蛋仔派对｜全国前 10 玩家</h3>
+            <p>竞技水平曾达到全国前十，并曾收到斗鱼平台签约主播邀约。长期深度参与游戏竞技与玩家社区，对核心玩法、玩家成长、社区内容与用户激励机制有较深入的一线理解。</p>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="date">2023.03 — 2024.06</div>
+          <div>
+            <h3>蛋仔派对校园社群｜创始人 &amp; 运营负责</h3>
+            <p>从零搭建 100+ 人校园社群，策划线下赛事及跨校联赛，并与上海交通大学校园社群合作；获得官方礼品赞助。持续追踪社群活跃度与活动转化数据，根据反馈优化活动形式与运营节奏，并沉淀双校 UGC 内容生态。</p>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="date">长期积累</div>
+          <div>
+            <h3>独立游戏海外市场研究｜100+ 款游戏深度体验</h3>
+            <p>累计深度体验 100+ 款国内外游戏，重点关注欧美独立游戏，并长期参与游戏社群、剧情分析等二次创作内容。法国 EMLYON 交流期间曾与锈湖开发团队开发者直接沟通，并广泛接触欧洲本地玩家，积累对欧美玩家在叙事深度、世界观构建与社交属性等方面偏好的第一手观察。</p>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<section id="profile">
+  <div class="container">
+    <div class="section-title">
+      <h2>个人简介</h2>
+      <p>教育背景、实习经历、个人技能与个人评价。</p>
+    </div>
+
+    <div style="margin-bottom:42px;">
+      <h3 style="font-size:19px;margin:0 0 16px;">教育背景</h3>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="date">2024.09 — 2026.06</div>
+          <div>
+            <h3>香港城市大学｜商业数据分析（商学院）｜硕士</h3>
+            <p>主修课程：数据库管理系统、数据可视化、统计数据分析、数据挖掘、生成式 AI 商业应用。</p>
+            <p style="margin-top:5px;">学术交流：法国里昂商学院 EMLYON（2025.09 — 2025.12）。</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="date">2020.09 — 2024.06</div>
+          <div>
+            <h3>华东师范大学｜统计学（统计学院）｜学士</h3>
+            <p>主修课程：概率论、数理统计、回归分析、经济学、统计软件、多元统计分析、经济统计。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:42px;">
+      <h3 style="font-size:19px;margin:0 0 16px;">实习经历</h3>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="date">2023.09 — 2024.02</div>
+          <div>
+            <h3>巴斯夫（中国）有限公司｜油田与矿业解决方案部｜市场实习生</h3>
+            <p>整合三大销售区域历史销售记录与问卷反馈，构建客户偏好与区域渗透模型；使用 Python 进行客户聚类，识别 3 类潜在高价值客户群体，并协助定向营销测试与反馈跟踪。</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="date">2023.07 — 2023.09</div>
+          <div>
+            <h3>东兴证券｜研究部｜金融工程实习生</h3>
+            <p>使用 Python 完成 10+ 个选股因子的提取、数据清洗与多因子模型回测，并制作收益分布、回撤曲线等可视化输出。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about">
+      <div class="about-box">
+        <h3>个人技能</h3>
+        <div class="skills">
+          <span class="skill">Game Design</span>
+          <span class="skill">System Design</span>
+          <span class="skill">Level Design</span>
+          <span class="skill">AI / LLM</span>
+          <span class="skill">Prompt Engineering</span>
+          <span class="skill">React</span>
+          <span class="skill">TypeScript</span>
+          <span class="skill">Python</span>
+          <span class="skill">SQL</span>
+          <span class="skill">Tableau</span>
+          <span class="skill">Data Analysis</span>
+        </div>
+        <p style="margin:16px 0 0;color:var(--muted);font-size:14px;">
+          语言：普通话（母语）、英语（精通）、粤语（良好）、法语（基础）。
+        </p>
+      </div>
+
+      <div class="about-box">
+        <h3>个人评价</h3>
+        <p style="margin:0;color:var(--muted);font-size:14px;">
+          重度游戏玩家，具备顶尖玩家视角与独立游戏开发经验；拥有统计学与商业数据分析背景，
+          能将数据结果转化为产品与运营判断。具备 AI 游戏产品落地经验，熟悉 Prompt Engineering
+          与 Vibe Coding，并拥有法国交流及欧美独立游戏、玩家社群的一手观察经验。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    Portfolio · 个人作品集 · 王禹尧 · 2026
+  </div>
+</footer>
+
+</body>
+</html>
