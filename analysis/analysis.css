@@ -183,8 +183,6 @@ td b{color:var(--text)}
 .callout.take .label{color:var(--accent)}
 .callout.risk{background:var(--warn-soft);border-color:#e8dcc9}
 .callout.risk .label{color:var(--warn)}
-.callout.field{background:var(--paper);border-style:dashed}
-.callout.field .label{color:#9a9a94}
 
 /* 图示 */
 figure.diagram{

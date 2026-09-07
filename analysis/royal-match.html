@@ -32,7 +32,7 @@
       <div><dt>上线</dt><dd>2021 年</dd></div>
       <div><dt>品类</dt><dd>三消 + 装修 Meta</dd></div>
       <div><dt>分析视角</dt><dd>留存结构 / 商业化 / 数值节奏</dd></div>
-      <div><dt>篇幅</dt><dd>约 4900 字 · 12 分钟</dd></div>
+      <div><dt>篇幅</dt><dd>约 4700 字 · 12 分钟</dd></div>
       <div><dt>最后更新</dt><dd>2026-09</dd></div>
     </dl>
   </div>
@@ -43,7 +43,7 @@
   <nav class="toc">
     <div class="toc-title">目录</div>
     <ol>
-      <li><a href="#q">01　我想回答的问题</a></li>
+      <li><a href="#q">01　问题定义</a></li>
       <li><a href="#loop">02　最高频事件是失败</a></li>
       <li><a href="#fail">03　失败体验的设计</a></li>
       <li><a href="#curve">04　卡关的商业角色</a></li>
@@ -52,15 +52,14 @@
       <li><a href="#retention">07　留存机制</a></li>
       <li><a href="#ua">08　买量效率才是真正的护城河</a></li>
       <li><a href="#transfer">09　可迁移的结论</a></li>
-      <li><a href="#field">10　我的自测记录</a></li>
-      <li><a href="#data">11　数据与来源</a></li>
+      <li><a href="#data">10　数据与来源</a></li>
     </ol>
   </nav>
 
   <article class="doc">
 
     <section id="q">
-      <h2><span>01</span>我想回答的问题</h2>
+      <h2><span>01</span>问题定义</h2>
       <p>
         三消是移动游戏里最红海的品类。《Candy Crush Saga》从 2012 年起长期占据畅销榜前列，
         规则已经被完全公开、被无数产品复刻，玩法层面没有任何秘密可言。
@@ -223,7 +222,7 @@
       </p>
 
       <div class="callout take">
-        <span class="label">我的判断</span>
+        <span class="label">判断</span>
         <p>
           体力系统的设计目标不该只用「付费转化」来评估，
           还应该看<strong>「体力耗尽后的次日回访率」</strong>。
@@ -283,7 +282,7 @@
           如果硬关的难度是<strong>动态针对付费意愿高的玩家</strong>调高的，
           那就从「设计节奏」滑向了「定向榨取」。
           区别在于难度是<em>对所有玩家一致</em>还是<em>因人而异</em>。
-          我个人的判断线画在这里：可以设计卡点，不可以针对个人调整卡点强度。
+          判断线可以画在这里：可以设计卡点，不可以针对个人调整卡点强度。
         </p>
       </div>
     </section>
@@ -496,32 +495,8 @@
       </ol>
     </section>
 
-    <section id="field">
-      <h2><span>10</span>我的自测记录</h2>
-      <div class="callout field">
-        <span class="label">待填写 — 发布前必须替换或删除本块</span>
-        <p>
-          这篇拆解目前全部是机制推演，缺少一手证据。计划用<strong>自测埋点</strong>补上——
-          这也是我数据分析背景能提供的、比公开资料更有说服力的东西。
-        </p>
-        <p style="margin-top:12px"><b>计划做法：</b>实际游玩前 50–80 关，逐关记录：</p>
-        <ul>
-          <li>关卡号 / 失败次数 / 通关时剩余步数</li>
-          <li>是否使用道具、使用的是关前还是关内道具</li>
-          <li>失败时距离目标还差多少（用于验证第 03 节的「差一点」设计）</li>
-          <li>体力耗尽的关卡位置、以及每次体力耗尽后我实际隔了多久回来</li>
-          <li>装修奖励节点的位置，与硬关位置的相对关系（用于验证第 04 节的对齐假设）</li>
-        </ul>
-        <p style="margin-top:12px"><b>产出：</b>
-          一张<b>「关卡号 × 失败次数」的折线图</b>，叠加 meta 奖励节点的位置标记。
-          如果第 04 节的锯齿结构和对齐假设成立，图上应该能看到失败次数的周期性尖峰，
-          且尖峰位置紧邻奖励节点。<b>如果看不到，就如实写出来并修正本文的论断。</b>
-        </p>
-      </div>
-    </section>
-
     <section id="data">
-      <h2><span>11</span>数据与来源</h2>
+      <h2><span>10</span>数据与来源</h2>
       <p>本文论证基于机制推演与可公开观察的产品结构，未使用未经核实的数值。</p>
       <div class="todo-data">
         <span class="label">待补充（附来源链接）</span>
@@ -531,14 +506,13 @@
           <li>买量投放规模与素材类型分布 —— 第 08 节最关键的证据，广告素材库可直接观察</li>
           <li>次留 / 7 留 / 30 留的行业基准与本作水平 —— 用于第 08 节路径一</li>
           <li>付费渗透率与 ARPPU —— 用于第 05 节</li>
-          <li>第 10 节的自测数据（我自己产出）</li>
         </ul>
       </div>
       <div class="callout risk" style="margin-top:18px">
         <span class="label">需要核实的具体论断</span>
         <p>
           第 08 节关于「Dream Games 的广告素材更接近真实玩法」这一点，
-          我是基于对该品类投放风格的观察得出的，<strong>写入正式版本前需要用广告素材库实际抽样验证</strong>
+          系基于对该品类投放风格的观察得出，<strong>写入正式版本前需要用广告素材库实际抽样验证</strong>
           （可用 Meta 广告资源库、SocialPeta、AppGrowing 等，按时间段抽样统计素材类型占比）。
           如果抽样结果不支持，第 08 节的路径二需要重写。
         </p>
