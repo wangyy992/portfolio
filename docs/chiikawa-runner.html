@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ちいかわ 跑酷原型 策划案｜王禹尧</title>
+<meta name="description" content="72 小时 Game Jam 原型的设计说明：IP 使用边界、除草检定进度系统、功能先行的障碍设计、手感参数规格与关卡节奏。">
+<link rel="stylesheet" href="../assets/doc.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#featured">← 返回作品集</a>
+    <div class="kicker">策划案 / 原型</div>
+    <h1>ちいかわ 跑酷原型</h1>
+    <p class="sub">72 小时 Game Jam · 设计说明</p>
+
+    <p class="thesis">
+      <b>设计主张</b>
+      IP 授权游戏最大的浪费，是把 IP 当成贴图。
+      一个成熟 IP 自带三样可直接消费的设计资产：<strong>世界观规则、进度框架、视觉语言</strong>。
+      本原型的全部设计决策都围绕一个问题展开——
+      在 72 小时的硬约束下，哪些地方应该让位给 IP 已有的东西，哪些地方必须由设计自己扛。
+    </p>
+
+    <dl class="metabar">
+      <div><dt>类型</dt><dd>横版跑酷 / 收集</dd></div>
+      <div><dt>周期</dt><dd>72 小时 Game Jam</dd></div>
+      <div><dt>性质</dt><dd>非商业同人练习作</dd></div>
+      <div><dt>状态</dt><dd>可玩原型</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#scope">01　定位与 scope 边界</a></li>
+      <li><a href="#ip">02　IP 选择与使用边界</a></li>
+      <li><a href="#loop">03　核心循环</a></li>
+      <li><a href="#exam">04　除草检定：进度系统</a></li>
+      <li><a href="#obstacle">05　障碍设计</a></li>
+      <li><a href="#feel">06　手感参数规格</a></li>
+      <li><a href="#pacing">07　关卡节奏</a></li>
+      <li><a href="#fail">08　失败与反馈</a></li>
+      <li><a href="#asset">09　资产策略</a></li>
+      <li><a href="#plan">10　排期与实现</a></li>
+      <li><a href="#next">11　已知问题与下一步</a></li>
+      <li><a href="#legal">12　IP 合规声明</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <div class="callout risk">
+      <span class="label">文档口径</span>
+      <p>
+        本文是原型的<strong>设计说明</strong>，记录设计意图与取舍理由。
+        文中带 <span class="tbd">待对齐</span> 标记的具体数值需与实际构建核对后填入；
+        设计结构与论证部分不依赖这些数值。
+      </p>
+    </div>
+
+    <section id="scope">
+      <h2><span>01</span>定位与 scope 边界</h2>
+      <p>
+        目标不是「在 72 小时内做完一款游戏」，而是<strong>用一个可玩原型回答一个具体问题</strong>：
+        IP 授权游戏里，设计该在哪里让位给 IP，又该在哪里坚持。
+      </p>
+      <p>
+        选题来自市场观察。《ちいかわ》从推特短篇连载起家，2023 年起在国内快速扩散，
+        是目前谷子经济里最活跃的 IP 之一——联名频次高、线下快闪常态化排队、
+        核心受众是购买力强的年轻女性。这类高热度 IP 的授权游戏正在变多，
+        而多数做成了换皮：把角色贴到一个和 IP 毫无关系的玩法上。本原型想验证另一条路。
+      </p>
+
+      <h3>不做清单</h3>
+      <p>
+        对 jam 项目来说，<em>明确不做什么比明确做什么更重要</em>。
+        以下内容在立项时就排除，不在开发中途重新讨论：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>不做</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td>剧情与对话</td><td>叙事无法在 72 小时内做到及格线，且会挤占手感调优时间</td></tr>
+          <tr><td>多角色 / 角色切换</td><td>每个角色都要重做动画与判定，收益远小于成本</td></tr>
+          <tr><td>存档与结算画面</td><td>原型的验证目标不涉及长期留存</td></tr>
+          <tr><td>音乐</td><td>只做必要音效，音乐是可后补的表层</td></tr>
+          <tr><td>任何商业化设计</td><td>同人性质，不涉及</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section id="ip">
+      <h2><span>02</span>IP 选择与使用边界</h2>
+
+      <h3>为什么是这个 IP</h3>
+      <p>
+        除了热度，更重要的原因是：<strong>《ちいかわ》的世界观自带可玩结构。</strong>
+        它不是一个只有角色形象的 IP——角色靠<em>讨伐怪物</em>和<em>除草</em>打工谋生，
+        除草还有<em>等级检定</em>，考过才能接更高报酬的活。
+        这套设定本身就是一个现成的目标系统、一个现成的敌人库、一个现成的晋级框架。
+      </p>
+      <p>
+        它的识别点是<strong>「可爱外表 + 残酷规则」</strong>：画风萌，但世界是严苛的，
+        角色会累、会怕、会失败。这个反差是它能被成年人大量消费、
+        而不是停留在低龄向的根本原因，也是任何改编都不能丢的东西。
+      </p>
+
+      <h3>玩法类型的选择，是 IP 一致性的第一道题</h3>
+      <p class="pull">
+        原作里的角色不擅长战斗。所以这个 IP 应该做躲避，不应该做对抗。
+      </p>
+      <p>
+        这是本原型最先确定、也最关键的一个决定。
+        《ちいかわ》的角色面对怪物时，常态是害怕、逃跑、勉强应付，
+        而不是变强、反击、获胜。如果做成动作战斗游戏，
+        角色会被迫获得原作里不存在的力量，IP 的基调随之瓦解。
+      </p>
+      <p>
+        跑酷的核心动词是<strong>躲避</strong>——玩家不消灭威胁，只是设法通过。
+        这恰好是原作角色面对世界的方式。
+        <em>玩法类型和 IP 的一致性，发生在动词层面，不在美术层面。</em>
+      </p>
+
+      <h3>使用边界</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>内容</th><th>处理原则</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>直接使用</b></td>
+            <td>角色形象、怪物形象、除草检定制度、既有表情</td>
+            <td>原样复用，不做再设计——复用的价值正在于玩家的既有认知</td>
+          </tr>
+          <tr>
+            <td><b>可以扩展</b></td>
+            <td>检定等级对应的具体考核内容、关卡场景的组合方式</td>
+            <td>在原作没有明确规定的地方补齐，但必须符合既有逻辑</td>
+          </tr>
+          <tr>
+            <td><b>不可改动</b></td>
+            <td>角色与怪物的力量关系、角色性格、世界观基调</td>
+            <td>角色不能打赢怪物；不能把世界改成纯欢乐向；不能让角色变得无所畏惧</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        第三行是最容易被违反的一条。做游戏的本能是给玩家成长与胜利感，
+        但这个 IP 的成长不是「变强」，而是<strong>「考过下一级」</strong>——
+        这正是第 04 节要把检定当作进度系统的原因。
+      </p>
+    </section>
+
+    <section id="loop">
+      <h2><span>03</span>核心循环</h2>
+      <p>
+        循环本身很短，关键在于其中埋了一个<strong>目标冲突</strong>：
+        草长在危险的位置，所以「安全通过」和「考过检定」不是同一条路线。
+      </p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="跑酷核心循环与路线冲突示意图" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+
+          <g stroke="#deded8" fill="#fafaf8">
+            <rect x="0"   y="98" width="112" height="54" rx="7"/>
+            <rect x="152" y="98" width="126" height="54" rx="7"/>
+            <rect x="330" y="22" width="150" height="54" rx="7"/>
+            <rect x="536" y="98" width="150" height="54" rx="7"/>
+          </g>
+          <rect x="330" y="174" width="150" height="54" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+
+          <g font-size="13" fill="#171717" text-anchor="middle">
+            <text x="56"  y="130">跑动</text>
+            <text x="215" y="122">怪物障碍</text>
+            <text x="215" y="140" font-size="11.5" fill="#6e6e6a">进入视野</text>
+            <text x="405" y="45">稳妥躲避</text>
+            <text x="405" y="63" font-size="11.5" fill="#6e6e6a">安全，但草不够</text>
+            <text x="405" y="197" font-weight="700" fill="#365f73">绕向草丛</text>
+            <text x="405" y="215" font-size="11.5" fill="#365f73">贴近危险，达标</text>
+            <text x="611" y="122">检定点结算</text>
+            <text x="611" y="140" font-size="11.5" fill="#6e6e6a">达标则升级</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar5)">
+            <path d="M112,125 L147,125"/>
+            <path d="M278,112 L300,112 Q312,112 312,100 L312,61 Q312,49 324,49 L325,49"/>
+            <path d="M278,138 L300,138 Q312,138 312,150 L312,189 Q312,201 324,201 L325,201"/>
+            <path d="M480,49 L500,49 Q512,49 512,61 L512,113 L531,113"/>
+            <path d="M480,201 L500,201 Q512,201 512,189 L512,137 L531,137"/>
+            <path d="M611,152 L611,232 Q611,244 599,244 L68,244 Q56,244 56,232 L56,157"/>
+          </g>
+
+          <g font-size="11.5" fill="#6e6e6a" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="330" y="240" text-anchor="middle">达标线设在稳妥路线拿不到的位置，玩家必须主动冒险</text>
+          </g>
+        </svg>
+        <figcaption>
+          核心张力不在「躲得掉躲不掉」，而在<strong>「要不要为了达标去冒险」</strong>。
+          这个决策每隔几秒重复一次。
+        </figcaption>
+      </figure>
+
+      <p>
+        这个冲突不是为了增加难度而设计的，它直接来自 IP 的世界观：
+        <em>在原作里，打工本身就是有风险的事。</em>
+        角色除草是为了赚钱，而除草的地方就在怪物出没的范围里。
+        把这层设定翻译成玩法，就是「收集物必须放在危险附近」这一条规则。
+      </p>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          如果草均匀地铺在安全路线上，这个游戏就退化成了「躲障碍 + 顺手捡东西」，
+          IP 只剩美术。<strong>收集物的位置是这个设计里唯一不能妥协的参数。</strong>
+        </p>
+      </div>
+    </section>
+
+    <section id="exam">
+      <h2><span>04</span>除草检定：进度系统</h2>
+      <p>
+        进度系统直接使用原作既有的<strong>除草检定等级</strong>，从最低级起步，每通过一段升一级。
+      </p>
+
+      <h3>为什么不自建成长系统</h3>
+      <ul>
+        <li><strong>零教学成本。</strong>玩家看到「五级」「四级」立刻理解这是什么，不需要任何引导文案解释晋级意味着什么。</li>
+        <li><strong>目标感现成。</strong>「考过下一级」在原作里已经是角色的动机，玩家继承的是一个已被建立的欲望。</li>
+        <li><strong>符合 IP 的成长逻辑。</strong>如第 02 节所述，这个 IP 的角色不该「变强」，但可以「考过」。检定是唯一不破坏基调的成长形式。</li>
+      </ul>
+
+      <h3>等级结构</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>检定等级</th><th>达标草数</th><th>移动速度</th><th>新增障碍类型</th></tr></thead>
+        <tbody>
+          <tr><td>五级（起步）</td><td><span class="tbd">待对齐</span></td><td>基准</td><td>地面型</td></tr>
+          <tr><td>四级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>低空型</td></tr>
+          <tr><td>三级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>追击型</td></tr>
+          <tr><td>二级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>伪装型</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        <strong>达标线的设定原则：</strong>必须设在「全程走稳妥路线拿不到」的量上。
+        这是第 03 节那个目标冲突能否成立的唯一开关——
+        达标线过低，玩家永远不需要冒险，冲突消失；
+        过高，稳妥路线完全无意义，玩家只能贴着危险跑，紧张感被拉平成疲劳。
+      </p>
+      <p>
+        实际调参时，建议以<strong>「稳妥路线可得量的 1.2–1.4 倍」</strong>作为起始达标线，
+        再按实测通过率调整。
+      </p>
+    </section>
+
+    <section id="obstacle">
+      <h2><span>05</span>障碍设计：功能先行，形象后绑</h2>
+      <p>
+        障碍全部取自原作怪物，但设计顺序是<strong>先定义功能，再绑定形象</strong>，而不是反过来。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>功能类型</th><th>玩家应对动作</th><th>设计作用</th><th>绑定形象</th></tr></thead>
+        <tbody>
+          <tr><td><b>地面型</b></td><td>跳</td><td>最基础的节奏单位，用于建立跳跃时机的肌肉记忆</td><td><span class="tbd">待指定</span></td></tr>
+          <tr><td><b>低空型</b></td><td>下滑 / 不跳</td><td>打破「一律跳过去」的惯性，强制读屏</td><td><span class="tbd">待指定</span></td></tr>
+          <tr><td><b>追击型</b></td><td>持续加速，不能停</td><td>压缩决策时间，制造持续压力而非单点威胁</td><td><span class="tbd">待指定</span></td></tr>
+          <tr><td><b>伪装型</b></td><td>先辨认再决定</td><td>把「识别」加进决策，最贴合 IP 的一类</td><td><span class="tbd">待指定</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>为什么坚持这个顺序</h3>
+      <ol>
+        <li><strong>素材替换不破坏关卡设计。</strong>如果关卡是围绕某个具体怪物的形状设计的，换一个形象就得重做关卡；围绕功能设计，形象只是皮肤。</li>
+        <li><strong>便于去 IP 化。</strong>同人作品无法商业化。如果日后要把这套设计用在别处，功能层可以整体保留。</li>
+        <li><strong>避免为了用 IP 而用 IP。</strong>先想「这里需要一个逼玩家读屏的障碍」，再去找哪个怪物合适；而不是「这个怪物很有名，加进来」。</li>
+      </ol>
+
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          伪装型是四类里唯一由 IP 直接催生的设计。
+          《ちいかわ》世界里「看起来无害的东西其实很危险」是反复出现的母题，
+          把它做成「远看像草丛，靠近才发现是怪物」的障碍，
+          <strong>是玩法在复述 IP 的叙事经验，而不只是借用它的形象。</strong>
+          这是本原型里 IP 使用得最深的一处。
+        </p>
+      </div>
+    </section>
+
+    <section id="feel">
+      <h2><span>06</span>手感参数规格</h2>
+      <p>
+        跑酷的失败必须让玩家归因于「我按晚了」，而不是「这游戏不跟手」。
+        以下参数按这个目标设定：
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数</th><th>规格</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>跳跃前摇</b></td>
+            <td>0 帧（输入即起跳）</td>
+            <td>跑酷里任何起跳延迟都会被感知为「不跟手」，这是挫败的最大来源</td>
+          </tr>
+          <tr>
+            <td><b>土狼时间</b><br>coyote time</td>
+            <td>约 100 ms</td>
+            <td>离开平台边缘后仍可起跳。掩盖玩家的微小判断误差，代价几乎为零</td>
+          </tr>
+          <tr>
+            <td><b>输入缓冲</b><br>jump buffer</td>
+            <td>约 100 ms</td>
+            <td>落地前按下的跳跃指令予以保留。连续跳跃时不会因为早按一帧而失败</td>
+          </tr>
+          <tr>
+            <td><b>落地缓冲</b></td>
+            <td>极短，不锁输入</td>
+            <td>落地硬直会打断跑酷的连续感，只保留视觉上的压缩表现</td>
+          </tr>
+          <tr>
+            <td><b>障碍最小间距</b></td>
+            <td>≥ 人的反应时间 + 一次完整跳跃时长</td>
+            <td>低于此值的组合在物理上不可解，玩家会正确地认为这是设计失误</td>
+          </tr>
+          <tr>
+            <td><b>实测数值</b></td>
+            <td colspan="2"><span class="tbd">待对齐</span>——上表为设计目标，需与构建中的实际参数核对</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        土狼时间和输入缓冲这两项是<em>玩家察觉不到、但拿掉就会明显变难受</em>的典型。
+        它们的作用不是降低难度，而是<strong>让难度落在设计者想要的地方</strong>——
+        应该难在读屏和决策，不该难在输入精度。
+      </p>
+    </section>
+
+    <section id="pacing">
+      <h2><span>07</span>关卡节奏</h2>
+      <p>每个检定等级内部按四段推进：</p>
+      <ol>
+        <li><strong>教学段。</strong>本级新增的障碍类型单独出现，间距宽松，给足反应距离。<em>新元素的第一次出现必须是无压力的。</em></li>
+        <li><strong>组合段。</strong>新障碍与已掌握的类型混合，开始要求切换应对动作。</li>
+        <li><strong>压力段。</strong>密度提高，草的位置更靠近危险，冒险与稳妥的取舍最尖锐。</li>
+        <li><strong>检定点。</strong>结算草数，达标升级，未达标重来本段。</li>
+      </ol>
+
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          压力段之后不应紧接下一级的压力段。
+          连续的高压会让玩家形成「后面只会更难」的预期，而这个预期是流失的直接原因。
+          下一级的教学段恰好承担了缓冲作用——<strong>它既是新内容的引入，也是情绪的重置。</strong>
+        </p>
+      </div>
+    </section>
+
+    <section id="fail">
+      <h2><span>08</span>失败与反馈</h2>
+      <ul>
+        <li><strong>失败条件</strong>：碰到障碍即失败，或到达检定点时草数未达标。</li>
+        <li><strong>重开路径</strong>：立即重开当前段，不返回任何菜单。跑酷的失败频率高，任何多余的一次点击都会被放大成烦躁。</li>
+        <li><strong>失败表现</strong>：复用原作角色既有的慌张 / 脱力表情。这类表情本身就有高辨识度和情绪缓冲作用——<em>失败画面很可爱，是这个 IP 的天然优势。</em></li>
+        <li>
+          <strong>失败文案</strong>：显示「还差 N 株」，而不是「失败」。
+          当 N 很小时，玩家会把原因归给运气而非能力，
+          归因方向直接决定他是再试一次还是关掉。
+        </li>
+      </ul>
+    </section>
+
+    <section id="asset">
+      <h2><span>09</span>资产策略</h2>
+      <p>72 小时里，任何新做的资产都在挤压手感调优的时间。执行原则只有一条：</p>
+      <p class="pull">
+        任何需要新做的资产，先问能不能用既有素材的变体代替。
+      </p>
+      <ul>
+        <li><strong>角色与怪物</strong>：全部使用原作既有形象，不做再设计。</li>
+        <li><strong>失败与状态反馈</strong>：使用既有表情，不新做动画。</li>
+        <li><strong>场景</strong>：以少量元素的重复组合构成，靠速度和密度制造变化，而不是靠新场景。</li>
+        <li><strong>音效</strong>：只保留跳跃、除草、碰撞三个，其余不做。</li>
+      </ul>
+      <p>
+        这套策略之所以成立，前提是<strong>选了一个视觉语言高度统一的 IP</strong>。
+        原作画风扁平、线条简洁、配色克制，任何元素放在一起都自然协调——
+        这是选题阶段就已经预支的收益。
+      </p>
+    </section>
+
+    <section id="plan">
+      <h2><span>10</span>排期与实现</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>时段</th><th>目标</th><th>完成判据</th></tr></thead>
+        <tbody>
+          <tr><td>0–12h</td><td>移动、跳跃、碰撞</td><td>角色能跑能跳，碰到方块会死</td></tr>
+          <tr><td>12–30h</td><td>障碍生成与四类障碍</td><td>四类障碍可配置出现，关卡可跑通</td></tr>
+          <tr><td>30–48h</td><td>除草收集与检定结算</td><td>能捡草、能结算、能升级</td></tr>
+          <tr><td>48–60h</td><td>关卡节奏与草的分布调优</td><td>目标冲突在实际游玩中能被感知到</td></tr>
+          <tr><td>60–72h</td><td>手感打磨与打包</td><td>可交付的可玩版本</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        排期的关键是把<strong>手感打磨放在最后而不是最前</strong>：
+        在关卡节奏定下来之前调手感，参数会被反复推翻。
+      </p>
+      <p>技术栈：<span class="tbd">待对齐</span></p>
+    </section>
+
+    <section id="next">
+      <h2><span>11</span>已知问题与下一步</h2>
+      <h3>原型未覆盖</h3>
+      <ul>
+        <li>存档与跨会话进度</li>
+        <li>音乐与完整音效层</li>
+        <li>多角色与角色差异化</li>
+        <li>检定失败次数过多时的引导或补偿</li>
+      </ul>
+      <h3>下一步要验证的问题</h3>
+      <ol>
+        <li>
+          <strong>目标冲突是否真的被玩家感知到。</strong>
+          需要实测：玩家是否出现过「明知危险仍绕过去拿草」的行为。
+          如果玩家全程走稳妥路线仍能达标，说明第 04 节的达标线设低了，整个设计的核心失效。
+        </li>
+        <li>
+          <strong>伪装型障碍的辨认时间是否足够。</strong>
+          它是四类里唯一要求「先识别再反应」的，如果辨认窗口过短，玩家会觉得不公平而非紧张。
+        </li>
+        <li>
+          <strong>不熟悉原作的玩家能否理解检定目标。</strong>
+          零教学成本的前提是玩家认识这个 IP。需要找几个没看过原作的人测一遍，
+          确认在没有既有认知时，这套目标系统是否还能自解释。
+        </li>
+      </ol>
+      <div class="callout take">
+        <span class="label">这条最重要</span>
+        <p>
+          第 3 条是对整篇策划案核心论证的反向检验。
+          本文反复主张「IP 的已知性可以当作设计资产直接消费」，
+          <strong>但这个主张只在玩家确实拥有那份认知时成立。</strong>
+          测出边界在哪里，比再多写一层论证都有价值。
+        </p>
+      </div>
+    </section>
+
+    <section id="legal">
+      <h2><span>12</span>IP 合规声明</h2>
+      <div class="callout risk">
+        <span class="label">非商业同人作品</span>
+        <p>
+          本项目为个人练习性质的非商业同人原型，用于设计能力的学习与验证。
+          《ちいかわ》的角色、怪物形象及相关世界观设定，
+          版权归原作者ナガノ及其授权方所有。
+        </p>
+        <p>
+          本原型<strong>不用于任何商业用途</strong>，不进行付费分发、不接受赞助、不用于任何形式的变现。
+          如权利方提出异议，将立即下架相关内容。
+        </p>
+      </div>
+      <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
+        说明：第 05 节坚持「功能先行、形象后绑」的设计顺序，
+        除了关卡设计上的理由之外，也使这套设计在移除 IP 素材后仍然完整可用。
+      </p>
+    </section>
+
+  </article>
+
+  <div class="related">
+    <div class="related-title">相关</div>
+    <ul>
+      <li><a href="../analysis/eggy-party.html"><b>蛋仔派对拆解</b><span>UGC 赢在循环转速，不在编辑器上限</span></a></li>
+      <li><a href="../analysis/royal-match.html"><b>Royal Match 拆解</b><span>失败才是主战场，meta 层只做正反馈</span></a></li>
+      <li><a href="../analysis/"><b>全部游戏拆解</b><span>四篇长文，每篇一个核心论点</span></a></li>
+    </ul>
+  </div>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>策划案 · ちいかわ 跑酷原型 · 王禹尧</div>
+    <div><a href="../index.html#featured">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="../assets/doc.js"></script>
+</body>
+</html>
