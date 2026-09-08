@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光与影 策划案｜王禹尧</title>
+<meta name="description" content="双角色合作解谜《光与影》设计说明：对称规则、光的判定与渲染分离、由引擎常量倒推的关卡设计约束、16 关教学曲线。">
+<link rel="stylesheet" href="../assets/doc.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#featured">← 返回作品集</a>
+    <div class="kicker">策划案 / 关卡设计</div>
+    <h1>光与影</h1>
+    <p class="sub">双角色合作解谜 · 16 关 · 设计说明</p>
+
+    <p class="thesis">
+      <b>设计主张</b>
+      双角色解谜的价值不在「两个人一起玩」，而在<strong>同一个环境状态对两人产生相反影响</strong>。
+      本作只有一个变量：灯的位置。推动一盏灯，光灵的路打开的同时，影灵的路可能随之断开。
+      设计的全部难度因此收敛成一句话——<em>任何让一方变容易的操作，必须让另一方变难。</em>
+    </p>
+
+    <dl class="metabar">
+      <div><dt>类型</dt><dd>双角色合作解谜 / 平台跳跃</dd></div>
+      <div><dt>规模</dt><dd>16 关</dd></div>
+      <div><dt>状态</dt><dd>已上线可玩</dd></div>
+      <div><dt>技术</dt><dd>原生 JS + Canvas，零依赖零构建</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+
+    <p class="doc-links">
+      <a href="https://wangyy992.github.io/Unlit/">试玩 →</a>
+      <a href="https://github.com/wangyy992/Unlit">源码 →</a>
+    </p>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#core">01　核心机制</a></li>
+      <li><a href="#symmetry">02　规则的对称性</a></li>
+      <li><a href="#light">03　判定与渲染分离</a></li>
+      <li><a href="#feel">04　手感参数</a></li>
+      <li><a href="#constraint">05　关卡设计约束</a></li>
+      <li><a href="#curve">06　16 关的教学曲线</a></li>
+      <li><a href="#lamp">07　灯：一物三用</a></li>
+      <li><a href="#plate">08　可逆与不可逆</a></li>
+      <li><a href="#read">09　可读性与音效</a></li>
+      <li><a href="#tech">10　技术实现</a></li>
+      <li><a href="#next">11　已知限制与下一步</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <div class="callout risk">
+      <span class="label">文档口径</span>
+      <p>
+        本文参数与约束均按实际代码核对（<code>src/engine.js</code>、<code>src/levels.js</code>）。
+        关卡设计约束一节的数值不是经验估计，而是<strong>由引擎常量反推出来的硬边界</strong>——
+        违反其中任何一条，关卡都会变成不可解或可被硬闯。
+      </p>
+    </div>
+
+    <section id="core">
+      <h2><span>01</span>核心机制</h2>
+      <p>
+        全黑场景。两个角色同屏，规则互为镜像：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>生存条件</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr><td><b>光灵</b>（Lumen）</td><td>必须待在光里，离开光就消散</td><td><code>←</code> <code>→</code> 移动，<code>↑</code> 跳</td></tr>
+          <tr><td><b>影灵</b>（Umbra）</td><td>必须待在暗处，被光照到就消散</td><td><code>A</code> <code>D</code> 移动，<code>W</code> 跳</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        灯有两种：<strong>固定灯</strong>（挂墙上，不可动，实心可站）与<strong>可推灯</strong>（角色能推着走）。
+        通关条件是两人<strong>同时</strong>站在各自的门里。
+      </p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 230" role="img" aria-label="推动一盏灯同时改变两个角色可行路径的示意" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="au" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+          <rect x="0" y="26" width="300" height="178" rx="8" fill="#fafaf8" stroke="#deded8"/>
+          <rect x="460" y="26" width="300" height="178" rx="8" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+
+          <g font-size="12" fill="#8a8a84" text-anchor="middle">
+            <text x="150" y="46">灯在左侧</text>
+            <text x="610" y="46" fill="#365f73" font-weight="700">把灯推到右侧</text>
+          </g>
+
+          <g font-size="13" fill="#171717">
+            <text x="26" y="86">光灵</text><text x="26" y="146">影灵</text>
+            <text x="486" y="86">光灵</text><text x="486" y="146">影灵</text>
+          </g>
+
+          <g>
+            <rect x="76" y="70" width="120" height="20" rx="4" fill="#f0d9a8"/>
+            <rect x="196" y="70" width="84" height="20" rx="4" fill="#e6e6e0"/>
+            <rect x="76" y="130" width="120" height="20" rx="4" fill="#e6e6e0"/>
+            <rect x="196" y="130" width="84" height="20" rx="4" fill="#4a4a52"/>
+
+            <rect x="536" y="70" width="90" height="20" rx="4" fill="#e6e6e0"/>
+            <rect x="626" y="70" width="114" height="20" rx="4" fill="#f0d9a8"/>
+            <rect x="536" y="130" width="90" height="20" rx="4" fill="#4a4a52"/>
+            <rect x="626" y="130" width="114" height="20" rx="4" fill="#e6e6e0"/>
+          </g>
+
+          <g font-size="11" fill="#6e6e6a" text-anchor="middle">
+            <text x="136" y="108">可通行</text><text x="238" y="108">断路</text>
+            <text x="136" y="168">断路</text><text x="238" y="168">可通行</text>
+            <text x="581" y="108">断路</text><text x="683" y="108">可通行</text>
+            <text x="581" y="168">可通行</text><text x="683" y="168">断路</text>
+          </g>
+
+          <path d="M312,115 L448,115" stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#au)"/>
+          <g font-size="11.5" fill="#6e6e6a" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="380" y="106" text-anchor="middle">推灯</text>
+          </g>
+        </svg>
+        <figcaption>
+          黄色为光照区（光灵可行、影灵致命），深色为阴影区（影灵可行、光灵致命）。
+          <strong>灯每移动一次，两条路径同时反向翻转。</strong>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="symmetry">
+      <h2><span>02</span>规则的对称性</h2>
+      <p>
+        两个角色的规则是严格镜像的：同一套判定，只是符号相反。
+        这不是为了省事——<strong>对称性是这个机制能产生有效谜题的前提</strong>。
+      </p>
+      <p>
+        如果两人的限制不对称（比如一个怕光、另一个怕水），那么改变环境时，
+        设计者需要分别推演两条独立的因果链；玩家也需要分别记忆两套规则。
+        而在镜像规则下，玩家只要理解<em>「亮和暗互补」</em>这一件事，
+        就能自动推演出两边的后果——<strong>认知成本减半，谜题深度不变。</strong>
+      </p>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          这是双角色设计里最容易做错的地方。给两个角色不同的能力看起来内容更丰富，
+          实际上是把一个谜题拆成两个互不相干的谜题。
+          <strong>真正的合作谜题要求两人被同一个变量以相反方式影响</strong>——
+          只有这样，玩家的每一次操作才同时是「帮了一个人」和「害了另一个人」。
+        </p>
+      </div>
+    </section>
+
+    <section id="light">
+      <h2><span>03</span>判定与渲染分离</h2>
+      <p>
+        这是本作技术实现里最关键、也最容易被忽略的一条：
+        <strong>光的「好看」和光的「致命边界」是两套独立系统。</strong>
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>渲染</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td><b>做法</b></td><td>把面向灯的墙面边缘沿光线挤出成阴影多边形，用 <code>destination-out</code> 从光照图挖掉</td><td>灯到角色的视线检测 + 距离衰减，累加光强</td></tr>
+          <tr><td><b>阈值</b></td><td>亮度曲线</td><td><code>LIT_THRESHOLD = 0.45</code>，对应灯半径的 <b>55%</b></td></tr>
+          <tr><td><b>更新时机</b></td><td>仅在灯移动或机关门开合时重算</td><td>每帧</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p class="pull">
+        渲染的亮度必须在判定边界之后迅速收掉，否则会出现「看着危险其实安全」的光晕。
+      </p>
+      <p>
+        这条约束的方向值得注意：<em>不是判定去迁就画面，而是画面必须服从判定。</em>
+        如果光晕在判定边界之外还留有可见的余辉，玩家会把那圈余辉也当成危险区，
+        于是绕开本来能走的路——<strong>谜题的解空间被视觉误导缩小了</strong>，
+        而玩家永远不会知道是自己读错了，只会觉得这关无解。
+      </p>
+      <p>
+        灯半径 <code>LAMP_RADIUS = 400</code>，判定发生在 220px 处。
+        角色进入错误环境后并非立即死亡，而是有 <code>0.28</code> 秒的护盾——这个数字的选取见下一节。
+      </p>
+    </section>
+
+    <section id="feel">
+      <h2><span>04</span>手感参数</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>常量</th><th>值</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>TILE</code></td><td>32 px</td><td>一格。关卡是字符网格，一个字符 = 一格</td></tr>
+          <tr><td><code>GRAVITY</code></td><td>1500 px/s²</td><td>重力</td></tr>
+          <tr><td><code>MOVE_SPEED</code></td><td>190 px/s</td><td>水平移速</td></tr>
+          <tr><td><code>JUMP_VEL</code></td><td>−490</td><td>起跳初速度，对应最高跳 <b>80px = 2.5 格</b></td></tr>
+          <tr><td><code>JUMP_CUT</code></td><td>0.45</td><td>松键断跳，短按矮跳</td></tr>
+          <tr><td><code>COYOTE_TIME</code></td><td>0.09 s</td><td>离地后仍可起跳</td></tr>
+          <tr><td><code>JUMP_BUFFER</code></td><td>0.10 s</td><td>落地前预输入</td></tr>
+          <tr><td><code>DRAIN_RATE</code></td><td>1 / 0.28 s</td><td>护盾耗尽时间</td></tr>
+          <tr><td><code>DEATH_TIME</code></td><td>0.55 s</td><td>消散动画时长</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>0.28 秒不是随便挑的</h3>
+      <p>
+        角色跳跃穿过一道光柱的暴露时间约 <strong>0.34 秒</strong>。
+        护盾设成 0.28 秒，意味着<em>硬闯必死</em>；
+        一旦放宽到 0.34 秒以上，会跳的玩家就能直接冲过所有光柱，
+        <strong>整个「光是屏障」的设定当场失效，所有关卡同时被破解。</strong>
+      </p>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          这是一个典型的「单点数值决定全局设计是否成立」的例子。
+          它不是手感参数，是<strong>规则参数</strong>——调它不是让游戏变难变易，而是决定游戏还成不成立。
+          这类参数应当在文档里被单独标出，避免后来者当成体验调优随手改动。
+        </p>
+      </div>
+    </section>
+
+    <section id="constraint">
+      <h2><span>05</span>关卡设计约束</h2>
+      <p>
+        以下数字全部由引擎常量倒推得出。它们不是建议，是<strong>硬边界</strong>——
+        新增关卡时违反任何一条，结果不是「难度不合适」，而是「不可解」或「可被硬闯」。
+      </p>
+
+      <h3>三个可达性数字，定义了关卡的全部词汇</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>动作</th><th>可达高度 / 距离</th><th>换算</th><th>关卡含义</th></tr></thead>
+        <tbody>
+          <tr><td>普通跳</td><td>80 px</td><td>2.5 格</td><td><b>2 格台阶跳得上，3 格跳不上</b></td></tr>
+          <tr><td>站在灯上跳</td><td>110 px</td><td>3.4 格</td><td><b>3 格墙必须借灯才能翻</b></td></tr>
+          <tr><td>最大水平跳</td><td>124 px</td><td>3.9 格</td><td><b>缺口最多 3 格</b></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        这三个数字构成了一套<em>可组合的关卡语法</em>：
+        「3 格墙」等于「这里必须用灯」，「4 格缺口」等于「这里过不去」。
+        设计关卡时不需要试玩验证可达性，读格子数就能判断。
+      </p>
+
+      <h3>其余六条硬约束</h3>
+      <ol>
+        <li>
+          <strong>光柱缝隙要有 3 格宽。</strong>护盾 0.28 秒，缝隙过窄则无论如何都撑不过去。
+        </li>
+        <li>
+          <strong>靠光斑赶路时，两块光斑之间的黑暗不得超过 53px。</strong>
+          由 0.28 秒护盾 × 190px/s 移速算出。实际留 20% 余量，即 <b>≤ 44px</b>。
+        </li>
+        <li>
+          <strong>影灵走廊至少 4 格高。</strong>
+          只有 3 格时跳跃会撞顶、上升速度归零，滞空从 0.65 秒缩到 0.52 秒，
+          水平距离只剩 98px——而跨 3 格缝需要 100px。<em>差 2px，关卡直接不可解。</em>
+        </li>
+        <li>
+          <strong>固定灯不能放在光柱缝隙的正下方。</strong>
+          对「站立」判定是安全的（缝里本来就站不了人），
+          但影灵必须飞越那段空域，会被正射的光柱烤死。
+        </li>
+        <li>
+          <strong>固定灯是实心的，不能放在地板行上</strong>，否则会堵死通路。
+        </li>
+        <li>
+          <strong>门必须放在角色真正站立的那一行</strong>（脚下有地），否则判定区够不着；
+          <strong>压力板至少铺 2 格</strong>——从高处跳下是抛物线，单格板会被整个越过。
+        </li>
+      </ol>
+
+      <div class="callout take">
+        <span class="label">这份约束表本身就是交付物</span>
+        <p>
+          关卡数据是纯字符网格，改关卡不用碰引擎（<code>src/levels.js</code>）。
+          但「能改」和「改得对」是两回事——<strong>没有这张表，任何新增关卡都要靠反复试玩才能确认可解</strong>。
+          把引擎常量翻译成格子数，等于把物理系统编译成了关卡设计者能直接使用的语言。
+          这是本项目里最有复用价值的一份产出。
+        </p>
+      </div>
+    </section>
+
+    <section id="curve">
+      <h2><span>06</span>16 关的教学曲线</h2>
+      <p>
+        每关只教一件新东西，且新元素首次出现时环境是宽松的。
+        关卡的设计意图写在数据的 <code>hint</code> 字段里，悬停选关按钮即可看到——
+        <em>提示不是攻略，是设计者对「这关在问什么」的声明。</em>
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>名称</th><th>教的东西</th><th>阶段</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>分道</td><td>两种角色的生存规则</td><td rowspan="4"><b>基础词汇</b><br><span style="color:#6e6e6a;font-size:12.5px">建立「灯 = 路」的心智模型</span></td></tr>
+          <tr><td>2</td><td>借光</td><td>灯可以推，推灯就是在改路</td></tr>
+          <tr><td>3</td><td>互锁</td><td>压力板 / 机关门，谁先动的顺序</td></tr>
+          <tr><td>4</td><td>垫脚石</td><td>灯也是能站上去的箱子</td></tr>
+          <tr><td>5</td><td>追光</td><td>光柱跟着灯扫动，跟在光后面走</td><td rowspan="4"><b>组合与约束</b><br><span style="color:#6e6e6a;font-size:12.5px">引入不可逆与配重</span></td></tr>
+          <tr><td>6</td><td>压住</td><td>常压板：松开就关，得拿灯当配重</td></tr>
+          <tr><td>7</td><td>深井</td><td>灯掉下去就捞不回来，顺序不可逆</td></tr>
+          <tr><td>8</td><td>双灯</td><td>两盏灯两个用途，别弄反</td></tr>
+          <tr><td>9</td><td>回环</td><td>先把灯送过去，再推回来</td><td rowspan="4"><b>空间与顺序</b><br><span style="color:#6e6e6a;font-size:12.5px">多层结构，规划成本上升</span></td></tr>
+          <tr><td>10</td><td>三重</td><td>三层楼，灯掉到底层就上不来</td></tr>
+          <tr><td>11</td><td>四层</td><td>四层楼，灯要往下丢两次</td></tr>
+          <tr><td>12</td><td>独灯</td><td>两块常压板一盏灯，一次只能开一扇门</td></tr>
+          <tr><td>13</td><td>双灯井</td><td>两盏灯两个去处</td><td rowspan="4"><b>综合</b><br><span style="color:#6e6e6a;font-size:12.5px">前面所有要素的组合考核</span></td></tr>
+          <tr><td>14</td><td>留守</td><td>轮流当按门的人</td></tr>
+          <tr><td>15</td><td>天窗</td><td>光灵没有灯，踩着漏下的光斑走</td></tr>
+          <tr><td>16</td><td>错身</td><td>两人反向走，光柱一路扫过来</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        第 15 关是整套曲线里的一次<strong>反转</strong>：前 14 关都在教「灯是你的工具」，
+        第 15 关把灯全部封在天花板后面，光灵只剩几块漏下来的光斑可踩。
+        <em>它考的不是新知识，而是玩家有没有真的理解「光是资源」这件事</em>——
+        当资源不可控时，剩下的只有对第 05 节那条「44px 黑暗上限」的直觉。
+      </p>
+    </section>
+
+    <section id="lamp">
+      <h2><span>07</span>灯：一物三用</h2>
+      <p>整个游戏只有一种可交互物件，但它承担三个完全不同的功能：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>身份</th><th>作用</th><th>首次教学</th></tr></thead>
+        <tbody>
+          <tr><td><b>光源</b></td><td>开辟光灵的路 / 封死影灵的路</td><td>第 2 关「借光」</td></tr>
+          <tr><td><b>箱子</b></td><td>站上去多 30px 可达高度，翻 3 格墙</td><td>第 4 关「垫脚石」</td></tr>
+          <tr><td><b>配重</b></td><td>压住常压板，代替人力持续压住</td><td>第 6 关「压住」</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        三个用途互相冲突——灯用来照路就不能同时当配重，用来当台阶就得留在原地。
+        <strong>「只有一盏灯而有两件事要做」因此成为最经济的谜题模板</strong>，
+        第 12 关「独灯」就是这个模板的纯粹形态：两块常压板、两扇门、一盏灯。
+      </p>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          增加物件种类是扩展谜题最直观的方式，也是最贵的方式——
+          每种新物件都要新的美术、新的规则、新的教学关。
+          <strong>给同一个物件叠加互斥的用途，成本接近于零，产生的组合空间却是乘法级的。</strong>
+          16 关里没有出现第二种可推物件，靠的就是这个。
+        </p>
+      </div>
+    </section>
+
+    <section id="plate">
+      <h2><span>08</span>可逆与不可逆</h2>
+      <p>两种开关，区别只有一条，但改变了整关的思考方式：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>类型</th><th>字符</th><th>行为</th><th>玩家的思考方式</th></tr></thead>
+        <tbody>
+          <tr><td><b>压力板</b></td><td><code>1-4</code></td><td>踩一次<b>永久</b>开启对应门</td><td>「先后顺序」——只需想清楚谁先动</td></tr>
+          <tr><td><b>常压板</b></td><td><code>a-d</code></td><td>压住才开，<b>松开就关</b>（灯可作配重）</td><td>「资源分配」——谁/什么被占用了</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        另一处不可逆来自地形：<strong>灯掉进井里就捞不回来</strong>（第 7、10、11、13 关）。
+        这把「顺序错误」的代价从「多走几步」提升到「本关作废」，
+        迫使玩家在动手前先在脑子里跑一遍——<em>解谜游戏真正的难度来自规划，不是操作。</em>
+      </p>
+      <p>
+        两类开关的分工也很清楚：可逆的压力板负责<strong>教学</strong>（第 3 关就出现，容错高），
+        不可逆的常压板与深井负责<strong>施压</strong>（第 6 关之后才登场）。
+      </p>
+    </section>
+
+    <section id="read">
+      <h2><span>09</span>可读性与音效</h2>
+      <h3>画面服务于判读</h3>
+      <ul>
+        <li><strong>墙体按坐标哈希做逐格明暗抖动</strong>，并加受光顶面与背光底边——避免大片纯色导致的空间感丢失。</li>
+        <li><strong>门画成暗内腔 + 发光门框。</strong>门本质是墙上的洞，内部必须暗，才能在明亮区域里也看得见。</li>
+        <li><strong>机关门用流动的能量条表示「还关着」</strong>，与已开启状态在静止画面里也能区分。</li>
+        <li><strong>光照区内飘浮尘埃</strong>，让「哪里有光」在没有物体的空中也能被看见；每帧只抽样更新五分之一以控制视线检测开销。</li>
+      </ul>
+
+      <h3>音效覆盖率是个真问题</h3>
+      <div class="callout risk">
+        <span class="label">踩过的坑</span>
+        <p>
+          音效事件必须铺满常见操作（开场、落地、推灯、开门、进门、开关反馈）。
+          原先跳跃是唯一的发声点，而<strong>第 1 关根本不需要跳</strong>——
+          结果玩家可能整整一关听不到任何声音，误以为游戏没有音效。
+        </p>
+        <p>
+          另一个坑是音频解锁：<code>AudioContext</code> 必须等到<strong>首次用户手势</strong>才创建。
+          页面载入时创建会得到一个挂起的上下文，之前排进去的声音全部丢失。
+        </p>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2><span>10</span>技术实现</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>项</th><th>做法</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td><b>依赖</b></td><td>原生 HTML/CSS/JS + Canvas，零依赖零构建</td><td>仓库直接丢到 GitHub Pages 就能跑</td></tr>
+          <tr><td><b>关卡数据</b></td><td>字符网格，与引擎完全分离</td><td>加关卡只改 <code>levels.js</code>，不碰逻辑</td></tr>
+          <tr><td><b>阴影生成</b></td><td>墙面边缘沿光线挤出多边形，<code>destination-out</code> 挖除</td><td>相邻同向墙面先合并成长边，减少多边形数量</td></tr>
+          <tr><td><b>重算时机</b></td><td>光照图只在灯移动或机关门开合时重算</td><td>静止时零开销</td></tr>
+          <tr><td><b>光暗判定</b></td><td>与渲染分离，视线检测 + 距离衰减</td><td>见第 03 节</td></tr>
+          <tr><td><b>音效</b></td><td>WebAudio 现场合成</td><td>无素材文件</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section id="next">
+      <h2><span>11</span>已知限制与下一步</h2>
+      <h3>已知限制</h3>
+      <ul>
+        <li><strong>需要物理键盘，手机端不支持触屏。</strong>双角色同屏各用一组按键，是当前操作方案的直接代价。</li>
+        <li><strong>双人同屏而非联机。</strong>一个人用两只手控两个角色，或两人共用一个键盘。</li>
+      </ul>
+      <h3>下一步</h3>
+      <ol>
+        <li>
+          <strong>移动端方案。</strong>触屏要同时控制两个角色，最可行的路径可能是「轮流控制 + 另一角色自动保持」，
+          但这会改变谜题的性质——<em>当前很多关的难点正在于「两人必须同时行动」</em>，需要重新评估受影响的关卡。
+        </li>
+        <li>
+          <strong>把第 05 节的约束做成校验工具。</strong>
+          现在这些约束靠人记；写一个读取字符网格并检查可达性的脚本，
+          新增关卡时能自动报出「这里 4 格缝跳不过去」「这块板只有 1 格宽」。
+        </li>
+        <li>
+          <strong>验证第 15 关的难度断层。</strong>
+          「天窗」取消了玩家对光的控制权，是全作认知负荷最大的一关。
+          需要观察玩家在此处的卡关时长是否显著高于前后关——如果是，考虑在第 13-14 关补一个光斑赶路的轻量教学。
+        </li>
+      </ol>
+    </section>
+
+  </article>
+
+  <div class="related">
+    <div class="related-title">其他策划案</div>
+    <ul>
+      <li><a href="chiikawa-runner.html"><b>ちいかわ 跑酷原型</b><span>IP 的已知性作为设计资产</span></a></li>
+      <li><a href="../analysis/"><b>游戏拆解</b><span>四篇长文，每篇一个核心论点</span></a></li>
+      <li><a href="../index.html#featured"><b>全部项目</b><span>返回作品集</span></a></li>
+    </ul>
+  </div>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>策划案 · 光与影 · 王禹尧</div>
+    <div><a href="../index.html#featured">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="../assets/doc.js"></script>
+</body>
+</html>

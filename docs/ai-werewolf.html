@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 狼人杀 策划案｜王禹尧</title>
+<meta name="description" content="1 名玩家对 11 个 AI Agent 的狼人杀设计说明：15 阶段确定性状态机、按身份分区的上下文构造、结构化输出与兜底降级、上下文与成本控制。">
+<link rel="stylesheet" href="../assets/doc.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#featured">← 返回作品集</a>
+    <div class="kicker">策划案 / 系统设计</div>
+    <h1>AI 狼人杀</h1>
+    <p class="sub">1 名玩家 vs 11 个 AI Agent · 12 人标准局 · 设计说明</p>
+
+    <p class="thesis">
+      <b>设计主张</b>
+      让 11 个 AI 玩狼人杀，难点不是让它们「会说话」——这一关早就过了。
+      难点是<strong>严格控制每个 Agent 能看见什么</strong>。
+      信息边界一旦破裂，AI 就会「知道」它不该知道的事，整局游戏当场失去意义。
+      因此这个系统的核心不是 prompt，而是<em>一台确定性状态机 + 一个按身份切片的上下文构造器</em>；
+      AI 只在被问到时输出一个结构化决策。
+    </p>
+
+    <dl class="metabar">
+      <div><dt>类型</dt><dd>多 Agent 社交推理</dd></div>
+      <div><dt>规模</dt><dd>12 人局 / 15 个阶段</dd></div>
+      <div><dt>模型</dt><dd>DeepSeek（deepseek-v4-flash）</dd></div>
+      <div><dt>技术</dt><dd>React + TypeScript + Vite</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+
+    <p class="doc-links">
+      <a href="https://github.com/wangyy992/werewollfaibattle">源码 →</a>
+    </p>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#q">01　要解决的问题</a></li>
+      <li><a href="#config">02　局配置</a></li>
+      <li><a href="#fsm">03　确定性状态机</a></li>
+      <li><a href="#partition">04　信息分区</a></li>
+      <li><a href="#output">05　结构化输出与兜底</a></li>
+      <li><a href="#cost">06　上下文与成本</a></li>
+      <li><a href="#halluc">07　防幻觉的三道措施</a></li>
+      <li><a href="#prompt">08　策略知识写在哪</a></li>
+      <li><a href="#tech">09　技术实现</a></li>
+      <li><a href="#next">10　已知限制与下一步</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <div class="callout risk">
+      <span class="label">文档口径</span>
+      <p>
+        本文机制与参数按实际代码核对
+        （<code>src/types.ts</code>、<code>src/constants.ts</code>、<code>src/lib/gameUtils.ts</code>、
+        <code>src/services/geminiService.ts</code>）。
+      </p>
+    </div>
+
+    <section id="q">
+      <h2><span>01</span>要解决的问题</h2>
+      <p>
+        狼人杀是一个<strong>建立在信息不对称之上</strong>的游戏。它的全部乐趣来自：
+        有人知道你不知道的事，而你要从他的发言里把它推出来。
+      </p>
+      <p>
+        把 11 个位置交给 LLM，最容易出的事故不是「AI 说话不像人」，而是<strong>信息边界失守</strong>——
+        一个平民的发言里出现了只有狼人才知道的信息，或者预言家「猜」中了从未查验过的身份。
+        一旦发生，玩家立刻会察觉这局是假的，而且<em>无法通过后续的精彩发言挽回</em>。
+      </p>
+      <p>本文回答三个问题：</p>
+      <ol>
+        <li>信息边界应该在哪一层强制？prompt 里叮嘱，还是根本不给数据？</li>
+        <li>当模型返回了无法解析的内容时，游戏该怎么办？</li>
+        <li>12 个 Agent、每天多轮发言与投票，成本怎么控制在可接受范围？</li>
+      </ol>
+    </section>
+
+    <section id="config">
+      <h2><span>02</span>局配置</h2>
+      <p>12 人标准局。玩家固定为 1 号，其余 11 位由 AI 扮演。</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>身份</th><th>数量</th><th>技能</th></tr></thead>
+        <tbody>
+          <tr><td>🐺 狼人</td><td>4</td><td>每晚集体击杀一名好人；白天伪装</td></tr>
+          <tr><td>🔮 预言家</td><td>1</td><td>每晚查验一人的阵营</td></tr>
+          <tr><td>🧙 女巫</td><td>1</td><td>解药 ×1、毒药 ×1，每晚最多用一瓶，不可自救</td></tr>
+          <tr><td>🏹 猎人</td><td>1</td><td>被击杀或被放逐时开枪带走一人（被毒杀时不可开枪）</td></tr>
+          <tr><td>🛡️ 守卫 <b>或</b> 🃏 白痴</td><td>1</td><td><b>每局随机其一</b>——第 12 个位置是浮动的</td></tr>
+          <tr><td>👤 平民</td><td>4</td><td>无技能</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        第 12 个位置随机在守卫与白痴之间二选一，是个成本很低但收益明显的设计：
+        <strong>玩家无法在开局就确定场上有没有守卫</strong>，
+        「昨晚平安夜」这条信息因此同时兼容「守卫守对了」和「女巫用了解药」两种解释，
+        推理空间被显著撑开。
+      </p>
+      <p>
+        规则里保留了标准局的复杂交互，包括<em>守卫与解药同时作用于同一人时该玩家反而死亡</em>（奶穿）、
+        白痴翻牌后失去投票权但保留发言权、警长 1.5 票并决定发言顺序、死亡时可传递或撕毁警徽。
+        胜负判定为：狼全灭则好人胜；狼数 ≥ 好人数则狼胜。
+      </p>
+    </section>
+
+    <section id="fsm">
+      <h2><span>03</span>确定性状态机</h2>
+      <p>
+        整局由一个 15 阶段的枚举驱动。<strong>阶段推进、死亡结算、胜负判定全部是确定性代码，AI 不参与。</strong>
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>时段</th><th>阶段</th></tr></thead>
+        <tbody>
+          <tr><td><b>夜晚</b></td><td><code>NIGHT_GUARD</code> → <code>NIGHT_WOLVES</code> → <code>NIGHT_SEER</code> → <code>NIGHT_WITCH</code> → <code>NIGHT_RESULT</code></td></tr>
+          <tr><td><b>警长竞选</b><br><span style="color:#6e6e6a;font-size:12.5px">仅第一天</span></td><td><code>SHERIFF_ELECT</code> → <code>SHERIFF_SPEECH</code> → <code>SHERIFF_VOTE</code> → <code>SHERIFF_RESULT</code></td></tr>
+          <tr><td><b>白天</b></td><td><code>DAY_DISCUSSION</code> → <code>DAY_VOTING</code> → <code>DAY_RESULT</code> → <code>SHERIFF_ACTION</code></td></tr>
+          <tr><td><b>边界</b></td><td><code>INIT</code>、<code>GAME_OVER</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="pull">
+        AI 从不推进游戏，只在游戏问它时回答一个问题。
+      </p>
+      <p>
+        这个分工是整个架构的地基。<em>如果让 AI 决定「现在该进入白天了」或「他死了」，
+        游戏状态就会随对话漂移</em>——两个 Agent 可能对当前是第几天产生分歧，
+        而这类不一致在社交推理游戏里是致命的：所有推理都建立在共同的事实基础上。
+      </p>
+    </section>
+
+    <section id="partition">
+      <h2><span>04</span>信息分区</h2>
+      <p>
+        每次调用 AI 前，<code>buildGameContext(player, gameState)</code> 为<strong>那一个具体的 Agent</strong>
+        现场拼装一份上下文。公共信息人人有份，私有信息只发给该身份。
+      </p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 262" role="img" aria-label="按身份切片的上下文构造示意" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+
+          <rect x="0" y="14" width="216" height="66" rx="7" fill="#fafaf8" stroke="#deded8"/>
+          <g stroke="#deded8" fill="#fff">
+            <rect x="0" y="98"  width="216" height="42" rx="7"/>
+            <rect x="0" y="152" width="216" height="42" rx="7"/>
+            <rect x="0" y="206" width="216" height="42" rx="7"/>
+          </g>
+          <rect x="316" y="86" width="150" height="90" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+          <rect x="566" y="98" width="194" height="66" rx="7" fill="#fafaf8" stroke="#deded8"/>
+
+          <g font-size="12.5" fill="#171717">
+            <text x="14" y="38">公共信息</text>
+            <text x="14" y="57" font-size="11" fill="#6e6e6a">存活/出局名单、警长、昨晚死亡</text>
+            <text x="14" y="72" font-size="11" fill="#6e6e6a">近 15 条发言记录</text>
+            <text x="14" y="118">狼队友名单</text>
+            <text x="14" y="134" font-size="11" fill="#8a5a2b">仅狼人</text>
+            <text x="14" y="172">查验记录</text>
+            <text x="14" y="188" font-size="11" fill="#8a5a2b">仅预言家</text>
+            <text x="14" y="226">解药 / 毒药状态</text>
+            <text x="14" y="242" font-size="11" fill="#8a5a2b">仅女巫</text>
+          </g>
+
+          <g font-size="12.5" fill="#365f73" text-anchor="middle" font-weight="700">
+            <text x="391" y="122">buildGameContext</text>
+            <text x="391" y="142" font-size="11" font-weight="400">(player, gameState)</text>
+          </g>
+          <g font-size="12.5" fill="#171717" text-anchor="middle">
+            <text x="663" y="126">该 Agent 的上下文</text>
+            <text x="663" y="145" font-size="11" fill="#6e6e6a">其余 11 人看不到这一份</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.3" fill="none" marker-end="url(#aw)">
+            <path d="M216,47 L262,47 Q274,47 274,59 L274,119 L311,119"/>
+            <path d="M216,119 L311,119"/>
+            <path d="M216,173 L262,173 Q274,173 274,161 L274,143 L311,143"/>
+            <path d="M216,227 L262,227 Q274,227 274,215 L274,147 L311,147"/>
+            <path d="M466,131 L561,131"/>
+          </g>
+        </svg>
+        <figcaption>
+          边界在<strong>上下文构造时</strong>强制，而不是在 prompt 里叮嘱模型「不要偷看」。
+          模型根本拿不到那份数据。
+        </figcaption>
+      </figure>
+
+      <p>
+        这一点值得说清楚，因为两种做法的可靠性差着数量级：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>做法</th><th>可靠性</th><th>失败时的表现</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>把全部信息给模型，在 prompt 里要求「你是平民，不要使用狼人信息」</td>
+            <td><b>不可靠</b>——依赖模型的服从性，且无法验证</td>
+            <td>偶发泄漏，且难以复现和定位</td>
+          </tr>
+          <tr>
+            <td><b>构造上下文时就不放入</b>（本作做法）</td>
+            <td><b>可靠</b>——是代码约束，不是模型行为</td>
+            <td>不会发生</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        公共信息里有一处细节：出局玩家的身份是<em>公开</em>的
+        （<code>3号(狼人,被投票,第2天)</code>），这符合狼人杀的实际规则，
+        也给了 AI 复盘的依据——<strong>它需要能说出「昨天被票出去的是狼，说明当时跟票的人有问题」这种话</strong>。
+      </p>
+    </section>
+
+    <section id="output">
+      <h2><span>05</span>结构化输出与兜底</h2>
+      <p>
+        除了白天发言是自然语言，<strong>所有决策都要求模型返回 JSON</strong>，
+        并通过 <code>response_format: json_object</code> 约束。每种决策有独立的函数与 schema：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>决策</th><th>返回</th><th>解析失败时的兜底</th></tr></thead>
+        <tbody>
+          <tr><td>投票</td><td><code>{voteId, reason}</code></td><td><code>{voteId: -1}</code> 弃权</td></tr>
+          <tr><td>狼人击杀</td><td><code>{targetId}</code></td><td><code>-1</code>，由代码兜底</td></tr>
+          <tr><td>预言家查验</td><td><code>{targetId}</code></td><td><code>-1</code></td></tr>
+          <tr><td>女巫用药</td><td><code>{action, targetId?}</code></td><td><code>{action: "skip"}</code> 不用药</td></tr>
+          <tr><td>守卫守护</td><td><code>{targetId}</code></td><td><code>-1</code> 空守</td></tr>
+          <tr><td>猎人开枪</td><td><code>{targetId}</code></td><td><code>-1</code> 不开枪</td></tr>
+          <tr><td>是否上警</td><td><code>{run}</code></td><td><code>false</code> 不上警</td></tr>
+          <tr><td>警徽移交</td><td><code>{targetId}</code></td><td><code>-1</code> 撕毁</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        解析统一走 <code>safeJSON&lt;T&gt;(text, fallback)</code>：先剥掉模型可能包裹的
+        <code>```json</code> 围栏，再 <code>JSON.parse</code>，失败则返回兜底值。
+      </p>
+
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          注意每个兜底值的共同点：<strong>它们都是合法的「什么都不做」，而不是随机值或抛错。</strong>
+        </p>
+        <p>
+          这是与 LLM 集成时最重要的一条工程原则。模型偶尔会返回无法解析的内容，
+          这是概率性的、无法完全消除的。如果解析失败就崩溃，游戏在长局里必然中断；
+          如果失败就随机选一个目标，会产生玩家无法理解的诡异行为。
+          <em>降级成一个合法的空操作，游戏继续，玩家最多觉得「这个 AI 今晚没动」</em>——
+          而这在真实牌局里也会发生。
+        </p>
+      </div>
+    </section>
+
+    <section id="cost">
+      <h2><span>06</span>上下文与成本</h2>
+      <p>
+        一局 12 人狼人杀的调用量是可观的：每天每个存活 AI 至少一次发言 + 一次投票，
+        夜里还有各神职的行动。<strong>如果每次都把完整历史塞进去，token 消耗会随天数平方增长。</strong>
+      </p>
+      <h3>控制手段</h3>
+      <ul>
+        <li>
+          <strong>发言记录只取最近 15 条</strong>（<code>logs.slice(-15)</code>）。
+          狼人杀的推理主要依赖近期发言与当前存活结构；更早的内容已经沉淀进「出局名单 + 身份公开」里，
+          <em>被压缩成了结构化状态，不需要以原文形式重复携带。</em>
+        </li>
+        <li>
+          <strong>局面以结构化摘要而非原文呈现。</strong>存活/出局、警长、药品、查验记录都是短标签，
+          不是叙述性文字。
+        </li>
+        <li>
+          <strong>决策类调用限制输出为 JSON</strong>，输出 token 极少。
+        </li>
+        <li>
+          <strong>选用 flash 级模型</strong>（<code>deepseek-v4-flash</code>）。
+          社交推理需要的是快速的立场判断，不是长链推理。
+        </li>
+      </ul>
+      <p>
+        「近 15 条 + 结构化摘要」这个组合本质上是一套<strong>分层记忆</strong>：
+        近期用原文、中期用结构化事实、远期直接丢弃。
+        它没有引入向量检索，因为狼人杀的信息量天然有界——<em>一局最多十几天，
+        重要事实不超过几十条，用不着检索。</em>
+      </p>
+    </section>
+
+    <section id="halluc">
+      <h2><span>07</span>防幻觉的三道措施</h2>
+      <p>
+        社交推理里最伤的幻觉是<strong>捏造游戏事件</strong>——
+        AI 说「昨天 5 号跳了预言家」而实际上没有。
+        这会污染其他 Agent 的推理，并让玩家彻底失去信任。三道措施依次生效：
+      </p>
+      <ol>
+        <li>
+          <strong>不给不该有的数据</strong>（第 04 节）。大部分越界从源头被切断。
+        </li>
+        <li>
+          <strong>上下文末尾的硬性声明。</strong>每次调用都以这一行结尾：
+          <em>「⚠️ 重要：你只能基于以上真实信息发言，严禁捏造不存在的游戏事件！」</em>
+          位置在上下文最末、紧邻任务指令，是模型注意力最强的位置。
+        </li>
+        <li>
+          <strong>决策与表达分离。</strong>投票、击杀、查验这些<b>会改变游戏状态</b>的动作走 JSON，
+          由代码校验后执行；自然语言只用于发言。
+          <em>即使发言里含有幻觉，它也无法直接改写世界状态</em>——最多影响其他 Agent 的判断，
+          而这在真实牌局里叫「造谣」，本来就是玩法的一部分。
+        </li>
+      </ol>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          第 3 条是这个架构最幸运的一点：<strong>狼人杀恰好是一个「说谎是合法玩法」的游戏。</strong>
+          在别的产品里，AI 说错话是 bug；在这里，只要它改不了事实，说错话最多是一次糟糕的发言。
+          <em>选对了题材，一半的 AI 可靠性问题被规则本身吸收了。</em>
+        </p>
+      </div>
+    </section>
+
+    <section id="prompt">
+      <h2><span>08</span>策略知识写在哪</h2>
+      <p>
+        <code>SYSTEM_PROMPT</code> 注入每一次调用，包含三部分：身份构成、各角色技能的完整规则、
+        以及<strong>按身份分列的核心策略</strong>。
+      </p>
+      <p>
+        策略部分写得相当具体，例如预言家一条写着
+        <em>「必须在第一天警长竞选时上警起跳，争夺警徽——这是铁则」</em>。
+      </p>
+      <div class="callout risk">
+        <span class="label">这里有个待验证的取舍</span>
+        <p>
+          把策略写死进 system prompt，好处是 AI 的行为符合真实牌局的套路，玩家不会觉得对手在乱打。
+          代价是<strong>所有 Agent 共享同一套策略认知，打法趋同</strong>——
+          11 个 AI 可能表现得像同一个人的 11 个分身。
+        </p>
+        <p>
+          真实牌局的乐趣有相当一部分来自玩家<em>风格各异</em>：有人激进有人保守，有人爱冲票有人爱苟。
+          下一步应当在共享规则之上，为每个 Agent 叠加一层<b>个体风格</b>
+          （激进度、话痨度、跟票倾向），并观察它对发言多样性与跟票行为的实际影响。
+        </p>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2><span>09</span>技术实现</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>项</th><th>选择</th></tr></thead>
+        <tbody>
+          <tr><td>前端</td><td>React + TypeScript + Vite</td></tr>
+          <tr><td>模型</td><td>DeepSeek <code>deepseek-v4-flash</code>，经 OpenAI SDK 指向 <code>api.deepseek.com</code></td></tr>
+          <tr><td>状态</td><td>全部在前端，单文件 <code>App.tsx</code> 驱动状态机（801 行）</td></tr>
+          <tr><td>类型</td><td><code>types.ts</code> 定义 Role / Side / Phase / Player / GameLog / WitchStatus / SeerRecord</td></tr>
+          <tr><td>发牌</td><td>Fisher-Yates 洗牌；第 12 个身份在守卫与白痴间随机</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout risk">
+        <span class="label">两处代码问题</span>
+        <p>
+          <strong>一、密钥在浏览器里。</strong>客户端以 <code>dangerouslyAllowBrowser: true</code> 初始化，
+          API key 走 <code>VITE_</code> 前缀进前端包。这是本项目<strong>没有部署到 GitHub Pages 的直接原因</strong>——
+          公开部署等于公开密钥。需要一个服务端转发层才能对外开放试玩。
+        </p>
+        <p>
+          <strong>二、文件名与实现不符。</strong><code>services/geminiService.ts</code> 里实际调用的是 DeepSeek，
+          文件名是早期版本的遗留。应当改名，否则会误导后来读代码的人。
+        </p>
+      </div>
+    </section>
+
+    <section id="next">
+      <h2><span>10</span>已知限制与下一步</h2>
+      <h3>已知限制</h3>
+      <ul>
+        <li><strong>无法公开试玩</strong>（密钥问题，见上）。</li>
+        <li><strong>Agent 无跨局记忆。</strong>每局从零开始，AI 不会记得玩家上一局的打法。</li>
+        <li><strong>无对局日志导出。</strong>目前只能在界面里回看，不便于批量分析行为模式。</li>
+      </ul>
+      <h3>下一步要验证的问题</h3>
+      <ol>
+        <li>
+          <strong>跟票行为（herd behavior）的实际强度。</strong>
+          需要先加对局日志导出，统计「第二个投某人的 Agent，有多大比例跟随了第一个投票者」。
+          如果显著高于随机，说明 AI 在用「别人投了」代替独立判断——
+          <em>这既可能是缺陷，也可能恰好模拟了真实玩家的从众心理，需要数据才能判断。</em>
+        </li>
+        <li>
+          <strong>个体风格对发言多样性的影响</strong>（见第 08 节）。
+        </li>
+        <li>
+          <strong>错误推断的扩散路径。</strong>一个 Agent 的错误结论会进入公共发言记录，
+          被其他 Agent 当作事实引用。需要观察这类污染在一局内能传播多远，
+          以及「近 15 条」的窗口是加速还是抑制了它。
+        </li>
+      </ol>
+    </section>
+
+  </article>
+
+  <div class="related">
+    <div class="related-title">其他策划案</div>
+    <ul>
+      <li><a href="idol-life.html"><b>爱豆收集梦想生活</b><span>确定性模拟与生成层的分工线</span></a></li>
+      <li><a href="../analysis/status-ai.html"><b>Status AI 拆解</b><span>AI-native gameplay 的四个结构性约束</span></a></li>
+      <li><a href="../index.html#featured"><b>全部项目</b><span>返回作品集</span></a></li>
+    </ul>
+  </div>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>策划案 · AI 狼人杀 · 王禹尧</div>
+    <div><a href="../index.html#featured">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="../assets/doc.js"></script>
+</body>
+</html>

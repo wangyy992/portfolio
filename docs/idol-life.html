@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>爱豆收集梦想生活 策划案｜王禹尧</title>
+<meta name="description" content="AI 驱动沙盒养成的设计说明：确定性模拟与生成层的分工线、哈希驱动的需求心跳、九种结构化输出块、状态所有权审计。">
+<link rel="stylesheet" href="../assets/doc.css">
+</head>
+<body>
+
+<div class="progress"><i></i></div>
+
+<header class="doc-head">
+  <div class="container">
+    <a class="back" href="../index.html#featured">← 返回作品集</a>
+    <div class="kicker">策划案 / 系统架构</div>
+    <h1>爱豆收集梦想生活</h1>
+    <p class="sub">AI 驱动沙盒养成 · 设计说明</p>
+
+    <p class="thesis">
+      <b>设计主张</b>
+      「确定性模拟 + 生成式 AI」的分工线画在哪里，决定这类产品能不能长期运行。
+      本作把线画在：<strong>游戏掌管时钟和世界状态，AI 只负责演当下这一刻，并提出小幅改动</strong>。
+      凡是 AI 抢了游戏该管的东西、或状态只靠 AI 回显的地方，都是要堵的漏。
+      <em>成本控制不是让每次调用更便宜，而是让大部分时刻根本不需要调用。</em>
+    </p>
+
+    <dl class="metabar">
+      <div><dt>类型</dt><dd>沙盒养成 / 恋爱模拟</dd></div>
+      <div><dt>结果</dt><dd>2000+ 用户体验</dd></div>
+      <div><dt>模型</dt><dd>DeepSeek（deepseek-v4-flash）</dd></div>
+      <div><dt>技术</dt><dd>React 19 / TypeScript / Vite / Tailwind v4</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+    </dl>
+
+    <p class="doc-links">
+      <a href="https://github.com/wangyy992/idolTomodachiLifev2">源码 →</a>
+    </p>
+  </div>
+</header>
+
+<div class="container layout">
+
+  <nav class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#line">01　分工线</a></li>
+      <li><a href="#needs">02　需求：不调 AI 的心跳</a></li>
+      <li><a href="#calendar">03　年历与档期</a></li>
+      <li><a href="#relation">04　统一关系模型</a></li>
+      <li><a href="#blocks">05　九种结构化输出块</a></li>
+      <li><a href="#cost">06　上下文与成本</a></li>
+      <li><a href="#authored">07　里程碑与结局</a></li>
+      <li><a href="#audit">08　状态所有权审计</a></li>
+      <li><a href="#tech">09　技术实现</a></li>
+      <li><a href="#next">10　已知问题与下一步</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+    <div class="callout risk">
+      <span class="label">文档口径</span>
+      <p>
+        本文描述<strong>已实现的系统</strong>，按代码核对
+        （<code>src/needs.ts</code>、<code>calendar.ts</code>、<code>relations.ts</code>、
+        <code>geminiService.ts</code>、<code>milestones.ts</code>、<code>endings.ts</code>、<code>api/chat.ts</code>）。
+      </p>
+      <p>
+        仓库里另有一份 <code>玩法设计笔记.md</code>，开头写明「设计讨论中，尚未实现」——
+        那是待办清单，<strong>本文不引用其中未落地的内容</strong>。
+      </p>
+    </div>
+
+    <section id="line">
+      <h2><span>01</span>分工线</h2>
+      <p>
+        参考 Stardew Valley 与 Tomodachi Life 的做法，本作确立了一条硬性分工：
+      </p>
+      <p class="pull">
+        游戏掌管时钟和世界状态；AI 只负责演当下这一刻，并提出小幅改动。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>确定性层（游戏）</th><th>生成层（AI）</th></tr></thead>
+        <tbody>
+          <tr><td><b>持有</b></td><td>天数、时段、地点、好感、关系、档期、需求、里程碑触发</td><td>不持有任何状态</td></tr>
+          <tr><td><b>决定</b></td><td>什么时候发生什么、发生了之后世界变成什么样</td><td>这一刻的对话与场景怎么演</td></tr>
+          <tr><td><b>提出</b></td><td>—</td><td>好感的小幅增减、一句记忆、可选的社媒内容</td></tr>
+          <tr><td><b>可测试性</b></td><td>可写单元测试、可回归</td><td>不可预测，只能约束格式</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        这条线的实际检验标准很直接：<strong>如果 AI 某一轮完全失败，游戏状态会不会被破坏？</strong>
+        在正确的分工下，答案是「不会，只是这一段对话质量差」。
+        第 08 节的审计就是在逐条排查违反这条线的地方。
+      </p>
+    </section>
+
+    <section id="needs">
+      <h2><span>02</span>需求：不调 AI 的心跳</h2>
+      <p>
+        Tomodachi Life 类玩法的心跳是「角色主动冒出需求，玩家去满足」。
+        朴素做法是每个时段问一次 AI「她现在想干嘛」——
+        <strong>12 位爱豆 × 3 个时段 × 每天，光是生成需求就会把成本打穿。</strong>
+      </p>
+      <p>本作的做法是把这层完全交给确定性哈希：</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 240" role="img" aria-label="需求系统的成本闸门示意" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+          <g stroke="#deded8" fill="#fafaf8">
+            <rect x="0"   y="92"  width="146" height="58" rx="7"/>
+            <rect x="190" y="92"  width="168" height="58" rx="7"/>
+            <rect x="404" y="22"  width="176" height="54" rx="7"/>
+          </g>
+          <rect x="404" y="152" width="176" height="54" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+          <rect x="616" y="152" width="144" height="54" rx="7" fill="#fafaf8" stroke="#deded8"/>
+
+          <g font-size="13" fill="#171717" text-anchor="middle">
+            <text x="73"  y="115">每位爱豆</text>
+            <text x="73"  y="134" font-size="11" fill="#6e6e6a">× 每个时段</text>
+            <text x="274" y="115">确定性哈希</text>
+            <text x="274" y="134" font-size="11" fill="#8a5a2b">45% 有需求 · 定类型</text>
+            <text x="492" y="45">头顶冒泡 / 心情表情</text>
+            <text x="492" y="64" font-size="11" fill="#6e6e6a">零 API 调用</text>
+            <text x="492" y="175" font-weight="700" fill="#365f73">玩家点击才调 LLM</text>
+            <text x="492" y="194" font-size="11" fill="#365f73">演一段碎片剧场</text>
+            <text x="688" y="175">结构化块回写</text>
+            <text x="688" y="194" font-size="11" fill="#6e6e6a">好感 / 记忆 / 社媒</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ai)">
+            <path d="M146,121 L185,121"/>
+            <path d="M358,110 L378,110 Q390,110 390,98 L390,49 L399,49"/>
+            <path d="M358,132 L378,132 Q390,132 390,144 L390,179 L399,179"/>
+            <path d="M580,179 L611,179"/>
+          </g>
+          <g font-size="11.5" fill="#8a5a2b" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="492" y="128" text-anchor="middle">成本只在这条支路上产生</text>
+          </g>
+        </svg>
+        <figcaption>
+          需求的<strong>有无与类型</strong>由哈希算出，不花钱；
+          LLM 只在玩家主动点进某个冒泡时才被调用一次。
+        </figcaption>
+      </figure>
+
+      <h3>具体做法</h3>
+      <ul>
+        <li>
+          <strong>需求的有无</strong>：<code>hash(memberId|need|day-slot) % 100 &lt; 45</code>——约 45% 概率有需求。
+          同一个人、同一天、同一时段永远得到同一个结果，<em>不需要存储，也不会因为重新渲染而变化。</em>
+        </li>
+        <li>
+          <strong>需求的类型</strong>：7 种（想吃东西 / 闲得慌 / 有心事 / 想要个东西 / 想让你牵线 / 想分享 / 心情很好），
+          同样由哈希从加权池中选出。
+        </li>
+        <li>
+          <strong>性格影响权重</strong>：用正则匹配角色的性格文本给需求池加权——
+          写着「吃 / 美食 / 零食」的角色更容易饿，写着「累 / 焦虑 / 内耗 / 敏感」的更容易有心事，
+          「话痨 / 活泼 / 社牛」的更容易想分享。<em>很轻的偏向，成本为零，但让每个角色的需求分布有辨识度。</em>
+        </li>
+        <li>
+          <strong>无需求时也有表情</strong>：头顶挂一个同样由哈希决定的心情 emoji，随时段轻微漂移。
+          让每个人头上总有点东西——这是 Tomodachi Life 的质感来源。
+        </li>
+        <li>
+          <strong>优雅降级</strong>：「想让你牵线」需要一个牵线对象，没有候选时自动退化为「想分享」，
+          而不是报错或产生空指针。
+        </li>
+      </ul>
+
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          这是全项目最值得复用的一个决定。它把 AI 的角色从
+          <strong>「持续驱动世界」压缩成「玩家主动触发时演一段」</strong>。
+        </p>
+        <p>
+          效果是双重的：成本上，绝大多数时刻的 API 调用是零；
+          体验上，<em>角色的需求在玩家点开之前就已经存在且稳定</em>——
+          你昨天看到她想吃东西，今天再看还是那件事，
+          这种一致性如果交给 AI 生成，反而很难保证。
+          <strong>确定性在这里不是性能妥协，是体验本身。</strong>
+        </p>
+      </div>
+    </section>
+
+    <section id="calendar">
+      <h2><span>03</span>年历与档期</h2>
+      <p>一轮 = 游戏内一年，52 周 × 7 天。档期由哈希确定性排布，带小幅浮动：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>档期</th><th>时间</th><th>玩法作用</th></tr></thead>
+        <tbody>
+          <tr><td>📀 上半年回归预热 + 🎤 打歌期</td><td>第 8–11 周起，共 4 周</td><td>爱豆常在练习室 / 打歌 / 后台，相遇机会密集，关系爆发窗口</td></tr>
+          <tr><td>✈️ 巡演</td><td>回归结束后 5–7 周，持续 3 周</td><td>部分成员「在外地联系不上」，制造想见见不到的张力</td></tr>
+          <tr><td>📀 下半年回归 + 🎤 打歌期</td><td>第 32–36 周起，共 4 周</td><td>同上</td></tr>
+          <tr><td>🏆 颁奖季</td><td>第 50–52 周</td><td>年末大事件锚点，高光时机</td></tr>
+          <tr><td>其余</td><td>淡季 / 私下期</td><td>低密度日常，可快进</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        排布种子是<strong>团名 + 年份</strong>，所以：同一个团每次开局的档期一致（可预期），
+        不同的团档期不同（有辨识度）。浮动范围只有 3–5 周，
+        <em>既避免了「每次都一模一样」，又不至于让玩家无法规划。</em>
+      </p>
+      <div class="callout take">
+        <span class="label">判断</span>
+        <p>
+          大事件<strong>确定</strong>而小事件<strong>随机</strong>，是这类长周期养成的通用解法。
+          确定的大事件让玩家一开局就能在日历上看见「回归在第几周」，
+          从而产生规划行为——<strong>前瞻性就是目标感</strong>。
+          而随机的小事件（热搜、偶遇、吃醋）负责让每一周的具体内容不重复。
+          两者缺一：全确定则乏味，全随机则玩家无法计划，只能被动接受。
+        </p>
+      </div>
+    </section>
+
+    <section id="relation">
+      <h2><span>04</span>统一关系模型</h2>
+      <p>
+        玩家↔爱豆与爱豆↔爱豆<strong>共用同一套模型</strong>：
+        <code>{ affinity, tension, flags }</code>，关系名由数值推导而非直接存储。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>条件</th><th>推导出的关系</th></tr></thead>
+        <tbody>
+          <tr><td>tension ≥ 65 且 affinity &lt; 55</td><td>交恶</td></tr>
+          <tr><td>tension ≥ 50 且 affinity &lt; 45</td><td>疏远</td></tr>
+          <tr><td>affinity ≥ 90</td><td>已表白 → <b>恋人</b>；有恋爱意图 → 深度暧昧；否则 → 挚友</td></tr>
+          <tr><td>affinity ≥ 75</td><td>有恋爱意图 → 暧昧；否则 → 好友</td></tr>
+          <tr><td>affinity ≥ 60 / 45 / 25 / 更低</td><td>朋友 / 普通认识 / 眼熟 / 陌生</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        两个设计点值得说：
+      </p>
+      <ul>
+        <li>
+          <strong>关系名是推导出来的，不是存的。</strong>
+          存的只有两个数值加若干 flag。这意味着关系永远与数值一致，
+          <em>不存在「好感 92 但显示还是朋友」这类状态不同步的 bug</em>。
+        </li>
+        <li>
+          <strong>同一个 affinity 因「意图」不同而呈现不同关系。</strong>
+          好感 80 在恋爱意图下是「暧昧」，在朋友意图下是「好友」——
+          <strong>玩家的定位选择直接改变关系的性质，而不只是速度。</strong>
+          这让「专一 vs 广撒网」成为真实取舍，而不是数值优化题。
+        </li>
+      </ul>
+      <p>
+        爱豆之间的初始关系从各成员的 <code>initialRelationships</code> 播种；
+        配对键做了规范化排序（<code>pairKey</code>），保证 A-B 与 B-A 指向同一条记录。
+        <em>「看着我撮合的两人真的成了」——这条玩家爽点之所以成立，
+        前提就是 NPC 之间的关系和玩家自己的关系用的是同一套可演进的数值。</em>
+      </p>
+    </section>
+
+    <section id="blocks">
+      <h2><span>05</span>九种结构化输出块</h2>
+      <p>
+        AI 的回复是自然语言，但其中<strong>需要写回游戏状态的部分必须包在标记块里</strong>，
+        由代码解析后才生效。共九种：
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>标记块</th><th>承载</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>SNAPSHOT</code></td><td>好感小幅变化等</td><td><b>强制</b>，每轮必须有</td></tr>
+          <tr><td><code>RELDELTA</code></td><td>爱豆之间关系的变化</td><td>撮合玩法的数值出口</td></tr>
+          <tr><td><code>RISK</code></td><td>风险提示</td><td>状态预警</td></tr>
+          <tr><td><code>CARD</code></td><td>卡片式内容</td><td>结构化展示</td></tr>
+          <tr><td><code>KKTMSG</code></td><td>手机私信</td><td rowspan="4">虚拟社交平台层。<br>把「关系」外化成可见的社交痕迹</td></tr>
+          <tr><td><code>WEVERSE</code></td><td>爱豆发的动态</td></tr>
+          <tr><td><code>BUBBLE</code></td><td>私信订阅式消息</td></tr>
+          <tr><td><code>THEQOO</code></td><td>论坛热帖</td></tr>
+          <tr><td><code>MUSICSHOW</code></td><td>打歌成绩</td><td>见第 08 节——这一块存在双源问题</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        格式要求写得相当强硬，例如：正文 60–140 字；结尾必须有 <code>A. / B. / C.</code> 三行具体选项，
+        不能写「你可以选择」，不能用数字编号；<code>SNAPSHOT</code> 是强制要求禁止省略。
+      </p>
+      <div class="callout take">
+        <span class="label">一条容易被忽略的约束</span>
+        <p>
+          prompt 里专门写了：<em>「affection 只在本轮真的有实质进展时才变；敷衍 / 寒暄 / 被冷落就保持不变（+0），
+          不要为了凑数硬加。」</em>
+        </p>
+        <p>
+          这条很关键。生成模型有强烈的「让玩家开心」倾向，
+          如果不明确要求，它会在每一轮都给一点好感——<strong>于是好感变成时间的函数，而不是行为的函数</strong>。
+          一旦玩家意识到「随便聊也会涨」，所有对话选择就失去了意义。
+          <em>在生成式养成里，「不涨」比「涨多少」更需要被显式设计。</em>
+        </p>
+      </div>
+    </section>
+
+    <section id="cost">
+      <h2><span>06</span>上下文与成本</h2>
+      <p>第 02 节的需求系统已经把调用频次压到最低，剩下的是每次调用的体积控制：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>手段</th><th>做法</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><b>历史裁剪</b></td><td><code>messages.slice(-10)</code></td><td>只带最近 10 轮</td></tr>
+          <tr>
+            <td><b>剥离标记块</b></td>
+            <td>回传历史前，用正则把全部九种标记块从旧消息里删掉</td>
+            <td><b>关键一步</b>——见下</td>
+          </tr>
+          <tr><td><b>分角色记忆</b></td><td><code>memories[memberId].slice(-4)</code></td><td>每个角色只带最近 4 条长期记忆</td></tr>
+          <tr><td><b>输出上限</b></td><td><code>max_tokens: 4096</code>，<code>temperature: 0.75</code></td><td>限制单轮体积</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        「剥离标记块」这一步值得单独说。AI 每轮输出里都含有 <code>SNAPSHOT</code> 等结构化块，
+        如果原样回传进下一轮的历史，会产生两个问题：
+      </p>
+      <ol>
+        <li><strong>体积膨胀</strong>——这些块的 token 量不小，且随轮数线性累积。</li>
+        <li>
+          <strong>模型会模仿历史里的块并「重放」旧数值。</strong>
+          它看到前面几轮都有 SNAPSHOT，可能把旧的好感值抄进新的一轮，
+          <em>造成状态回滚。</em>
+        </li>
+      </ol>
+      <p>
+        剥离之后，历史里只剩纯粹的对话正文，
+        而真实状态由确定性层在上下文开头重新注入——<strong>数据只有一个来源。</strong>
+      </p>
+    </section>
+
+    <section id="authored">
+      <h2><span>07</span>里程碑与结局</h2>
+      <p>
+        并非所有内容都交给生成。系统里保留了两类 <strong>authored（人工编写）</strong> 的节点：
+      </p>
+
+      <h3>里程碑：暗线积累后的重头戏</h3>
+      <p>
+        里程碑是好感积累到阈值后触发的大节点，由 <code>milestones.ts</code> 定义，
+        条件包括：最低好感、是否需要恋爱意图、是否需要「晚上 / 汉江 / 天台」这类能说心里话的时空。
+      </p>
+      <p>
+        与日常的碎片剧场相对，里程碑<em>更长、更正式、有醒目预兆</em>（世界里显示 ⚡），
+        并会被记进大事记，最终喂给年鉴与结局。
+        <strong>这张表被 prompt 和世界视图共用</strong>——同一份定义既驱动生成，也驱动 UI 预兆，
+        保证「玩家看到的预兆」和「实际会触发的事」不会脱节。
+      </p>
+
+      <h3>结局：条件触发，玩家决定何时收</h3>
+      <p>
+        四类结局：恋人线、撮合线、见证线、BE。设计原则写在代码注释里：
+      </p>
+      <div class="callout">
+        <span class="label" style="color:var(--accent)">结局的设计原则</span>
+        <p style="margin:0">
+          「明确的 END 一直挂在那儿（有目标、可达成、可收口）＝ 收敛；
+          收不收由玩家定，日常甜蜜和随机事件可以一直玩 ＝ 不硬切。」
+        </p>
+      </div>
+      <p>
+        这解决了沙盒养成的一个经典矛盾：<em>有结局则玩家被迫结束，没结局则努力没有回报。</em>
+        本作的解法是把结局做成<strong>随时可用但不强制的收口</strong>——
+        目标感来自「我知道能走到哪」，自由度来自「什么时候走由我定」。
+      </p>
+    </section>
+
+    <section id="audit">
+      <h2><span>08</span>状态所有权审计</h2>
+      <p>
+        项目做过一次专门的审计，逐条排查「AI 抢了游戏该管的东西」的地方，
+        产出 <strong>13 条问题，分四类</strong>：时间/世界所有权、玩家能动性、状态可靠性、其它。
+      </p>
+      <p>其中几条特别能说明第 01 节那条分工线在实践中会怎么破：</p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>编号</th><th>问题</th><th>症状</th><th>处理</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>F1</b></td>
+            <td>AI 自己跳时间 / 换场</td>
+            <td>旧 prompt 每 2 轮硬命令「结束场景 + 跳周」</td>
+            <td><b>已修</b>：改为实时对话指令</td>
+          </tr>
+          <tr>
+            <td><b>F2</b></td>
+            <td><code>currentScene</code> 有两个真相源</td>
+            <td>世界地图有 <code>worldLocation</code>，AI 又每轮用 SNAPSHOT 覆盖它。<em>你在咖啡厅，AI 说练习室，顶栏和地图对不上</em></td>
+            <td>地点以世界为准，AI 不再覆盖</td>
+          </tr>
+          <tr>
+            <td><b>F3</b></td>
+            <td><b>两个时钟打架</b></td>
+            <td>叙事锚点用 <code>turnCount</code>（每回复 +1），世界时间是 <code>worldDay/worldSlot</code>（玩家推进）。<em>聊 3 句 AI 就以为过了 3 段时间</em></td>
+            <td>时间锚点改喂「第 D 天·上午/下午/晚上」，并说明这一刻在对话里固定不变</td>
+          </tr>
+          <tr>
+            <td><b>F4</b></td>
+            <td>回归期由 AI 每轮说了算</td>
+            <td>本该由日历决定，AI 的 SNAPSHOT 每轮覆盖，与日历打架</td>
+            <td>以日历为准，从 SNAPSHOT 移除</td>
+          </tr>
+          <tr>
+            <td><b>F5</b></td>
+            <td>打歌名次双源结算</td>
+            <td>代码已在推进时段时算名次（对），但 prompt 仍允许 AI 输出 MUSICSHOW 块并被照单全收 → <em>一位可能被算两次、结果冲突</em></td>
+            <td>成绩由代码算，AI 只演旁白与获奖感言</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p class="pull">
+        F3 是这类系统里最隐蔽的一种 bug：两个时钟各自都对，合在一起就错。
+      </p>
+      <p>
+        它的隐蔽之处在于<em>没有任何一处代码是写错的</em>——
+        <code>turnCount</code> 用来做叙事节奏是合理的，
+        <code>worldDay</code> 用来做世界时间也是合理的，
+        问题只出在「喂给 AI 的时间锚点用了前者」。
+        <strong>这类 bug 无法靠单元测试发现，只能靠一次专门的所有权审计。</strong>
+      </p>
+
+      <div class="callout take">
+        <span class="label">方法本身值得复用</span>
+        <p>
+          审计的判据只有一句：<strong>凡是 AI 抢了游戏该管的东西、或状态只靠 AI 回显的地方，都是漏。</strong>
+        </p>
+        <p>
+          按这句话把所有状态字段过一遍，问两个问题——
+          「这个字段的真相源是谁？」「如果 AI 这轮胡说，它会被改坏吗？」——
+          13 条问题就是这样找出来的。
+          <em>任何把 LLM 放进主循环的产品都应该做一次这样的审计</em>，
+          而且越早做越便宜：F2 到 F5 都是「已经写完才发现」的类型。
+        </p>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2><span>09</span>技术实现</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>项</th><th>选择</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>前端</td><td>React 19 / TypeScript / Vite / Tailwind CSS v4</td><td>—</td></tr>
+          <tr><td>模型</td><td>DeepSeek <code>deepseek-v4-flash</code></td><td>玩家可自带 key 与模型；未提供时走默认</td></tr>
+          <tr>
+            <td><b>密钥处理</b></td>
+            <td><code>api/chat.ts</code> 服务端转发</td>
+            <td><b>密钥不进前端包</b>——服务端读 <code>DEEPSEEK_API_KEY</code> 后转发到 <code>api.deepseek.com</code></td>
+          </tr>
+          <tr><td>美术</td><td>像素 tileset 素材包 + 生成式素材</td><td>室内/室外分层，含大量家具、门、电视动图等</td></tr>
+          <tr><td>捏脸</td><td><code>FaceCustomizer.tsx</code> + 素材组合</td><td>基于分层素材的自定义外观</td></tr>
+          <tr><td>部署</td><td>含 Dockerfile 与国内直连部署说明</td><td>—</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        密钥处理这一点与同期的 AI 狼人杀项目形成对比：那个项目把 key 放在前端
+        （<code>dangerouslyAllowBrowser</code>），因此无法公开部署。
+        <strong>本项目加了一层服务端转发，才使公开试玩成为可能</strong>——
+        2000+ 用户体验的前提就在这里。
+      </p>
+    </section>
+
+    <section id="next">
+      <h2><span>10</span>已知问题与下一步</h2>
+      <h3>已知问题</h3>
+      <ul>
+        <li><strong>审计中仍有未修项。</strong>13 条里已修的只是一部分，F2–F5 等需要逐条落地。</li>
+        <li><strong>App.tsx 达 2393 行。</strong>状态机、UI、AI 调度混在一处，继续加系统会越来越难改。</li>
+        <li><strong>打歌评分仍有双源风险</strong>（F5），在完全切到代码算分前，结果可能不一致。</li>
+      </ul>
+      <h3>下一步要验证的问题</h3>
+      <ol>
+        <li>
+          <strong>需求系统的 45% 是不是合适的密度。</strong>
+          太高则玩家疲于应付、每个都点会很累；太低则世界显得没人在活动。
+          需要观察玩家实际点开冒泡的比例——<em>如果远低于出现率，说明密度过高，反而稀释了每个需求的分量。</em>
+        </li>
+        <li>
+          <strong>「好感只在有实质进展时才变」是否真的被模型遵守。</strong>
+          这是第 05 节那条约束的落地检验。做法是记录连续多轮敷衍对话下的好感曲线——
+          如果仍在稳步上涨，说明约束没生效，需要改为由代码判定是否允许本轮加好感。
+        </li>
+        <li>
+          <strong>实测单用户成本。</strong>
+          第 02 节和第 06 节的所有设计都是为了压成本，但目前<b>缺少实际的 token 消耗数据</b>。
+          需要统计人均单次会话的调用次数与 token 量，才能判断这套架构在更大规模下是否成立。
+        </li>
+      </ol>
+    </section>
+
+  </article>
+
+  <div class="related">
+    <div class="related-title">其他策划案</div>
+    <ul>
+      <li><a href="ai-werewolf.html"><b>AI 狼人杀</b><span>信息边界在构造时强制，不靠 prompt</span></a></li>
+      <li><a href="../analysis/status-ai.html"><b>Status AI 拆解</b><span>AI-native gameplay 的四个结构性约束</span></a></li>
+      <li><a href="../index.html#featured"><b>全部项目</b><span>返回作品集</span></a></li>
+    </ul>
+  </div>
+</div>
+
+<footer class="doc-foot">
+  <div class="container">
+    <div>策划案 · 爱豆收集梦想生活 · 王禹尧</div>
+    <div><a href="../index.html#featured">← 返回作品集</a></div>
+  </div>
+</footer>
+
+<script src="../assets/doc.js"></script>
+</body>
+</html>

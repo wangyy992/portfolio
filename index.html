@@ -395,9 +395,9 @@ footer{
         </div>
 
         <div class="links">
-          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
-          <a class="todo" href="#">试玩 →</a>
-          <a class="todo" href="#">策划案 →</a>
+          <!-- TODO：如有线上试玩地址，加一条 <a href="...">试玩 →</a> -->
+          <a href="docs/idol-life.html">策划案 →</a>
+          <a href="https://github.com/wangyy992/idolTomodachiLifev2">源码 →</a>
         </div>
       </article>
 
@@ -438,9 +438,9 @@ footer{
         </div>
 
         <div class="links">
-          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
-          <a class="todo" href="#">试玩 →</a>
-          <a class="todo" href="#">策划案 →</a>
+          <!-- 密钥在前端，公开部署等于公开密钥，故暂无线上试玩，见策划案第 09 节 -->
+          <a href="docs/ai-werewolf.html">策划案 →</a>
+          <a href="https://github.com/wangyy992/werewollfaibattle">源码 →</a>
         </div>
       </article>
 
@@ -448,7 +448,7 @@ footer{
         <div class="project-head">
           <div>
             <h3>光与影｜双角色机关解谜</h3>
-            <div class="meta">玩法设计 / 关卡设计 · WIP</div>
+            <div class="meta">个人开发 · 16 关 · 已上线</div>
           </div>
           <div class="badges">
             <span class="badge">Puzzle</span>
@@ -458,16 +458,42 @@ footer{
         </div>
 
         <p class="summary">
-          全黑场景中，灯可以被推动、开关与遮挡。光灵只能走在光照区域，影灵依赖阴影前进。
-          玩家每一次移动灯光，都会同时改变两个角色的可行路径：一个人的路打开，另一个人的路可能随之断开。
+          全黑场景，双角色同屏合作解谜，共 16 关。光灵离开光就消散，影灵被光照到就消散；
+          灯可以推着走。<strong>每移动一次灯，两条路径同时反向翻转</strong>——
+          一个人的路打开，另一个人的路随之断开。两人必须同时站进各自的门才算过关。
         </p>
 
         <div class="project-grid">
           <div>
             <ul class="keypoints">
-              <li>以“同一环境状态对两个角色产生相反影响”作为核心机制。</li>
-              <li>关卡按开关灯 → 推灯 → 遮挡 → 多光源逐步增加复杂度。</li>
-              <li>最终目标是让两个角色同时抵达各自终点。</li>
+              <li>
+                <strong>两个角色的规则严格镜像，这是机制成立的前提。</strong>
+                若限制不对称，一个谜题会退化成两个互不相干的谜题；
+                镜像规则下玩家只需理解「亮暗互补」一件事，就能自动推演两边后果——
+                认知成本减半，谜题深度不变。
+              </li>
+              <li>
+                <strong>光的渲染与致命判定是两套系统，且渲染必须服从判定。</strong>
+                判定阈值在灯半径 55% 处，渲染亮度必须在此之后迅速收掉；
+                否则会出现「看着危险其实安全」的光晕，玩家绕开本可通行的路，
+                解空间被视觉误导缩小，而他只会觉得这关无解。
+              </li>
+              <li>
+                <strong>护盾 0.28 秒是规则参数，不是手感参数。</strong>
+                跳跃穿过光柱的暴露时间约 0.34 秒——护盾设在其下，硬闯必死；
+                一旦放宽到 0.34 秒以上，会跳的玩家可直接冲过所有光柱，
+                「光是屏障」的设定当场失效，全部关卡同时被破解。
+              </li>
+              <li>
+                <strong>三个可达性数字定义了关卡的全部语法。</strong>
+                普通跳 2.5 格、站在灯上 3.4 格、最大水平跳 3.9 格——
+                于是「3 格墙」等于「这里必须用灯」，读格子数就能判断可解性，不必试玩验证。
+              </li>
+              <li>
+                <strong>全程只有一种可交互物件，靠叠加互斥用途换取组合空间。</strong>
+                灯同时是光源、垫脚箱子和常压板配重，三者互相冲突——
+                「只有一盏灯而有两件事要做」因此成为最经济的谜题模板。
+              </li>
             </ul>
           </div>
           <figure class="media">
@@ -481,9 +507,9 @@ footer{
         </div>
 
         <div class="links">
-          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
-          <a class="todo" href="#">试玩 →</a>
-          <a class="todo" href="#">策划案 →</a>
+          <a href="https://wangyy992.github.io/Unlit/">试玩 →</a>
+          <a href="docs/unlit.html">策划案 →</a>
+          <a href="https://github.com/wangyy992/Unlit">源码 →</a>
         </div>
       </article>
 
