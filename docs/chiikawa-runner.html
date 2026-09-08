@@ -30,9 +30,14 @@
       <div><dt>类型</dt><dd>横版跑酷 / 收集</dd></div>
       <div><dt>周期</dt><dd>72 小时 Game Jam</dd></div>
       <div><dt>性质</dt><dd>非商业同人练习作</dd></div>
-      <div><dt>状态</dt><dd>可玩原型</dd></div>
+      <div><dt>状态</dt><dd>已上线可玩</dd></div>
       <div><dt>最后更新</dt><dd>2026-09</dd></div>
     </dl>
+
+    <p class="doc-links">
+      <a href="https://wangyy992.github.io/chiiiikawa/">试玩 →</a>
+      <a href="https://github.com/wangyy992/chiiiikawa">源码 →</a>
+    </p>
   </div>
 </header>
 
@@ -45,12 +50,12 @@
       <li><a href="#ip">02　IP 选择与使用边界</a></li>
       <li><a href="#loop">03　核心循环</a></li>
       <li><a href="#exam">04　除草检定：进度系统</a></li>
-      <li><a href="#obstacle">05　障碍设计</a></li>
+      <li><a href="#obstacle">05　障碍与地形</a></li>
       <li><a href="#feel">06　手感参数规格</a></li>
       <li><a href="#pacing">07　关卡节奏</a></li>
-      <li><a href="#fail">08　失败与反馈</a></li>
+      <li><a href="#fail">08　失败与追击</a></li>
       <li><a href="#asset">09　资产策略</a></li>
-      <li><a href="#plan">10　排期与实现</a></li>
+      <li><a href="#plan">10　技术实现</a></li>
       <li><a href="#next">11　已知问题与下一步</a></li>
       <li><a href="#legal">12　IP 合规声明</a></li>
     </ol>
@@ -61,9 +66,10 @@
     <div class="callout risk">
       <span class="label">文档口径</span>
       <p>
-        本文是原型的<strong>设计说明</strong>，记录设计意图与取舍理由。
-        文中带 <span class="tbd">待对齐</span> 标记的具体数值需与实际构建核对后填入；
-        设计结构与论证部分不依赖这些数值。
+        本文所有参数与机制均<strong>已按实际代码逐条核对</strong>
+        （<code>js/config.js</code>、<code>js/world.js</code>、<code>js/game.js</code>、<code>js/raster.js</code>）。
+        与最初设计意图不一致的地方，文中直接写明实现是什么、当初设想的是什么、差异带来了什么——
+        <em>这些差异本身是这份文档里信息量最高的部分。</em>
       </p>
     </div>
 
@@ -164,12 +170,13 @@
     <section id="loop">
       <h2><span>03</span>核心循环</h2>
       <p>
-        循环本身很短，关键在于其中埋了一个<strong>目标冲突</strong>：
-        草长在危险的位置，所以「安全通过」和「考过检定」不是同一条路线。
+        循环的关键在一行生成代码里：<code>coinArc(x + w/2, G - h - 55, 4, 30)</code>——
+        每个障碍生成的同时，<strong>4 枚金币以该障碍为中心、在它正上方 55px 处排成弧线</strong>。
+        想吃到这串币，就必须从障碍正上方的空域穿过去，擦着它的碰撞盒。
       </p>
 
       <figure class="diagram">
-        <svg viewBox="0 0 760 250" role="img" aria-label="跑酷核心循环与路线冲突示意图" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+        <svg viewBox="0 0 760 260" role="img" aria-label="跑酷核心循环：金币悬于障碍上方，连击换取领先距离" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
           <defs>
             <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
@@ -177,55 +184,61 @@
           </defs>
 
           <g stroke="#deded8" fill="#fafaf8">
-            <rect x="0"   y="98" width="112" height="54" rx="7"/>
-            <rect x="152" y="98" width="126" height="54" rx="7"/>
-            <rect x="330" y="22" width="150" height="54" rx="7"/>
-            <rect x="536" y="98" width="150" height="54" rx="7"/>
+            <rect x="0"   y="96"  width="148" height="60" rx="7"/>
+            <rect x="196" y="168" width="140" height="52" rx="7"/>
+            <rect x="384" y="96"  width="172" height="60" rx="7"/>
+            <rect x="600" y="96"  width="160" height="60" rx="7"/>
           </g>
-          <rect x="330" y="174" width="150" height="54" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+          <rect x="196" y="30" width="140" height="52" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
 
           <g font-size="13" fill="#171717" text-anchor="middle">
-            <text x="56"  y="130">跑动</text>
-            <text x="215" y="122">怪物障碍</text>
-            <text x="215" y="140" font-size="11.5" fill="#6e6e6a">进入视野</text>
-            <text x="405" y="45">稳妥躲避</text>
-            <text x="405" y="63" font-size="11.5" fill="#6e6e6a">安全，但草不够</text>
-            <text x="405" y="197" font-weight="700" fill="#365f73">绕向草丛</text>
-            <text x="405" y="215" font-size="11.5" fill="#365f73">贴近危险，达标</text>
-            <text x="611" y="122">检定点结算</text>
-            <text x="611" y="140" font-size="11.5" fill="#6e6e6a">达标则升级</text>
+            <text x="74"  y="120">障碍生成</text>
+            <text x="74"  y="140" font-size="11.5" fill="#6e6e6a">正上方 55px 挂 4 枚币</text>
+            <text x="266" y="52" font-weight="700" fill="#365f73">跳穿吃币</text>
+            <text x="266" y="70" font-size="11.5" fill="#365f73">擦着碰撞盒</text>
+            <text x="266" y="190">稳妥绕过</text>
+            <text x="266" y="208" font-size="11.5" fill="#6e6e6a">安全，无收益</text>
+            <text x="470" y="120">连击每 5 枚</text>
+            <text x="470" y="140" font-size="11.5" fill="#6e6e6a">+1 金币，领先 +12</text>
+            <text x="680" y="120">领先距离 = 能跑多远</text>
+            <text x="680" y="140" font-size="11.5" fill="#6e6e6a">距离每 800m 升一级</text>
           </g>
 
           <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar5)">
-            <path d="M112,125 L147,125"/>
-            <path d="M278,112 L300,112 Q312,112 312,100 L312,61 Q312,49 324,49 L325,49"/>
-            <path d="M278,138 L300,138 Q312,138 312,150 L312,189 Q312,201 324,201 L325,201"/>
-            <path d="M480,49 L500,49 Q512,49 512,61 L512,113 L531,113"/>
-            <path d="M480,201 L500,201 Q512,201 512,189 L512,137 L531,137"/>
-            <path d="M611,152 L611,232 Q611,244 599,244 L68,244 Q56,244 56,232 L56,157"/>
+            <path d="M148,112 L168,112 Q180,112 180,100 L180,68 Q180,56 192,56 L191,56"/>
+            <path d="M148,140 L168,140 Q180,140 180,152 L180,182 Q180,194 192,194 L191,194"/>
+            <path d="M336,56 L360,56 Q372,56 372,68 L372,114 L379,114"/>
+            <path d="M556,126 L595,126"/>
           </g>
+          <path d="M336,194 L360,194 Q372,194 372,182 L372,150 L560,150 Q572,150 572,138 L572,126 L595,126"
+                stroke="#c8c8c0" stroke-width="1.3" fill="none" stroke-dasharray="4 4"/>
 
-          <g font-size="11.5" fill="#6e6e6a" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
-            <text x="330" y="240" text-anchor="middle">达标线设在稳妥路线拿不到的位置，玩家必须主动冒险</text>
+          <g font-size="11.5" fill="#8a5a2b" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="266" y="128" text-anchor="middle">撞到：领先 −80</text>
           </g>
         </svg>
         <figcaption>
-          核心张力不在「躲得掉躲不掉」，而在<strong>「要不要为了达标去冒险」</strong>。
-          这个决策每隔几秒重复一次。
+          收集不是达标条件，而是<strong>用风险换生存资源</strong>：
+          金币连击补充领先距离，领先距离决定能跑多远，跑得远才升得了级。
         </figcaption>
       </figure>
 
       <p>
-        这个冲突不是为了增加难度而设计的，它直接来自 IP 的世界观：
-        <em>在原作里，打工本身就是有风险的事。</em>
-        角色除草是为了赚钱，而除草的地方就在怪物出没的范围里。
-        把这层设定翻译成玩法，就是「收集物必须放在危险附近」这一条规则。
+        这条链是本作最值得说的设计：<em>玩家不是为了「凑够数量」去冒险，而是为了「活得更久」去冒险。</em>
+        前者是任务，后者是判断——每一串金币都是一次「我现在的领先距离够不够我冒这个险」的即时估算。
       </p>
+
       <div class="callout take">
         <span class="label">判断</span>
         <p>
-          如果草均匀地铺在安全路线上，这个游戏就退化成了「躲障碍 + 顺手捡东西」，
-          IP 只剩美术。<strong>收集物的位置是这个设计里唯一不能妥协的参数。</strong>
+          最初的设计意图是「收集满 N 株草才能升级」，即把收集做成<strong>直接的达标门槛</strong>。
+          实际实现走了另一条路：收集只影响生存资源，升级由距离决定。
+        </p>
+        <p>
+          实现的这条更好。直接门槛会让玩家在快达标时被迫贴着危险刷数量，
+          在已达标后完全失去收集动机——收益是阶跃的。
+          而换成生存资源后，<strong>金币在任何时刻都有价值，且价值随当前领先距离动态变化</strong>：
+          领先多时可以放过，领先少时必须去搏。收益是连续的，决策也就一直存在。
         </p>
       </div>
     </section>
@@ -233,159 +246,312 @@
     <section id="exam">
       <h2><span>04</span>除草检定：进度系统</h2>
       <p>
-        进度系统直接使用原作既有的<strong>除草检定等级</strong>，从最低级起步，每通过一段升一级。
+        进度直接使用原作的除草检定等级，由<strong>跑过的距离</strong>推进：
       </p>
+      <div class="callout">
+        <span class="label" style="color:var(--accent)">升级规则</span>
+        <p style="margin:0">
+          <code>certLevel = min(5, floor(distance / 800))</code>
+          　—— 每 800m 升一级，4000m 处封顶。历史最好等级存入 <code>chii_cert</code>。
+        </p>
+      </div>
 
-      <h3>为什么不自建成长系统</h3>
-      <ul>
-        <li><strong>零教学成本。</strong>玩家看到「五级」「四级」立刻理解这是什么，不需要任何引导文案解释晋级意味着什么。</li>
-        <li><strong>目标感现成。</strong>「考过下一级」在原作里已经是角色的动机，玩家继承的是一个已被建立的欲望。</li>
-        <li><strong>符合 IP 的成长逻辑。</strong>如第 02 节所述，这个 IP 的角色不该「变强」，但可以「考过」。检定是唯一不破坏基调的成长形式。</li>
-      </ul>
-
-      <h3>等级结构</h3>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>检定等级</th><th>达标草数</th><th>移动速度</th><th>新增障碍类型</th></tr></thead>
+        <thead><tr><th>检定等级</th><th>解锁距离</th><th>此时速度</th><th>该段的新压力</th></tr></thead>
         <tbody>
-          <tr><td>五级（起步）</td><td><span class="tbd">待对齐</span></td><td>基准</td><td>地面型</td></tr>
-          <tr><td>四级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>低空型</td></tr>
-          <tr><td>三级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>追击型</td></tr>
-          <tr><td>二级</td><td><span class="tbd">待对齐</span></td><td><span class="tbd">待对齐</span></td><td>伪装型</td></tr>
+          <tr><td>0（起步）</td><td>0 m</td><td>290 px/s</td><td>五格循环全部登场：荆棘、蘑菇怪、平台、奇美拉</td></tr>
+          <tr><td>1</td><td>800 m</td><td>378 px/s</td><td>速度已升 30%，跳跃窗口开始收紧</td></tr>
+          <tr><td>2</td><td>1600 m</td><td>466 px/s</td><td>接近速度上限；裂谷段已出现过数次</td></tr>
+          <tr><td>3</td><td>2400 m</td><td>470 px/s（封顶）</td><td>速度不再增长，压力转由障碍间距承担</td></tr>
+          <tr><td>4</td><td>3200 m</td><td>470 px/s</td><td>纯耐力段，考验领先距离的经营</td></tr>
+          <tr><td>5（最高）</td><td>4000 m</td><td>470 px/s</td><td>等级封顶，此后只刷距离记录</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        <strong>为什么用距离而不是收集量做门槛。</strong>
+        跑酷里距离是唯一无争议的成绩，把检定挂在距离上，等级就是「你撑了多久」的直接翻译，
+        不需要任何额外解释。而收集量通过领先距离间接影响能跑多远——
+        <em>收集仍然决定你能考到几级，只是通过「活下来」而不是通过「计数」。</em>
+      </p>
+
+      <h3>实测：两种跑法的金币可得量</h3>
+      <p>
+        为了判断收集在多大程度上真的构成决策，做了一组对照测试：
+        关闭伤害后只测可得量，两种跑法各 3 局，共 6 个 800m 区间。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>跑法</th><th>平均金币 / 800m</th><th>区间</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><b>稳妥</b></td><td>22.0 枚</td><td>17 – 26</td><td>只为躲障碍而跳，绝不为金币绕路</td></tr>
+          <tr><td><b>贪心</b></td><td>43.8 枚</td><td>35 – 53</td><td>主动够所有能够到的金币</td></tr>
         </tbody>
       </table>
       </div>
       <p>
-        <strong>达标线的设定原则：</strong>必须设在「全程走稳妥路线拿不到」的量上。
-        这是第 03 节那个目标冲突能否成立的唯一开关——
-        达标线过低，玩家永远不需要冒险，冲突消失；
-        过高，稳妥路线完全无意义，玩家只能贴着危险跑，紧张感被拉平成疲劳。
+        两者相差约 <strong>2 倍</strong>。这个差距说明「要不要冒险」确实是一个有实际收益差异的选择，
+        而不是可以忽略的装饰——冒险跑法能多拿一倍的领先距离补给。
       </p>
-      <p>
-        实际调参时，建议以<strong>「稳妥路线可得量的 1.2–1.4 倍」</strong>作为起始达标线，
-        再按实测通过率调整。
-      </p>
+      <div class="callout risk">
+        <span class="label">留给后续的设计决定</span>
+        <p>
+          如果日后要给检定加一条<strong>直接的收集门槛</strong>（而不只是间接影响），
+          按「稳妥可得量的 1.2–1.4 倍」推算，达标线应落在
+          <strong>26 – 31 枚 / 800m</strong>，约为贪心可得量的 60–70%。
+        </p>
+        <p>
+          这个区间的含义是：稳妥跑法差一点点、需要主动够几串才稳过，但远达不到要求满收集。
+          <strong>是否要加这道门槛本身是待定的设计决定</strong>——
+          它会把当前「连续收益」的结构重新变回「阶跃收益」，代价见第 03 节的判断。
+        </p>
+      </div>
     </section>
 
     <section id="obstacle">
-      <h2><span>05</span>障碍设计：功能先行，形象后绑</h2>
+      <h2><span>05</span>障碍与地形</h2>
       <p>
-        障碍全部取自原作怪物，但设计顺序是<strong>先定义功能，再绑定形象</strong>，而不是反过来。
+        地面段按<strong>五格循环</strong>铺设（<code>pattern++ % 5</code>），其中一格不是障碍而是可站立平台：
       </p>
 
       <div class="table-wrap">
       <table>
-        <thead><tr><th>功能类型</th><th>玩家应对动作</th><th>设计作用</th><th>绑定形象</th></tr></thead>
+        <thead><tr><th>循环位</th><th>内部名</th><th>贴图</th><th>尺寸</th><th>功能</th></tr></thead>
         <tbody>
-          <tr><td><b>地面型</b></td><td>跳</td><td>最基础的节奏单位，用于建立跳跃时机的肌肉记忆</td><td><span class="tbd">待指定</span></td></tr>
-          <tr><td><b>低空型</b></td><td>下滑 / 不跳</td><td>打破「一律跳过去」的惯性，强制读屏</td><td><span class="tbd">待指定</span></td></tr>
-          <tr><td><b>追击型</b></td><td>持续加速，不能停</td><td>压缩决策时间，制造持续压力而非单点威胁</td><td><span class="tbd">待指定</span></td></tr>
-          <tr><td><b>伪装型</b></td><td>先辨认再决定</td><td>把「识别」加进决策，最贴合 IP 的一类</td><td><span class="tbd">待指定</span></td></tr>
+          <tr><td>0、4</td><td><code>bush</code></td><td>weed.png　深青荆棘（植物）</td><td>62 × 55</td><td>最矮，基础跳跃节奏单位</td></tr>
+          <tr><td>1</td><td><code>rock</code></td><td>mushroom.png　红斑蘑菇怪</td><td>68 × 74</td><td>最高，需要更早起跳</td></tr>
+          <tr><td>2</td><td><code>platform</code></td><td>platform.png　草皮平台</td><td>190 × 45</td><td><b>可站立，不是障碍</b>；顶上另挂一排 4 枚金币</td></tr>
+          <tr><td>3</td><td><code>mob</code></td><td>chimera.png　粉色奇美拉</td><td>76 × 68</td><td>最宽，落点容错最小</td></tr>
+          <tr><td>裂谷段</td><td><code>flyer</code></td><td>chimera.png　<b>同一张图</b></td><td>68 × 62</td><td>正弦上下浮动，振幅 45px，两个高度层（160 / 315）</td></tr>
         </tbody>
       </table>
       </div>
 
-      <h3>为什么坚持这个顺序</h3>
-      <ol>
-        <li><strong>素材替换不破坏关卡设计。</strong>如果关卡是围绕某个具体怪物的形状设计的，换一个形象就得重做关卡；围绕功能设计，形象只是皮肤。</li>
-        <li><strong>便于去 IP 化。</strong>同人作品无法商业化。如果日后要把这套设计用在别处，功能层可以整体保留。</li>
-        <li><strong>避免为了用 IP 而用 IP。</strong>先想「这里需要一个逼玩家读屏的障碍」，再去找哪个怪物合适；而不是「这个怪物很有名，加进来」。</li>
-      </ol>
-
-      <div class="callout take">
-        <span class="label">判断</span>
+      <div class="callout risk">
+        <span class="label">与设计意图的差距</span>
         <p>
-          伪装型是四类里唯一由 IP 直接催生的设计。
-          《ちいかわ》世界里「看起来无害的东西其实很危险」是反复出现的母题，
-          把它做成「远看像草丛，靠近才发现是怪物」的障碍，
-          <strong>是玩法在复述 IP 的叙事经验，而不只是借用它的形象。</strong>
-          这是本原型里 IP 使用得最深的一处。
+          第 02 节主张「障碍取自原作怪物」，但实际实现里<strong>五种障碍中只有两种真的是怪物</strong>：
+          荆棘是植物，平台是地形，而<strong>地面怪、飞行怪、以及身后追击的三只，全部共用同一张 chimera.png</strong>。
+        </p>
+        <p>
+          这在 72 小时的约束下是正确的取舍——它印证了第 09 节的资产复用原则。
+          但代价是真实的：<em>玩家无法凭形象区分地面威胁与空中威胁</em>，
+          只能靠位置判断。这是第 11 节列为首要待改项的原因。
         </p>
       </div>
+
+      <h3>功能先行的设计顺序仍然成立</h3>
+      <p>
+        尽管形象上有复用，障碍在代码里仍是按<strong>功能</strong>定义的：
+        <code>kind</code> 决定尺寸、生成位置与碰撞盒，贴图只是渲染层的一次查表。
+        这意味着换一张飞怪贴图不需要动任何关卡逻辑——
+        <strong>形象层与功能层是分离的，第 11 节那项改进的成本因此很低。</strong>
+      </p>
+      <p>
+        碰撞盒统一比外观小 4px（<code>{x: h.x+4, y: h.y+4, w: h.w-8, h: h.h-8}</code>），
+        美术说明里写明了理由：<em>不让耳朵产生不公平碰撞</em>。
+      </p>
     </section>
 
     <section id="feel">
       <h2><span>06</span>手感参数规格</h2>
       <p>
-        跑酷的失败必须让玩家归因于「我按晚了」，而不是「这游戏不跟手」。
-        以下参数按这个目标设定：
+        全部手感参数集中在 <code>js/config.js</code>，注释写着「想改手感只动这里」。
+        这是原型阶段最值得做的一次结构决定：调参不需要读逻辑。
       </p>
 
       <div class="table-wrap">
       <table>
-        <thead><tr><th>参数</th><th>规格</th><th>理由</th></tr></thead>
+        <thead><tr><th>参数</th><th>实际值</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>GRAVITY</code></td><td>2500 px/s²</td><td>重力。偏大，落地干脆，跑酷需要短而利落的滞空</td></tr>
+          <tr><td><code>JUMP_V</code></td><td>−820</td><td>起跳初速度</td></tr>
+          <tr><td><code>JUMP_CUT</code></td><td>0.42</td><td><b>可变跳跃高度</b>：松键即把上升速度削到 42%，轻点小跳、长按大跳</td></tr>
+          <tr><td><code>MAX_JUMPS</code></td><td>2</td><td>二段跳。给了空中修正的机会，降低起跳时机的惩罚</td></tr>
+          <tr><td><code>COYOTE</code></td><td>0.10 s</td><td>土狼时间：离开平台边缘后 100ms 内仍可起跳</td></tr>
+          <tr><td><code>JUMP_BUFFER</code></td><td>0.12 s</td><td>输入缓冲：落地前 120ms 按下的跳跃予以保留</td></tr>
+          <tr><td><code>MAX_FALL</code></td><td>1300</td><td>下落速度上限，避免高处坠落时失去控制感</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        土狼时间与输入缓冲是<em>玩家察觉不到、拿掉就会明显变难受</em>的典型。
+        它们的作用不是降低难度，而是<strong>让难度落在读屏和决策上，而不是输入精度上</strong>。
+      </p>
+
+      <h3>难度的两条独立曲线</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>公式</th><th>范围</th><th>触顶距离</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>跳跃前摇</b></td>
-            <td>0 帧（输入即起跳）</td>
-            <td>跑酷里任何起跳延迟都会被感知为「不跟手」，这是挫败的最大来源</td>
+            <td><b>移动速度</b></td>
+            <td><code>clamp(290 + 距离 × 0.11, 290, 470)</code></td>
+            <td>290 → 470 px/s（1.62×）</td>
+            <td>1636 m</td>
           </tr>
           <tr>
-            <td><b>土狼时间</b><br>coyote time</td>
-            <td>约 100 ms</td>
-            <td>离开平台边缘后仍可起跳。掩盖玩家的微小判断误差，代价几乎为零</td>
-          </tr>
-          <tr>
-            <td><b>输入缓冲</b><br>jump buffer</td>
-            <td>约 100 ms</td>
-            <td>落地前按下的跳跃指令予以保留。连续跳跃时不会因为早按一帧而失败</td>
-          </tr>
-          <tr>
-            <td><b>落地缓冲</b></td>
-            <td>极短，不锁输入</td>
-            <td>落地硬直会打断跑酷的连续感，只保留视觉上的压缩表现</td>
-          </tr>
-          <tr>
-            <td><b>障碍最小间距</b></td>
-            <td>≥ 人的反应时间 + 一次完整跳跃时长</td>
-            <td>低于此值的组合在物理上不可解，玩家会正确地认为这是设计失误</td>
-          </tr>
-          <tr>
-            <td><b>实测数值</b></td>
-            <td colspan="2"><span class="tbd">待对齐</span>——上表为设计目标，需与构建中的实际参数核对</td>
+            <td><b>障碍间距</b></td>
+            <td><code>rand(470, 590) + min(距离 × 0.012, 60)</code></td>
+            <td>基础 470–590，额外 +0 → +60 px</td>
+            <td>5000 m</td>
           </tr>
         </tbody>
       </table>
       </div>
       <p>
-        土狼时间和输入缓冲这两项是<em>玩家察觉不到、但拿掉就会明显变难受</em>的典型。
-        它们的作用不是降低难度，而是<strong>让难度落在设计者想要的地方</strong>——
-        应该难在读屏和决策，不该难在输入精度。
+        注意这两条的方向是<strong>相反</strong>的：速度变快让局面更紧，间距变宽让局面更松。
+        速度在 1636m 就封顶，而间距要到 5000m 才封顶——
+        也就是说 1636m 之后，<em>游戏实际上在缓慢变简单</em>。
       </p>
-    </section>
-
-    <section id="pacing">
-      <h2><span>07</span>关卡节奏</h2>
-      <p>每个检定等级内部按四段推进：</p>
-      <ol>
-        <li><strong>教学段。</strong>本级新增的障碍类型单独出现，间距宽松，给足反应距离。<em>新元素的第一次出现必须是无压力的。</em></li>
-        <li><strong>组合段。</strong>新障碍与已掌握的类型混合，开始要求切换应对动作。</li>
-        <li><strong>压力段。</strong>密度提高，草的位置更靠近危险，冒险与稳妥的取舍最尖锐。</li>
-        <li><strong>检定点。</strong>结算草数，达标升级，未达标重来本段。</li>
-      </ol>
-
       <div class="callout take">
         <span class="label">判断</span>
         <p>
-          压力段之后不应紧接下一级的压力段。
-          连续的高压会让玩家形成「后面只会更难」的预期，而这个预期是流失的直接原因。
-          下一级的教学段恰好承担了缓冲作用——<strong>它既是新内容的引入，也是情绪的重置。</strong>
+          这个补偿是必要的：速度封顶后如果间距不放宽，长距离段会退化成纯粹的手速消耗。
+          放宽间距把后期的压力从「反应速度」转移到「领先距离的经营」——
+          <strong>难度的性质变了，而不只是数值变了。</strong>
+          这是本作难度曲线里设计得最好的一处。
         </p>
       </div>
     </section>
 
+    <section id="pacing">
+      <h2><span>07</span>关卡节奏</h2>
+      <p>
+        地形按段生成，节奏由一行决定：<code>if (section % 4 === 2) pushSky(...)</code>——
+        <strong>每四段固定出现一段裂谷</strong>，其余为地面段。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>段类型</th><th>长度</th><th>内容</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><b>地面段</b>（3/4）</td><td>rand(1800, 2350) px</td><td>五格循环的障碍与平台</td><td>主体节奏，建立并强化跳跃肌肉记忆</td></tr>
+          <tr><td><b>裂谷段</b>（1/4）</td><td>rand(1050, 1450) px</td><td>两个高度层的飞行怪，金币成排</td><td>切换操作模式，打断地面段的重复</td></tr>
+          <tr><td><b>落地跑道</b></td><td>420 px（<code>LANDING_RUNWAY</code>）</td><td>裂谷结束后的空白</td><td><b>缓冲</b>：不让玩家刚落地就撞上障碍</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        固定比例（而不是随机概率）是一个刻意的选择。
+        <code>config.js</code> 里还留着 <code>SKY_CHANCE_START</code> / <code>SKY_CHANCE_MAX</code>
+        两个概率参数——说明最初打算做成随机触发，后来改成了确定性的四段循环。
+        <em>这两个参数现在已经没有任何代码读取，是遗留的死配置。</em>
+      </p>
+      <div class="callout take">
+        <span class="label">这个改动是对的</span>
+        <p>
+          随机触发会让节奏不可预期：运气差时连续两段裂谷，玩家没有喘息；
+          运气好时长时间不出现，模式切换的作用消失。
+          固定四段循环保证了<strong>玩家能够学会节奏</strong>——
+          跑酷的乐趣建立在可预期的韵律上，随机性应该放在障碍的具体排布里，而不是段落结构里。
+        </p>
+      </div>
+
+      <h3>两种飞行状态</h3>
+      <p>代码里的 <code>FLY</code> 状态由 <code>flyReason</code> 区分，两者体验完全不同：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th><code>zone</code>　裂谷气流</th><th><code>item</code>　金色吉他</th></tr></thead>
+        <tbody>
+          <tr><td><b>触发</b></td><td>前方地面断开，自动进入</td><td>吃到吉他道具（间隔 ≥6500px，35% 概率）</td></tr>
+          <tr><td><b>时长</b></td><td>直到飞出该段</td><td>10 秒</td></tr>
+          <tr><td><b>是否受伤</b></td><td><b>会</b>——仍会被飞行怪撞到</td><td><b>不会</b>——完全免伤</td></tr>
+          <tr><td><b>撞到障碍</b></td><td>领先距离 −80</td><td><b>撞碎障碍，+2 金币</b></td></tr>
+          <tr><td><b>情绪</b></td><td>紧张：换了操作方式，威胁仍在</td><td>释放：短暂的无敌爽快段</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        吉他状态下撞碎障碍会转化成金币，代码注释写的是「无敌撞碎障碍，<strong>换成工资</strong>」——
+        <em>这是全作把 IP 世界观写进机制最轻巧的一处</em>：
+        在这个世界里，连怪物被打碎都要折算成打工报酬。
+      </p>
+    </section>
+
     <section id="fail">
-      <h2><span>08</span>失败与反馈</h2>
+      <h2><span>08</span>失败与追击</h2>
+      <p class="pull">
+        撞到障碍不会死。这是本作最重要的一条规则。
+      </p>
+      <p>
+        玩家身后有讨伐队追击，双方距离由 <code>lead</code>（领先距离）表示。
+        撞到障碍不是即死，而是被拉近；<strong>领先距离归零才被抓住</strong>。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>参数</th><th>值</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr><td><code>LEAD_START</code></td><td>200 px</td><td>开局领先距离</td></tr>
+          <tr><td><code>LEAD_MAX</code></td><td>235 px</td><td>上限，防止前期攒出无限缓冲</td></tr>
+          <tr><td><code>LEAD_REGEN</code></td><td>13 px/s</td><td>自然拉开——不撞就在恢复</td></tr>
+          <tr><td><code>LEAD_HIT</code></td><td>−80 px</td><td>撞一次的代价，约合 6 秒的自然恢复</td></tr>
+          <tr><td><code>HIT_INVULN</code></td><td>1.3 s</td><td>受伤后短暂无敌，防止一次失误被连续判定</td></tr>
+          <tr><td>连击奖励</td><td>+12 px</td><td>每 5 连击补充，是主动获取领先距离的唯一途径</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>为什么这个设计比即死更符合 IP</h3>
+      <p>
+        第 02 节说过，这个 IP 的角色不擅长战斗，面对怪物的常态是<em>被追着跑、勉强应付</em>。
+        即死机制表达的是「一击致命」，而<strong>消耗机制表达的是「被追得筋疲力尽」</strong>——
+        后者才是原作里角色的真实处境。
+      </p>
+      <p>
+        机制上它也更好：撞一次损失 80px，约需 6 秒不失误才能补回来。
+        这意味着<em>失误是可以挽回的，但要付出时间</em>——
+        玩家在撞了一次之后不会立刻重开，而是进入「我得稳一会儿」的状态，
+        这个状态本身就是一段有质感的游玩体验。而即死机制里，这段体验根本不存在。
+      </p>
+
+      <h3>两个失败条件</h3>
       <ul>
-        <li><strong>失败条件</strong>：碰到障碍即失败，或到达检定点时草数未达标。</li>
-        <li><strong>重开路径</strong>：立即重开当前段，不返回任何菜单。跑酷的失败频率高，任何多余的一次点击都会被放大成烦躁。</li>
-        <li><strong>失败表现</strong>：复用原作角色既有的慌张 / 脱力表情。这类表情本身就有高辨识度和情绪缓冲作用——<em>失败画面很可爱，是这个 IP 的天然优势。</em></li>
-        <li>
-          <strong>失败文案</strong>：显示「还差 N 株」，而不是「失败」。
-          当 N 很小时，玩家会把原因归给运气而非能力，
-          归因方向直接决定他是再试一次还是关掉。
-        </li>
+        <li><code>lead &lt;= 0</code> → <code>gameOver('caught')</code>　被追上，主要的失败方式</li>
+        <li><code>y &gt; H + 80</code> → <code>gameOver('fall')</code>　坠落，只在裂谷段发生</li>
       </ul>
+      <p>
+        撞击时的反馈是复合的：屏幕震动 14、白闪 0.5、角色被向上弹开（<code>vy = min(vy, -260)</code>）、
+        连击清零、粉色粒子。<strong>连击清零往往比领先距离的损失更让玩家在意</strong>——
+        它是即时可见的，而领先距离的变化是渐进的。
+      </p>
+
+      <h3>三个角色的差异化</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>能力</th><th>实现</th><th>适合的玩法</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>吉伊</b><br><span style="color:#6e6e6a;font-size:12.5px">勇气守护</span></td>
+            <td>撞到障碍时怪物逼近得更少</td>
+            <td><code>LEAD_HIT × 0.72</code>（−80 → −57.6）</td>
+            <td>容错型。适合还在学节奏的玩家</td>
+          </tr>
+          <tr>
+            <td><b>小八</b><br><span style="color:#6e6e6a;font-size:12.5px">发现好物</span></td>
+            <td>金币吸附范围更大</td>
+            <td>拾取判定框四周外扩 24 / 22 px</td>
+            <td>收益型。让「跳穿吃币」的风险实际下降</td>
+          </tr>
+          <tr>
+            <td><b>乌萨奇</b><br><span style="color:#6e6e6a;font-size:12.5px">呀哈弹跳</span></td>
+            <td>第二段跳得更高</td>
+            <td>二段跳 <code>×1.03</code>，其他角色 <code>×0.88</code></td>
+            <td>操作型。空中修正能力最强，上限最高</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        三个能力恰好对应三种降低难度的路径：<strong>减少惩罚、提高收益、扩大操作空间。</strong>
+        它们不改变任何关卡内容，只改变玩家与同一套关卡的关系——
+        这是差异化成本最低、且不会让关卡设计失效的做法。
+      </p>
     </section>
 
     <section id="asset">
@@ -394,75 +560,106 @@
       <p class="pull">
         任何需要新做的资产，先问能不能用既有素材的变体代替。
       </p>
+
+      <h3>实际产出</h3>
       <ul>
-        <li><strong>角色与怪物</strong>：全部使用原作既有形象，不做再设计。</li>
-        <li><strong>失败与状态反馈</strong>：使用既有表情，不新做动画。</li>
-        <li><strong>场景</strong>：以少量元素的重复组合构成，靠速度和密度制造变化，而不是靠新场景。</li>
-        <li><strong>音效</strong>：只保留跳跃、除草、碰撞三个，其余不做。</li>
+        <li><strong>共 14 张 PNG。</strong>三个角色各两态（站 / 跳）= 6 张，怪物与物件 6 张，背景 2 张（草原 / 裂谷）。</li>
+        <li><strong>Canvas 只做合成，不代码绘图。</strong><code>render.js</code> 顶部注释写明：所有世界美术都是图像合成，语义化的 HUD 与危险标记走 DOM。</li>
+        <li><strong>色键工作流。</strong>素材统一用 <code>#FF00FF</code> 品红背景生成，再经色键清理与切片接入——这让生成式出图能直接进管线，不需要手工抠图。</li>
+        <li><strong>一图三用。</strong>chimera.png 同时承担地面怪、飞行怪与身后的追击者。</li>
       </ul>
+
+      <h3>美术约束如何反过来服务玩法</h3>
+      <p>背景生成时写死了一条硬性构图要求：</p>
+      <div class="callout">
+        <span class="label" style="color:var(--accent)">背景提示词中的构图约束</span>
+        <p style="margin:0">
+          「图像底部 28% 必须是空的、低对比的浅薄荷色草地，没有物件、没有花、没有石头、没有路缘——
+          这块区域保留给玩法通道。」
+        </p>
+      </div>
       <p>
-        这套策略之所以成立，前提是<strong>选了一个视觉语言高度统一的 IP</strong>。
-        原作画风扁平、线条简洁、配色克制，任何元素放在一起都自然协调——
-        这是选题阶段就已经预支的收益。
+        这不是美术偏好，是<strong>玩法对美术下的规格</strong>：
+        跑酷的可读性依赖玩家能瞬间分辨「什么会撞到我」，
+        背景只要在通道高度上出现任何高对比元素，就会被误读成障碍。
+        与之配套的还有：危险物高对比并额外标注红色 <code>!</code>、可站立面统一为绿色顶面。
+        <em>把这条约束写进生成提示词，等于在美术产出的源头就消除了误读的可能。</em>
       </p>
     </section>
 
     <section id="plan">
-      <h2><span>10</span>排期与实现</h2>
+      <h2><span>10</span>技术实现</h2>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>时段</th><th>目标</th><th>完成判据</th></tr></thead>
+        <thead><tr><th>项</th><th>选择</th><th>理由</th></tr></thead>
         <tbody>
-          <tr><td>0–12h</td><td>移动、跳跃、碰撞</td><td>角色能跑能跳，碰到方块会死</td></tr>
-          <tr><td>12–30h</td><td>障碍生成与四类障碍</td><td>四类障碍可配置出现，关卡可跑通</td></tr>
-          <tr><td>30–48h</td><td>除草收集与检定结算</td><td>能捡草、能结算、能升级</td></tr>
-          <tr><td>48–60h</td><td>关卡节奏与草的分布调优</td><td>目标冲突在实际游玩中能被感知到</td></tr>
-          <tr><td>60–72h</td><td>手感打磨与打包</td><td>可交付的可玩版本</td></tr>
+          <tr><td><b>依赖与构建</b></td><td>零依赖、零构建</td><td>jam 里任何工具链问题都是纯损失</td></tr>
+          <tr><td><b>模块形式</b></td><td>分文件 IIFE，非 ES module</td><td><b>可直接 file:// 打开</b>，不需要起本地服务器——评委与试玩者的门槛降到最低</td></tr>
+          <tr><td><b>渲染</b></td><td>Canvas 2D，仅做 PNG 合成</td><td>不代码绘图，保证美术风格统一</td></tr>
+          <tr><td><b>界面</b></td><td>HUD 与菜单为 DOM + CSS</td><td>文字排版与可访问性交给浏览器，不在 canvas 里重造</td></tr>
+          <tr><td><b>音效</b></td><td>WebAudio 现场合成</td><td>零音频资源，无加载等待</td></tr>
+          <tr><td><b>存档</b></td><td>localStorage：<code>chii_best</code> / <code>chii_cert</code> / <code>chii_character</code></td><td>读写都包了 try/catch，隐私模式下不会崩</td></tr>
+          <tr><td><b>主循环</b></td><td>固定步长 1/120 s 积分，单帧上限 0.08 s，最多补 10 步</td><td>物理与帧率解耦；上限与补步数防止切后台回来时的「死亡螺旋」</td></tr>
+          <tr><td><b>部署</b></td><td>GitHub Pages + Actions</td><td>推送即上线</td></tr>
         </tbody>
       </table>
       </div>
       <p>
-        排期的关键是把<strong>手感打磨放在最后而不是最前</strong>：
-        在关卡节奏定下来之前调手感，参数会被反复推翻。
+        固定步长这一条在跑酷里不是可选项。<em>如果物理跟着帧率走，高刷屏和低端机的跳跃高度会不一样</em>——
+        同一套障碍间距在不同设备上难度不同，关卡设计随之失效。
       </p>
-      <p>技术栈：<span class="tbd">待对齐</span></p>
     </section>
 
     <section id="next">
       <h2><span>11</span>已知问题与下一步</h2>
+
+      <h3>核对代码时发现的问题</h3>
+      <ol>
+        <li>
+          <strong>飞行怪与地面怪共用 chimera.png。</strong>
+          玩家无法凭形象区分空中与地面威胁，只能靠位置判断。
+          由于形象层与功能层已经分离（第 05 节），换一张飞怪贴图不需要改任何关卡逻辑——
+          <em>这是投入产出比最高的一项改进。</em>
+        </li>
+        <li>
+          <strong><code>SKY_CHANCE_START</code> / <code>SKY_CHANCE_MAX</code> 是死配置。</strong>
+          裂谷生成早已改为确定性的 <code>section % 4 === 2</code>，这两个概率参数不再被任何代码读取。
+          留在 config 里会误导后续调参的人，应当删除。
+        </li>
+        <li>
+          <strong>1636m 之后游戏在缓慢变简单。</strong>
+          速度封顶而间距继续放宽（第 06 节）。这个补偿方向是对的，
+          但目前没有任何机制在后期重新加压，长距离段最终会趋于平淡。
+        </li>
+      </ol>
+
       <h3>原型未覆盖</h3>
       <ul>
-        <li>存档与跨会话进度</li>
-        <li>音乐与完整音效层</li>
-        <li>多角色与角色差异化</li>
-        <li>检定失败次数过多时的引导或补偿</li>
+        <li>音乐（只有 WebAudio 合成的音效）</li>
+        <li>裂谷段的地形变化——目前每段裂谷结构相同</li>
+        <li>连续失败时的引导或补偿</li>
       </ul>
+
       <h3>下一步要验证的问题</h3>
       <ol>
         <li>
-          <strong>目标冲突是否真的被玩家感知到。</strong>
-          需要实测：玩家是否出现过「明知危险仍绕过去拿草」的行为。
-          如果玩家全程走稳妥路线仍能达标，说明第 04 节的达标线设低了，整个设计的核心失效。
-        </li>
-        <li>
-          <strong>伪装型障碍的辨认时间是否足够。</strong>
-          它是四类里唯一要求「先识别再反应」的，如果辨认窗口过短，玩家会觉得不公平而非紧张。
+          <strong>「跳穿吃币」是否真的被当成决策。</strong>
+          第 04 节的实测确认了两种跑法有 2 倍收益差，但没有验证玩家<em>在有伤害的真实局中</em>是否会主动权衡。
+          需要观察：玩家在领先距离低时，是否会明显变得保守。如果不会，说明领先距离的显示不够醒目。
         </li>
         <li>
           <strong>不熟悉原作的玩家能否理解检定目标。</strong>
-          零教学成本的前提是玩家认识这个 IP。需要找几个没看过原作的人测一遍，
-          确认在没有既有认知时，这套目标系统是否还能自解释。
+          零教学成本的前提是玩家认识这个 IP。需要找几个没看过原作的人测一遍——
+          <strong>这是对本文核心论证的反向检验。</strong>
+          全文反复主张「IP 的已知性可以当作设计资产直接消费」，
+          但这个主张只在玩家确实拥有那份认知时成立。测出边界在哪，比再多写一层论证更有价值。
+        </li>
+        <li>
+          <strong>三个角色的选择率是否均衡。</strong>
+          如果绝大多数玩家选同一个，说明三条能力的强度没有拉平，
+          差异化就退化成了「有一个最优解 + 两个陪跑」。
         </li>
       </ol>
-      <div class="callout take">
-        <span class="label">这条最重要</span>
-        <p>
-          第 3 条是对整篇策划案核心论证的反向检验。
-          本文反复主张「IP 的已知性可以当作设计资产直接消费」，
-          <strong>但这个主张只在玩家确实拥有那份认知时成立。</strong>
-          测出边界在哪里，比再多写一层论证都有价值。
-        </p>
-      </div>
     </section>
 
     <section id="legal">
