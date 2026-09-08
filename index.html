@@ -216,20 +216,6 @@ section{padding:54px 0}
   content:"（待补充）";
   font-size:12px;
 }
-.other-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:18px;
-}
-.compact h3{
-  margin:0 0 8px;
-  font-size:18px;
-}
-.compact p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-}
 .case-list{
   border-top:1px solid var(--line);
 }
@@ -323,7 +309,6 @@ footer{
   .project-head{grid-template-columns:1fr}
   .badges{justify-content:flex-start}
   .project-grid{grid-template-columns:1fr}
-  .other-grid{grid-template-columns:1fr}
   .case-row{grid-template-columns:1fr}
   .timeline-row{grid-template-columns:1fr;gap:6px}
   .about{grid-template-columns:1fr}
@@ -502,26 +487,86 @@ footer{
         </div>
       </article>
 
-    </div>
-  </div>
-</section>
+      <article class="project">
+        <div class="project-head">
+          <div>
+            <h3>ちいかわ 跑酷原型｜72 小时 Game Jam</h3>
+            <div class="meta">个人开发 · 同人练习作 · 72 小时</div>
+          </div>
+          <div class="badges">
+            <span class="badge">IP Game</span>
+            <span class="badge">Runner</span>
+            <span class="badge">Rapid Prototype</span>
+          </div>
+        </div>
 
-<section id="other">
-  <div class="container">
-    <div class="section-title">
-      <h2>其他项目</h2>
-      <p>控制篇幅，只保留一句定位与当前进度。</p>
-    </div>
+        <p class="summary">
+          以《ちいかわ》（Chiikawa）为素材的横版跑酷原型，72 小时内完成移动、障碍、失败反馈与进度目标的最小闭环。
+          玩家操作角色边跑边除草，障碍来自原作的怪物；通关目标不是分数，
+          而是原作设定里的<strong>「除草检定」等级</strong>——考过一级，解锁下一段。
+        </p>
 
-    <div class="other-grid">
-      <div class="project compact">
-        <h3>鲁荣渔号题材叙事解谜</h3>
-        <p>以封闭空间、碎片信息、人物关系与时间线重构为核心，探索环境叙事与信息不可靠性。当前处于叙事结构与谜题原型阶段。</p>
-      </div>
-      <div class="project compact">
-        <h3>72 小时跑酷原型</h3>
-        <p>快速完成移动、失败反馈与关卡节奏的最小闭环，用于展示快速原型、scope 控制与基础 game feel 调整能力。</p>
-      </div>
+        <div class="project-grid">
+          <div>
+            <ul class="keypoints">
+              <li>
+                <strong>选题来自市场观察，不是个人偏好。</strong>
+                ちいかわ 从推特短篇连载起家，2023 年起在国内快速扩散，
+                是目前谷子经济里最活跃的 IP 之一——联名频次高、线下快闪常态化排队、
+                核心受众是购买力强的年轻女性。这类高热度 IP 的授权游戏正在变多，
+                做这个原型是想弄清一个具体问题：<strong>IP 授权游戏里，设计该在哪里让位给 IP，又该在哪里坚持。</strong>
+              </li>
+              <li>
+                <strong>把「打工考证」而不是「战斗」设为核心目标。</strong>
+                ちいかわ 的识别点是「可爱外表 + 残酷规则」——角色靠讨伐怪物和除草打工谋生，
+                除草还要考等级检定。做成战斗跑酷会丢掉这层反差，
+                变成任何萌系角色都能替换的皮；做成考证跑酷，这个 IP 才是不可替代的。
+              </li>
+              <li>
+                <strong>用 IP 自带的晋级框架替代自建数值。</strong>
+                「除草检定」在原作里已经是读者熟悉的等级体系，直接拿来当关卡进度，
+                省掉一整套自定义成长系统的设计与教学成本——玩家不需要被告知「考过五级会怎样」。
+              </li>
+              <li>
+                <strong>障碍库直接取自原作怪物。</strong>
+                玩家看到就知道要躲，不必为障碍物重新建立视觉语言与危险性认知。
+                这是 IP 在原型阶段最直接的效率红利。
+              </li>
+              <li>
+                <strong>失败反馈复用角色既有表情。</strong>
+                原作的慌张与脱力表情本身就是高辨识度的反馈素材，不需要新做动画。
+              </li>
+              <li>
+                手感调整集中在跳跃前摇、落地缓冲与障碍间距三项，用最少的参数覆盖 game feel 的主要感知。
+              </li>
+            </ul>
+            <p class="result">
+              <strong>这个项目验证的是</strong>
+              在硬性时间约束下，IP 的「已知性」本身就是可以直接消费的设计资产——
+              它同时提供世界观规则、进度框架与视觉语言。用好能大幅压缩设计成本，用不好就只是贴图换肤。
+            </p>
+          </div>
+          <figure class="media">
+            <!-- TODO 视频：录屏放到 media/chiikawa-runner.mp4，封面图放到 media/chiikawa-runner.jpg -->
+            <video src="media/chiikawa-runner.mp4" poster="media/chiikawa-runner.jpg"
+                   controls muted loop playsinline preload="none"
+                   aria-label="ちいかわ 跑酷原型 游玩录像"></video>
+            <div class="placeholder">演示视频整理中</div>
+            <figcaption>除草推进与怪物障碍的实机演示</figcaption>
+          </figure>
+        </div>
+
+        <p class="note">
+          非商业同人练习作品。《ちいかわ》角色、怪物及相关设定版权归原作者ナガノ及授权方所有，本原型不用于任何商业用途。
+        </p>
+
+        <div class="links">
+          <!-- TODO 链接：填好 href 后删掉 class="todo" -->
+          <a class="todo" href="#">试玩 →</a>
+          <a class="todo" href="#">策划案 →</a>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>

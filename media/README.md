@@ -7,6 +7,7 @@
 | 爱豆收集梦想生活 | `idol-life.mp4` | `idol-life.jpg` |
 | AI 狼人杀 | `werewolf.mp4` | `werewolf.jpg` |
 | 光与影 | `light-shadow.mp4` | `light-shadow.jpg` |
+| ちいかわ 跑酷原型 | `chiikawa-runner.mp4` | `chiikawa-runner.jpg` |
 
 录制建议：
 
