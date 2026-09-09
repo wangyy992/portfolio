@@ -95,6 +95,9 @@ figure.diagram.art figcaption strong{color:#d8d4cb}
   image-rendering:auto;
   filter:drop-shadow(0 6px 18px rgba(0,0,0,.6));
 }
+/* 角色的光晕用 CSS 画，与游戏里 drawPlayer 的径向光晕同色 */
+.art-cell img.glow-warm{filter:drop-shadow(0 0 18px rgba(255,214,140,.55)) drop-shadow(0 0 42px rgba(255,214,140,.28))}
+.art-cell img.glow-cool{filter:drop-shadow(0 0 18px rgba(150,120,255,.55)) drop-shadow(0 0 42px rgba(150,120,255,.30))}
 .art-label{
   font-size:12.5px;
   letter-spacing:.04em;
@@ -179,6 +182,27 @@ figure.diagram.art figcaption strong{color:#d8d4cb}
         </tbody>
       </table>
       </div>
+      <figure class="diagram art">
+        <div class="art-row">
+          <div class="art-cell">
+            <img class="glow-warm" src="../media/ghost-light.png" alt="光灵：暖黄色角色形象" style="width:150px">
+            <span class="art-label">光灵 Lumen</span>
+          </div>
+          <div class="art-cell">
+            <img class="glow-cool" src="../media/ghost-shadow.png" alt="影灵：冷紫色角色形象" style="width:150px">
+            <span class="art-label">影灵 Umbra</span>
+          </div>
+        </div>
+        <figcaption>
+          两个角色除颜色外<strong>完全同形</strong>——这是第 02 节那条对称性在视觉层的延续：
+          外形不暗示能力差异，玩家不会误以为谁更强、谁能做别人做不到的事，
+          剩下的唯一区别就是「怕光还是怕暗」。
+          角色自带一圈光晕，是为了在全黑场景里保证可见；
+          <b>注意：</b>此为角色设定稿，当前线上版本的角色由代码绘制
+          （<code>drawPlayer</code>，圆角矩形加渐变与光晕），形象尚未替换为该设定。
+        </figcaption>
+      </figure>
+
       <p>
         灯有两种：<strong>固定灯</strong>（挂墙上，不可动，实心可站）与<strong>可推灯</strong>（角色能推着走）。
         通关条件是两人<strong>同时</strong>站在各自的门里。

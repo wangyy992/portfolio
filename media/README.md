@@ -43,3 +43,15 @@ ffmpeg -i idol-life.mp4 -ss 3 -vframes 1 -q:v 3 idol-life.jpg
 | `rusty-lake-hero.png` | 1536×1024 | 上一行的无损源文件（2.3MB，页面未引用） |
 
 版权归各游戏的开发商与发行商所有，此处仅作为评论性文章的配图使用。
+
+## 策划案配图
+
+| 文件 | 用途 | 说明 |
+|---|---|---|
+| `unlit-door-lumen.png` | 光与影 §09 | 取自 Unlit 仓库 `art/door-lumen.png`，未改动 |
+| `unlit-door-umbra.png` | 光与影 §09 | 取自 Unlit 仓库 `art/door-umbra.png`，未改动 |
+| `ghost-light.png` | 光与影 §01 | 光灵设定稿。原图抠图残留深灰边，已按 alpha≥250 取实心本体后重做抗锯齿边；光晕改由 CSS `drop-shadow` 绘制 |
+| `ghost-shadow.png` | 光与影 §01 | 影灵设定稿，同上处理 |
+| `werewolf-cast.jpg` | AI 狼人杀 §02 | 12 人立绘。原图 2752×1536 / 2350 KB，压缩为 1600×893 / 172 KB |
+
+以上四张角色图**均为设定稿，线上版本尚未接入**，各图注已注明。

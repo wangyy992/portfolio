@@ -6,6 +6,18 @@
 <title>AI 狼人杀 策划案｜王禹尧</title>
 <meta name="description" content="1 名玩家对 11 个 AI Agent 的狼人杀设计说明：15 阶段确定性状态机、按身份分区的上下文构造、结构化输出与兜底降级、上下文与成本控制。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+figure.diagram.cast{padding:0;overflow:hidden;background:#1b1b1e;border-color:#2a2a2e}
+figure.diagram.cast img{display:block;width:100%;height:auto}
+figure.diagram.cast figcaption{
+  margin-top:0;
+  padding:14px 20px 16px;
+  border-top:1px solid #2a2a2e;
+  color:#9a978f;
+}
+figure.diagram.cast figcaption strong{color:#e6e3dc}
+figure.diagram.cast figcaption b{color:#e6e3dc}
+</style>
 </head>
 <body>
 
@@ -89,6 +101,18 @@
     <section id="config">
       <h2><span>02</span>局配置</h2>
       <p>12 人标准局。玩家固定为 1 号，其余 11 位由 AI 扮演。</p>
+
+      <figure class="diagram cast">
+        <img src="../media/werewolf-cast.jpg" alt="12 名村民的角色立绘，一字排开">
+        <figcaption>
+          十二个人站在一起，<strong>外形不透露任何身份信息</strong>。
+          这不是省事，是规则要求：狼人和平民必须长得一样重要，
+          否则「谁是狼」这个问题在第一眼就被美术回答掉了。
+          身份的全部线索只能来自发言、投票与夜间结果——
+          也就是第 04 节要处理的那套信息分区。
+          <b>注意：</b>此为角色设定稿，当前线上版本尚未接入该套立绘。
+        </figcaption>
+      </figure>
       <div class="table-wrap">
       <table>
         <thead><tr><th>身份</th><th>数量</th><th>技能</th></tr></thead>
