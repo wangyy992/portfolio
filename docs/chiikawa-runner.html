@@ -6,12 +6,101 @@
 <title>ちいかわ 跑酷 策划案｜王禹尧</title>
 <meta name="description" content="ちいかわ 跑酷设计说明：IP 使用边界、除草检定进度系统、功能先行的障碍设计、手感参数规格与关卡节奏。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+/* ちいかわ 跑酷 专属：草原奔跑 */
+:root{
+  --bg:#fbfaf5;
+  --line:#e6e6d8;
+  --hair:#eeeee2;
+  --soft:#f3f4e6;
+  --accent:#5c7a2e;
+  --accent-deep:#455c22;
+  --accent-soft:#eef3df;
+  --accent-line:#9dbb63;
+  --muted:#666a5f;
+  --body:#54574c;
+  --text:#1b1d16;
+}
+::selection{background:#dcebba}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  border-bottom:none;
+  padding:44px 0 46px;
+  background:linear-gradient(180deg,#dff0fb 0%, #f3f8ea 62%, var(--bg) 100%);
+}
+.doc-head .container{position:relative;z-index:2}
+.doc-head::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:120px;
+  background:url("../media/chiikawa-meadow.jpg") center bottom / cover no-repeat;
+  opacity:.5;
+  z-index:1;
+}
+.doc-head h1{color:#1b1d16}
+.doc-head .sub{color:#6d7360;font-style:normal;font-family:var(--serif);font-weight:500;font-size:19px}
+.kicker{color:#5c7a2e}
+.doc-head .thesis{
+  background:rgba(255,255,255,.88);
+  border:1px solid #dde5c9;
+  border-left:4px solid #9dbb63;
+  border-radius:0 18px 18px 0;
+  max-width:min(700px,calc(100% - 250px));
+}
+.thesis b{color:#5c7a2e}
+.cast{
+  position:absolute;
+  right:2%;
+  bottom:10px;
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  z-index:3;
+  pointer-events:none;
+}
+.cast img{height:132px;width:auto;filter:drop-shadow(0 8px 14px rgba(60,70,40,.22))}
+.cast img:nth-child(2){height:120px}
+.cast img:nth-child(3){height:126px}
+.doc h2 span{color:#5c7a2e}
+.doc em{box-shadow:inset 0 -9px 0 #dcebba}
+.pull{border-left-color:#9dbb63}
+.callout.take{background:#eef3df;border-color:#dde5c9}
+.callout.take .label{color:#455c22}
+.table-wrap,.callout,figure.diagram{border-radius:16px}
+th{background:#eef3df;color:#455c22}
+code{background:#f3f4e6;color:#455c22}
+.toc a.active{color:#455c22;border-left-color:#9dbb63}
+.doc-links a{border-color:#cfdcb0;color:#455c22}
+.doc-links a:hover{background:#eef3df}
+.doc-foot{background:#eef3df;border-top:1px solid #dde5c9;color:#666a5f}
+.doc-foot a{color:#5c7a2e}
+.sprite-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin:0 0 18px;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:16px}
+.sprite-row figure{margin:0;text-align:center;width:96px}
+.sprite-row img{width:72px;height:auto;display:block;margin:0 auto 8px}
+.sprite-row figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#666a5f}
+@media(max-width:900px){
+  .cast img{height:86px}
+  .cast img:nth-child(2){height:78px}
+  .cast img:nth-child(3){height:82px}
+  .doc-head .thesis{max-width:none}
+}
+@media(max-width:520px){
+  .cast img,.cast img:nth-child(2),.cast img:nth-child(3){height:58px}
+}
+</style>
 </head>
 <body>
 
 <div class="progress"><i></i></div>
 
 <header class="doc-head">
+  <div class="cast">
+    <img src="../media/chiikawa-chiikawa.png" alt="" aria-hidden="true">
+    <img src="../media/chiikawa-hachiware.png" alt="" aria-hidden="true">
+    <img src="../media/chiikawa-usagi.png" alt="" aria-hidden="true">
+  </div>
   <div class="container">
     <a class="back" href="../index.html#featured">← 返回作品集</a>
     <div class="kicker">策划案 / 玩法设计</div>
@@ -181,25 +270,25 @@
             </marker>
           </defs>
 
-          <g stroke="#deded8" fill="#fafaf8">
+          <g stroke="#e6e6d8" fill="#f3f4e6">
             <rect x="0"   y="96"  width="148" height="60" rx="7"/>
             <rect x="196" y="168" width="140" height="52" rx="7"/>
             <rect x="384" y="96"  width="172" height="60" rx="7"/>
             <rect x="600" y="96"  width="160" height="60" rx="7"/>
           </g>
-          <rect x="196" y="30" width="140" height="52" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+          <rect x="196" y="30" width="140" height="52" rx="7" fill="#eef3df" stroke="#5c7a2e" stroke-width="1.5"/>
 
           <g font-size="13" fill="#171717" text-anchor="middle">
             <text x="74"  y="120">障碍生成</text>
-            <text x="74"  y="140" font-size="11.5" fill="#6e6e6a">正上方 55px 挂 4 枚币</text>
-            <text x="266" y="52" font-weight="700" fill="#365f73">跳穿吃币</text>
-            <text x="266" y="70" font-size="11.5" fill="#365f73">擦着碰撞盒</text>
+            <text x="74"  y="140" font-size="11.5" fill="#666a5f">正上方 55px 挂 4 枚币</text>
+            <text x="266" y="52" font-weight="700" fill="#5c7a2e">跳穿吃币</text>
+            <text x="266" y="70" font-size="11.5" fill="#5c7a2e">擦着碰撞盒</text>
             <text x="266" y="190">稳妥绕过</text>
-            <text x="266" y="208" font-size="11.5" fill="#6e6e6a">安全，无收益</text>
+            <text x="266" y="208" font-size="11.5" fill="#666a5f">安全，无收益</text>
             <text x="470" y="120">连击每 5 枚</text>
-            <text x="470" y="140" font-size="11.5" fill="#6e6e6a">+1 金币，领先 +12</text>
+            <text x="470" y="140" font-size="11.5" fill="#666a5f">+1 金币，领先 +12</text>
             <text x="680" y="120">领先距离 = 能跑多远</text>
-            <text x="680" y="140" font-size="11.5" fill="#6e6e6a">距离每 800m 升一级</text>
+            <text x="680" y="140" font-size="11.5" fill="#666a5f">距离每 800m 升一级</text>
           </g>
 
           <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ar5)">
@@ -525,19 +614,19 @@
         <thead><tr><th>角色</th><th>能力</th><th>实现</th><th>适合的玩法</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>吉伊</b><br><span style="color:#6e6e6a;font-size:12.5px">勇气守护</span></td>
+            <td><b>吉伊</b><br><span style="color:#666a5f;font-size:12.5px">勇气守护</span></td>
             <td>撞到障碍时怪物逼近得更少</td>
             <td><code>LEAD_HIT × 0.72</code>（−80 → −57.6）</td>
             <td>容错型。适合还在学节奏的玩家</td>
           </tr>
           <tr>
-            <td><b>小八</b><br><span style="color:#6e6e6a;font-size:12.5px">发现好物</span></td>
+            <td><b>小八</b><br><span style="color:#666a5f;font-size:12.5px">发现好物</span></td>
             <td>金币吸附范围更大</td>
             <td>拾取判定框四周外扩 24 / 22 px</td>
             <td>收益型。让「跳穿吃币」的风险实际下降</td>
           </tr>
           <tr>
-            <td><b>乌萨奇</b><br><span style="color:#6e6e6a;font-size:12.5px">呀哈弹跳</span></td>
+            <td><b>乌萨奇</b><br><span style="color:#666a5f;font-size:12.5px">呀哈弹跳</span></td>
             <td>第二段跳得更高</td>
             <td>二段跳 <code>×1.03</code>，其他角色 <code>×0.88</code></td>
             <td>操作型。空中修正能力最强，上限最高</td>
@@ -554,6 +643,15 @@
 
     <section id="asset">
       <h2><span>09</span>资产策略</h2>
+      <div class="sprite-row">
+        <figure><img src="../media/chiikawa-chiikawa.png" alt="ちいかわ 角色贴图"><figcaption>chiikawa</figcaption></figure>
+        <figure><img src="../media/chiikawa-hachiware.png" alt="ハチワレ 角色贴图"><figcaption>hachiware</figcaption></figure>
+        <figure><img src="../media/chiikawa-usagi.png" alt="うさぎ 角色贴图"><figcaption>usagi</figcaption></figure>
+        <figure><img src="../media/chiikawa-coin.png" alt="金币"><figcaption>coin</figcaption></figure>
+        <figure><img src="../media/chiikawa-weed.png" alt="杂草障碍"><figcaption>weed</figcaption></figure>
+        <figure><img src="../media/chiikawa-mushroom.png" alt="蘑菇障碍"><figcaption>mushroom</figcaption></figure>
+        <figure><img src="../media/chiikawa-chimera.png" alt="讨伐对象 chimera"><figcaption>chimera</figcaption></figure>
+      </div>
       <p>任何新做的资产都在挤压手感调优的时间。执行原则只有一条：</p>
       <p class="pull">
         任何需要新做的资产，先问能不能用既有素材的变体代替。

@@ -55,3 +55,15 @@ ffmpeg -i idol-life.mp4 -ss 3 -vframes 1 -q:v 3 idol-life.jpg
 | `werewolf-cast.jpg` | AI 狼人杀 §02 | 12 人立绘。原图 2752×1536 / 2350 KB，压缩为 1600×893 / 172 KB |
 
 以上四张角色图**均为设定稿，线上版本尚未接入**，各图注已注明。
+
+### ちいかわ 跑酷配图
+
+| 文件 | 用途 |
+|---|---|
+| `chiikawa-chiikawa.png` / `-hachiware.png` / `-usagi.png` | 页头三人组 + §素材表 |
+| `chiikawa-coin.png` / `-weed.png` / `-mushroom.png` / `-chimera.png` | 素材表：金币、杂草、蘑菇、讨伐对象 |
+| `chiikawa-meadow.jpg` | 页头底部草地背景条 |
+
+原始压缩包内共 3890 KB（含 2009 KB 的 meadow PNG）。
+七张精灵图经调色板量化（200 色，保留 alpha）压至 240 KB；
+meadow 无透明通道、为照片式背景，转 JPEG 1400×933 / 106 KB。合计 3890 → 346 KB。
