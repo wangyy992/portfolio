@@ -127,7 +127,7 @@
             <figcaption style="margin-top:10px;font-size:13px;color:#666e68">角色日程推进与 AI 对话生成实机演示</figcaption>
             </figure>
             <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
-              Tomodachi-Life 风格的俯视沙盒养成游戏。核心采用“确定性模拟 + 生成式 AI”混合架构：游戏系统管理时间、角色状态、日程和关系数值，LLM 只负责生成当前情境下的对话与剧情，以提升内容自由度，同时保证世界状态连续、规则可控。
+              Tomodachi-Life 风格的俯视沙盒养成游戏。核心采用“确定性模拟 + 生成式 AI”混合架构：游戏系统管理时间、角色状态、日程和关系数值，<strong style="font-weight:700;box-shadow:inset 0 -9px 0 #d9ebe1">LLM 只负责生成当前情境下的对话与剧情</strong>，以提升内容自由度，同时保证世界状态连续、规则可控。
             </p>
             <div style="display:grid;gap:9px">
               <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>设计角色关系、世界事件、虚拟社交平台、角色创建等核心系统。</span></div>
@@ -171,7 +171,7 @@
             <figcaption style="margin-top:10px;font-size:13px;color:#666e68">11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
             </figure>
             <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
-              玩家独自进入 12 人狼人杀对局，其余 11 个位置由 AI Agent 控制。重点不是“AI 会聊天”，而是让每个 Agent 拥有角色信息、记忆、怀疑、立场与行为决策，形成真实的多人社交推理体验。
+              玩家独自进入 12 人狼人杀对局，其余 11 个位置由 AI Agent 控制。重点不是“AI 会聊天”，而是<strong style="font-weight:700;box-shadow:inset 0 -9px 0 #d9ebe1">让每个 Agent 拥有角色信息、记忆、怀疑、立场与行为决策</strong>，形成真实的多人社交推理体验。
             </p>
             <div style="display:grid;gap:9px">
               <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>拆分公开信息、身份私有信息与 Agent 局部记忆。</span></div>
@@ -272,41 +272,49 @@
       <div style="height:1px;background:#d5ddd7;margin-bottom:24px"></div>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
-        <a href="analysis/eggy-party.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h11">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
-            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">蛋仔派对</h3>
+        <a href="analysis/eggy-party.html" style="display:block;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px 24px 24px 24px;color:inherit" class="h11">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <span style="flex:none;width:58px;height:58px;border-radius:14px;background:#f2f7f4;border:1px solid #eaefeb;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="media/char-eggy.png" alt="" aria-hidden="true" style="max-width:44px;max-height:48px;width:auto;height:auto;object-fit:contain;display:block"></span>
+            <div style="min-width:0">
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">蛋仔派对</h3>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:4px 0 0">派对竞技 / UGC · 网易 · 2022 公测</div>
+            </div>
           </div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">派对竞技 / UGC · 网易 · 2022 公测</div>
           <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">UGC 生态赢在「创作 → 分发 → 反馈」的循环转速，不在编辑器上限。拆统一操作语法如何把成本转移给消费端、纯外观商业化为什么是结构性约束，以及约每 10 天一次的 IP 联动为什么不是营销动作，而是同时给商业化、创作与消费三个循环供料。</p>
           <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">14 MIN</span></div>
-        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">🥚</span>
         </a>
-        <a href="analysis/rusty-lake.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h12">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
-            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">锈湖</h3>
+        <a href="analysis/rusty-lake.html" style="display:block;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px 24px 24px 24px;color:inherit" class="h12">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <span style="flex:none;width:58px;height:58px;border-radius:14px;background:#f2f7f4;border:1px solid #eaefeb;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="media/char-rusty-lake.png" alt="" aria-hidden="true" style="max-width:44px;max-height:48px;width:auto;height:auto;object-fit:contain;display:block"></span>
+            <div style="min-width:0">
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">锈湖</h3>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:4px 0 0">点击解谜 · Rusty Lake（荷兰）· 2015 起系列</div>
+            </div>
           </div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">点击解谜 · Rusty Lake（荷兰，两人团队）· 2015 起系列</div>
-          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">两人团队把「不解释」制度化：符号复用制造关联，硬谜题保成就感，软逻辑留讨论空间，解释权外包给社区，形成边际成本为零的内容飞轮。</p>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">小团队把「不解释」制度化：符号复用制造关联，硬谜题保成就感，软逻辑留讨论空间，解释权外包给社区，形成边际成本为零的内容飞轮。</p>
           <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">11 MIN</span></div>
-        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">🔑</span>
         </a>
-        <a href="analysis/royal-match.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h13">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
-            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Royal Match</h3>
+        <a href="analysis/royal-match.html" style="display:block;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h13">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <span style="flex:none;width:58px;height:58px;border-radius:14px;background:#f2f7f4;border:1px solid #eaefeb;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="media/char-royal-match.png" alt="" aria-hidden="true" style="max-width:44px;max-height:48px;width:auto;height:auto;object-fit:contain;display:block"></span>
+            <div style="min-width:0">
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Royal Match</h3>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:4px 0 0">三消 · Dream Games（土耳其）· 2021</div>
+            </div>
           </div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">三消 · Dream Games（土耳其）· 2021</div>
           <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">玩法几乎没有创新，胜负手在把「失败」而非「通关」当主战场设计，以及 meta 层只做正反馈、不引入第二个失败点。成熟品类的竞争已转移到买量效率。</p>
           <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">12 MIN</span></div>
-        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">👑</span>
         </a>
-        <a href="analysis/status-ai.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h14">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
-            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Status AI</h3>
+        <a href="analysis/status-ai.html" style="display:block;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h14">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <span style="flex:none;width:58px;height:58px;border-radius:14px;background:#f2f7f4;border:1px solid #eaefeb;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="media/char-status-ai-cut.png" alt="" aria-hidden="true" style="max-width:44px;max-height:48px;width:auto;height:auto;object-fit:contain;display:block"></span>
+            <div style="min-width:0">
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Status AI</h3>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:4px 0 0">AI 社交模拟 / 同人 roleplay · WishRoll（YC）· 2024</div>
+            </div>
           </div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">AI 社交模拟 / 同人 roleplay · WishRoll（YC）· 2024</div>
           <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">推理成本让游戏的边际成本不再趋近于零，直接推翻 F2P 的经济模型前提。四个结构性约束里，哪些会被模型进步解决，哪些不会。</p>
           <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">15 MIN</span></div>
-        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">💬</span>
         </a>
       </div>
     </section>

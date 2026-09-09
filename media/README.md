@@ -39,6 +39,7 @@ ffmpeg -i idol-life.mp4 -ss 3 -vframes 1 -q:v 3 idol-life.jpg
 | `char-rusty-lake.png` | 163×480 | 锈湖 |
 | `char-status-ai.png` | 480×480 | Status AI |
 | `char-status-ai-cut.png` | 430×480 | Status AI（另一版裁切） |
-| `rusty-lake-hero.png` | 1536×1024 | 锈湖主视觉（2.3MB，若用于网页需先压缩） |
+| `rusty-lake-hero.jpg` | 1536×1024 | 锈湖拆解页的头图背景（226KB，**页面实际引用的是这张**） |
+| `rusty-lake-hero.png` | 1536×1024 | 上一行的无损源文件（2.3MB，页面未引用） |
 
 版权归各游戏的开发商与发行商所有，此处仅作为评论性文章的配图使用。

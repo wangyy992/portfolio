@@ -6,6 +6,70 @@
 <title>锈湖拆解：把解释权外包给玩家｜王禹尧</title>
 <meta name="description" content="锈湖 Rusty Lake 的 IP 结构拆解：免费与付费双轨矩阵、符号复用机制、硬逻辑与软逻辑的分层设计，以及玩家 theorycrafting 如何成为零成本的内容生产。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+/* 锈湖专属：暗色档案头 + 锈红强调 */
+:root{
+  --bg:#faf7f3;
+  --line:#e7e0d8;
+  --hair:#efe9e2;
+  --soft:#f5efe9;
+  --accent:#8f3a2a;
+  --accent-deep:#6f2a1d;
+  --accent-soft:#f6ece7;
+  --accent-line:#c2836f;
+  --muted:#6b635c;
+  --body:#57504a;
+  --text:#1a1613;
+}
+::selection{background:#ecd9d1}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  background:#14100e;
+  border-bottom:none;
+  padding:56px 0 52px;
+}
+.doc-head .container{position:relative;z-index:1}
+.doc-head::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url("../media/rusty-lake-hero.jpg") center 32% / cover no-repeat;
+  opacity:.55;
+}
+.doc-head::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, rgba(14,11,10,.94) 0%, rgba(14,11,10,.86) 46%, rgba(14,11,10,.70) 100%);
+  pointer-events:none;
+}
+.doc-head h1{color:#f3ece5}
+.doc-head .sub{color:#a89c92}
+.doc-head .kicker{color:#c2836f}
+.back{color:#8d8279}
+.back:hover{color:#d9b7a8}
+.crow{display:none}
+.doc-head .thesis{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.1);
+  border-left:3px solid #8f3a2a;
+  color:#ddd3ca;
+  max-width:min(720px,100%);
+}
+.doc-head .thesis strong{color:#f3ece5}
+.doc-head .thesis b{color:#c2836f}
+.metabar dt{color:#a2978d}
+.metabar dd{color:#c9bfb6}
+.doc em{box-shadow:inset 0 -9px 0 #f0dcd4}
+.pull{border-left-color:#8f3a2a}
+.doc-foot{background:#14100e;border-top:none;color:#8d8279}
+.doc-foot a{color:#c2836f}
+@media(max-width:820px){
+  .crow{display:none}
+  .doc-head .thesis{max-width:none}
+}
+</style>
 </head>
 <body>
 
@@ -13,6 +77,7 @@
 
 <header class="doc-head">
   <div class="container">
+    <img class="crow" src="../media/char-rusty-lake.png" alt="" aria-hidden="true">
     <a class="back" href="../index.html#analysis">← 返回作品集</a>
     <div class="kicker">游戏拆解 / 02</div>
     <h1>锈湖 Rusty Lake</h1>
@@ -28,7 +93,7 @@
     </p>
 
     <dl class="metabar">
-      <div><dt>开发 / 发行</dt><dd>Rusty Lake（荷兰，两人起家的独立团队）</dd></div>
+      <div><dt>开发 / 发行</dt><dd>Rusty Lake（荷兰，两人创立的小型独立工作室，现约 4 名全职）</dd></div>
       <div><dt>起始</dt><dd>2015 年 Cube Escape 系列</dd></div>
       <div><dt>品类</dt><dd>点击式解谜 / 逃脱</dd></div>
       <div><dt>分析视角</dt><dd>IP 结构 / 叙事设计 / 传播机制</dd></div>
@@ -69,7 +134,7 @@
         <li><strong>难以做长线运营。</strong>没有数值成长、没有社交、没有可循环的核心玩法，留存机制几乎为零。</li>
       </ul>
       <p>
-        按这三条，一个荷兰的两人小团队做这个品类，正常结局应该是做两三部、小范围口碑、然后消失。
+        按这三条，一个荷兰的小型独立工作室做这个品类，正常结局应该是做两三部、小范围口碑、然后消失。
       </p>
       <p>
         但锈湖的实际情况是：从 2015 年至今持续产出二十余部作品，形成了稳定的 IP 认知，
@@ -128,7 +193,7 @@
       <h3>高频出品是这个结构的必要条件</h3>
       <p>
         双轨结构要成立，免费线必须持续有新作，否则世界观停止扩张，缺口就不再增加。
-        锈湖保持了接近每年都有新作的节奏，这对两人团队是很高的强度要求，
+        锈湖保持了接近每年都有新作的节奏，这对一个不到五人的团队是很高的强度要求，
         它之所以做得到，直接来自第 06 节要讲的美术与技术约束——
         <strong>产能不是靠人力堆出来的，是靠把单作成本压到足够低换来的。</strong>
       </p>
@@ -273,8 +338,9 @@
       </p>
     </section>
 
-    <section id="art">
+    <section id="art" style="position:relative">
       <h2><span>06</span>美术约束是廉价的辨识度</h2>
+      <img src="../media/char-rusty-lake.png" alt="" aria-hidden="true" style="float:right;height:300px;width:auto;margin:70px 90px 18px 28px;shape-outside:margin-box">
       <p>
         「辨识度高」通常被认为是需要投入才能换到的东西。锈湖证明了相反的路径：
         <strong>辨识度可以靠严格的自我约束、以极低成本获得。</strong>
