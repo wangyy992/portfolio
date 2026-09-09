@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>光与影 策划案｜王禹尧</title>
-<meta name="description" content="双角色合作解谜《光与影》设计说明：对称规则、光的判定与渲染分离、由引擎常量倒推的关卡设计约束、16 关教学曲线。">
+<meta name="description" content="双角色合作解谜《光与影》设计说明：对称规则、光的判定与渲染分离、由引擎常量倒推的关卡设计约束、教学曲线。">
 <link rel="stylesheet" href="../assets/doc.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <a class="back" href="../index.html#featured">← 返回作品集</a>
     <div class="kicker">策划案 / 关卡设计</div>
     <h1>光与影</h1>
-    <p class="sub">双角色合作解谜 · 16 关 · 设计说明</p>
+    <p class="sub">双角色合作解谜 · 设计说明</p>
 
     <p class="thesis">
       <b>设计主张</b>
@@ -27,7 +27,6 @@
 
     <dl class="metabar">
       <div><dt>类型</dt><dd>双角色合作解谜 / 平台跳跃</dd></div>
-      <div><dt>规模</dt><dd>16 关</dd></div>
       <div><dt>状态</dt><dd>已上线可玩</dd></div>
       <div><dt>技术</dt><dd>原生 JS + Canvas，零依赖零构建</dd></div>
       <div><dt>最后更新</dt><dd>2026-09</dd></div>
@@ -49,7 +48,7 @@
       <li><a href="#light">03　判定与渲染分离</a></li>
       <li><a href="#feel">04　手感参数</a></li>
       <li><a href="#constraint">05　关卡设计约束</a></li>
-      <li><a href="#curve">06　16 关的教学曲线</a></li>
+      <li><a href="#curve">06　教学曲线</a></li>
       <li><a href="#lamp">07　灯：一物三用</a></li>
       <li><a href="#plate">08　可逆与不可逆</a></li>
       <li><a href="#read">09　可读性与音效</a></li>
@@ -295,7 +294,7 @@
     </section>
 
     <section id="curve">
-      <h2><span>06</span>16 关的教学曲线</h2>
+      <h2><span>06</span>教学曲线</h2>
       <p>
         每关只教一件新东西，且新元素首次出现时环境是宽松的。
         关卡的设计意图写在数据的 <code>hint</code> 字段里，悬停选关按钮即可看到——
@@ -304,31 +303,31 @@
 
       <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>名称</th><th>教的东西</th><th>阶段</th></tr></thead>
+        <thead><tr><th>阶段</th><th>关卡</th><th>教的东西</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>分道</td><td>两种角色的生存规则</td><td rowspan="4"><b>基础词汇</b><br><span style="color:#6e6e6a;font-size:12.5px">建立「灯 = 路」的心智模型</span></td></tr>
-          <tr><td>2</td><td>借光</td><td>灯可以推，推灯就是在改路</td></tr>
-          <tr><td>3</td><td>互锁</td><td>压力板 / 机关门，谁先动的顺序</td></tr>
-          <tr><td>4</td><td>垫脚石</td><td>灯也是能站上去的箱子</td></tr>
-          <tr><td>5</td><td>追光</td><td>光柱跟着灯扫动，跟在光后面走</td><td rowspan="4"><b>组合与约束</b><br><span style="color:#6e6e6a;font-size:12.5px">引入不可逆与配重</span></td></tr>
-          <tr><td>6</td><td>压住</td><td>常压板：松开就关，得拿灯当配重</td></tr>
-          <tr><td>7</td><td>深井</td><td>灯掉下去就捞不回来，顺序不可逆</td></tr>
-          <tr><td>8</td><td>双灯</td><td>两盏灯两个用途，别弄反</td></tr>
-          <tr><td>9</td><td>回环</td><td>先把灯送过去，再推回来</td><td rowspan="4"><b>空间与顺序</b><br><span style="color:#6e6e6a;font-size:12.5px">多层结构，规划成本上升</span></td></tr>
-          <tr><td>10</td><td>三重</td><td>三层楼，灯掉到底层就上不来</td></tr>
-          <tr><td>11</td><td>四层</td><td>四层楼，灯要往下丢两次</td></tr>
-          <tr><td>12</td><td>独灯</td><td>两块常压板一盏灯，一次只能开一扇门</td></tr>
-          <tr><td>13</td><td>双灯井</td><td>两盏灯两个去处</td><td rowspan="4"><b>综合</b><br><span style="color:#6e6e6a;font-size:12.5px">前面所有要素的组合考核</span></td></tr>
-          <tr><td>14</td><td>留守</td><td>轮流当按门的人</td></tr>
-          <tr><td>15</td><td>天窗</td><td>光灵没有灯，踩着漏下的光斑走</td></tr>
-          <tr><td>16</td><td>错身</td><td>两人反向走，光柱一路扫过来</td></tr>
+          <tr><td rowspan="4"><b>基础词汇</b><br><span style="color:#6e6e6a;font-size:12.5px">建立「灯 = 路」的心智模型</span></td><td>分道</td><td>两种角色的生存规则</td></tr>
+          <tr><td>借光</td><td>灯可以推，推灯就是在改路</td></tr>
+          <tr><td>互锁</td><td>压力板 / 机关门，谁先动的顺序</td></tr>
+          <tr><td>垫脚石</td><td>灯也是能站上去的箱子</td></tr>
+          <tr><td rowspan="4"><b>组合与约束</b><br><span style="color:#6e6e6a;font-size:12.5px">引入不可逆与配重</span></td><td>追光</td><td>光柱跟着灯扫动，跟在光后面走</td></tr>
+          <tr><td>压住</td><td>常压板：松开就关，得拿灯当配重</td></tr>
+          <tr><td>深井</td><td>灯掉下去就捞不回来，顺序不可逆</td></tr>
+          <tr><td>双灯</td><td>两盏灯两个用途，别弄反</td></tr>
+          <tr><td rowspan="4"><b>空间与顺序</b><br><span style="color:#6e6e6a;font-size:12.5px">多层结构，规划成本上升</span></td><td>回环</td><td>先把灯送过去，再推回来</td></tr>
+          <tr><td>三重</td><td>三层楼，灯掉到底层就上不来</td></tr>
+          <tr><td>四层</td><td>四层楼，灯要往下丢两次</td></tr>
+          <tr><td>独灯</td><td>两块常压板一盏灯，一次只能开一扇门</td></tr>
+          <tr><td rowspan="4"><b>综合</b><br><span style="color:#6e6e6a;font-size:12.5px">前面所有要素的组合考核</span></td><td>双灯井</td><td>两盏灯两个去处</td></tr>
+          <tr><td>留守</td><td>轮流当按门的人</td></tr>
+          <tr><td>天窗</td><td>光灵没有灯，踩着漏下的光斑走</td></tr>
+          <tr><td>错身</td><td>两人反向走，光柱一路扫过来</td></tr>
         </tbody>
       </table>
       </div>
 
       <p>
-        第 15 关是整套曲线里的一次<strong>反转</strong>：前 14 关都在教「灯是你的工具」，
-        第 15 关把灯全部封在天花板后面，光灵只剩几块漏下来的光斑可踩。
+        「天窗」是整套曲线里的一次<strong>反转</strong>：此前所有关卡都在教「灯是你的工具」，
+        这一关却把灯全部封在天花板后面，光灵只剩几块漏下来的光斑可踩。
         <em>它考的不是新知识，而是玩家有没有真的理解「光是资源」这件事</em>——
         当资源不可控时，剩下的只有对第 05 节那条「44px 黑暗上限」的直觉。
       </p>
@@ -341,16 +340,16 @@
       <table>
         <thead><tr><th>身份</th><th>作用</th><th>首次教学</th></tr></thead>
         <tbody>
-          <tr><td><b>光源</b></td><td>开辟光灵的路 / 封死影灵的路</td><td>第 2 关「借光」</td></tr>
-          <tr><td><b>箱子</b></td><td>站上去多 30px 可达高度，翻 3 格墙</td><td>第 4 关「垫脚石」</td></tr>
-          <tr><td><b>配重</b></td><td>压住常压板，代替人力持续压住</td><td>第 6 关「压住」</td></tr>
+          <tr><td><b>光源</b></td><td>开辟光灵的路 / 封死影灵的路</td><td>「借光」</td></tr>
+          <tr><td><b>箱子</b></td><td>站上去多 30px 可达高度，翻 3 格墙</td><td>「垫脚石」</td></tr>
+          <tr><td><b>配重</b></td><td>压住常压板，代替人力持续压住</td><td>「压住」</td></tr>
         </tbody>
       </table>
       </div>
       <p>
         三个用途互相冲突——灯用来照路就不能同时当配重，用来当台阶就得留在原地。
         <strong>「只有一盏灯而有两件事要做」因此成为最经济的谜题模板</strong>，
-        第 12 关「独灯」就是这个模板的纯粹形态：两块常压板、两扇门、一盏灯。
+        「独灯」就是这个模板的纯粹形态：两块常压板、两扇门、一盏灯。
       </p>
       <div class="callout take">
         <span class="label">判断</span>
@@ -358,7 +357,7 @@
           增加物件种类是扩展谜题最直观的方式，也是最贵的方式——
           每种新物件都要新的美术、新的规则、新的教学关。
           <strong>给同一个物件叠加互斥的用途，成本接近于零，产生的组合空间却是乘法级的。</strong>
-          16 关里没有出现第二种可推物件，靠的就是这个。
+          全作没有出现第二种可推物件，靠的就是这个。
         </p>
       </div>
     </section>
@@ -376,13 +375,13 @@
       </table>
       </div>
       <p>
-        另一处不可逆来自地形：<strong>灯掉进井里就捞不回来</strong>（第 7、10、11、13 关）。
+        另一处不可逆来自地形：<strong>灯掉进井里就捞不回来</strong>（「深井」「三重」「四层」「双灯井」）。
         这把「顺序错误」的代价从「多走几步」提升到「本关作废」，
         迫使玩家在动手前先在脑子里跑一遍——<em>解谜游戏真正的难度来自规划，不是操作。</em>
       </p>
       <p>
-        两类开关的分工也很清楚：可逆的压力板负责<strong>教学</strong>（第 3 关就出现，容错高），
-        不可逆的常压板与深井负责<strong>施压</strong>（第 6 关之后才登场）。
+        两类开关的分工也很清楚：可逆的压力板负责<strong>教学</strong>（很早就出现，容错高），
+        不可逆的常压板与深井负责<strong>施压</strong>（进入「组合与约束」阶段后才登场）。
       </p>
     </section>
 
@@ -401,7 +400,7 @@
         <span class="label">踩过的坑</span>
         <p>
           音效事件必须铺满常见操作（开场、落地、推灯、开门、进门、开关反馈）。
-          原先跳跃是唯一的发声点，而<strong>第 1 关根本不需要跳</strong>——
+          原先跳跃是唯一的发声点，而<strong>首关根本不需要跳</strong>——
           结果玩家可能整整一关听不到任何声音，误以为游戏没有音效。
         </p>
         <p>
@@ -447,9 +446,9 @@
           新增关卡时能自动报出「这里 4 格缝跳不过去」「这块板只有 1 格宽」。
         </li>
         <li>
-          <strong>验证第 15 关的难度断层。</strong>
-          「天窗」取消了玩家对光的控制权，是全作认知负荷最大的一关。
-          需要观察玩家在此处的卡关时长是否显著高于前后关——如果是，考虑在第 13-14 关补一个光斑赶路的轻量教学。
+          <strong>验证「天窗」的难度断层。</strong>
+          这一关取消了玩家对光的控制权，是全作认知负荷最大的一关。
+          需要观察玩家在此处的卡关时长是否显著高于前后关——如果是，考虑在它之前补一个光斑赶路的轻量教学。
         </li>
       </ol>
     </section>
