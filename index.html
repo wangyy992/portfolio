@@ -8,850 +8,419 @@
 <meta property="og:title" content="王禹尧｜游戏作品集">
 <meta property="og:description" content="四个游戏项目、四篇游戏拆解、四份策划案。关注 AI-native gameplay、系统设计与玩家行为数据。">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23365f73'/%3E%3Crect x='8' y='8' width='11' height='11' rx='2' fill='%23f6f6f3'/%3E%3Crect x='15' y='15' width='9' height='9' rx='2' fill='%23f6f6f3' opacity='.55'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233f7a63'/%3E%3Crect x='8' y='8' width='11' height='11' rx='2' fill='%23fbfbf7'/%3E%3Crect x='15' y='15' width='9' height='9' rx='2' fill='%23fbfbf7' opacity='.55'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&amp;family=Noto+Sans+SC:wght@400;500;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#f6f6f3;
-  --paper:#ffffff;
-  --text:#171717;
-  --muted:#6e6e6a;
-  --line:#deded8;
-  --soft:#ecece7;
-  --accent:#365f73;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  line-height:1.7;
-}
-a{color:inherit;text-decoration:none}
-.container{
-  width:min(1080px,calc(100% - 40px));
-  margin:0 auto;
-}
-header{
-  padding:72px 0 38px;
-  border-bottom:1px solid var(--line);
-}
-.topline{
-  display:flex;
-  justify-content:space-between;
-  gap:24px;
-  align-items:flex-start;
-}
-.name{
-  font-size:42px;
-  line-height:1.1;
-  margin:0 0 12px;
-  letter-spacing:-0.04em;
-  font-weight:750;
-}
-.role{
-  font-size:18px;
-  color:var(--accent);
-  margin-bottom:16px;
-  font-weight:650;
-}
-.intro{
-  max-width:760px;
-  color:var(--muted);
-  font-size:16px;
-  margin:0;
-}
-.contact{
-  text-align:right;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.9;
-  white-space:nowrap;
-}
-.contact-label{
-  font-size:11px;
-  letter-spacing:.14em;
-  color:#9a9a94;
-  margin-bottom:4px;
-}
-nav{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(246,246,243,.94);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-}
-nav .container{
-  display:flex;
-  gap:24px;
-  align-items:center;
-  min-height:52px;
-}
-nav a{
-  position:relative;
-  display:block;
-  padding:16px 0;
-  font-size:14px;
-  color:var(--muted);
-  transition:color .18s ease;
-}
-nav a:hover{color:var(--text)}
-nav a.active{color:var(--text);font-weight:650}
-nav a.active::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:2px;
-  background:var(--accent);
-}
-section{padding:54px 0;scroll-margin-top:64px}
-.section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:30px;
-  margin-bottom:24px;
-}
-.section-title h2{
-  margin:0;
-  font-size:26px;
-  letter-spacing:-.02em;
-}
-.section-title h2::before{
-  content:"";
-  display:block;
-  width:26px;
-  height:2px;
-  background:var(--accent);
-  margin-bottom:15px;
-}
-.section-title p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-  max-width:520px;
-}
-.featured{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:18px;
-  counter-reset:proj;
-}
-.project{
-  background:var(--paper);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:24px;
-  transition:border-color .18s ease;
-}
-.project:hover{border-color:#c8d5da}
-
-.project-head{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:20px;
-  align-items:start;
-}
-.project{counter-increment:proj}
-.project h3{
-  margin:0 0 6px;
-  font-size:22px;
-  letter-spacing:-.02em;
-}
-.project h3::before{
-  content:counter(proj,decimal-leading-zero);
-  display:block;
-  font-size:12px;
-  letter-spacing:.14em;
-  color:var(--accent);
-  font-weight:700;
-  margin-bottom:9px;
-}
-.meta{
-  color:var(--muted);
-  font-size:13px;
-}
-.badges{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-.badge{
-  padding:4px 8px;
-  border-radius:6px;
-  border:1px solid var(--line);
-  background:#fafaf8;
-  font-size:12px;
-  color:#555;
-}
-.summary{
-  margin:18px 0 18px;
-  color:#3e3e3b;
-}
-.project-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-.keypoints{
-  margin:0;
-  padding-left:18px;
-  color:#43433f;
-}
-.keypoints li{margin:7px 0}
-.result{
-  margin:18px 0 0;
-  border-left:2px solid var(--soft);
-  padding-left:14px;
-  color:var(--muted);
-  font-size:14px;
-}
-.result strong{
-  display:block;
-  color:var(--text);
-}
-.media{margin:0;position:relative}
-.media video{
-  display:block;
-  width:100%;
-  aspect-ratio:16/9;
-  object-fit:cover;
-  background:var(--soft);
-  border:1px solid var(--line);
-  border-radius:8px;
-}
-.media .placeholder{
-  display:none;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  aspect-ratio:16/9;
-  border:1px dashed var(--line);
-  border-radius:8px;
-  background:var(--soft);
-  color:#9a9a94;
-  font-size:14px;
-}
+  body{margin:0;background:#fbfbf7;-webkit-font-smoothing:antialiased}
+  html{scroll-behavior:smooth}
+  a{color:#3f7a63;text-decoration:none}
+  a:hover{color:#2c5a49}
+  ::selection{background:#d9ebe1}
+</style>
+<style>
+.h1:hover{color:#3f7a63 !important}
+.h2:hover{color:#3f7a63 !important}
+.h3:hover{color:#3f7a63 !important}
+.h4:hover{color:#3f7a63 !important}
+.h5:hover{background:#e6f1eb !important}
+.h6:hover{background:#e6f1eb !important}
+.h7:hover{background:#1f4536 !important}
+.h8:hover{background:#e6f1eb !important}
+.h9:hover{background:#1f4536 !important}
+.h10:hover{background:#e6f1eb !important}
+.h11:hover{border-color:#7fb39a !important}
+.h12:hover{border-color:#7fb39a !important}
+.h13:hover{border-color:#7fb39a !important}
+.h14:hover{border-color:#7fb39a !important}
 .media.is-empty video{display:none}
-.media.is-empty .placeholder{display:flex}
-.media figcaption{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:13px;
-}
-.links{
-  margin-top:20px;
-  display:flex;
-  gap:18px;
-  flex-wrap:wrap;
-}
-.links a{
-  font-size:14px;
-  color:var(--accent);
-  font-weight:650;
-}
-.links a.todo{
-  color:#9a9a94;
-  font-weight:500;
-  pointer-events:none;
-}
-.links a.todo::after{
-  content:"（待补充）";
-  font-size:12px;
-}
-.case-list{
-  border-top:1px solid var(--line);
-}
-.case-row{
-  display:grid;
-  grid-template-columns:1.15fr 1.6fr auto;
-  gap:24px;
-  align-items:start;
-  padding:22px 0;
-  border-bottom:1px solid var(--line);
-}
-.case-row h3{
-  margin:0;
-  font-size:18px;
-}
-.case-row p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-}
-.case-row a{
-  color:var(--accent);
-  font-size:14px;
-  font-weight:650;
-}
-.case-row{transition:background-color .18s ease}
-.case-row:hover{background:#fbfbf9}
-.case-row a:hover{text-decoration:underline}
-.timeline{
-  border-top:1px solid var(--line);
-}
-.timeline-row{
-  display:grid;
-  grid-template-columns:170px 1fr;
-  gap:28px;
-  padding:20px 0;
-  border-bottom:1px solid var(--line);
-}
-.timeline-row .date{
-  color:var(--muted);
-  font-size:13px;
-}
-.timeline-row h3{
-  margin:0 0 5px;
-  font-size:17px;
-}
-.timeline-row p{
-  margin:0;
-  color:var(--muted);
-  font-size:14px;
-}
-.about{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
-.about-box{
-  background:var(--paper);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:22px;
-}
-.about-box h3{
-  margin:0 0 12px;
-  font-size:17px;
-}
-.skills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-.skill{
-  padding:5px 9px;
-  border:1px solid var(--line);
-  border-radius:6px;
-  font-size:12px;
-  color:#4d4d49;
-  background:#fafaf8;
-}
-footer{
-  border-top:1px solid var(--line);
-  padding:30px 0 46px;
-  color:var(--muted);
-  font-size:13px;
-}
-.note{
-  font-size:12px;
-  color:#8a8a84;
-  margin-top:10px;
-}
-@media(max-width:760px){
-  .topline{display:block}
-  .contact{text-align:left;margin-top:22px;white-space:normal}
-  .project-head{grid-template-columns:1fr}
-  .badges{justify-content:flex-start}
-  .project-grid{grid-template-columns:1fr}
-  .case-row{grid-template-columns:1fr}
-  .timeline-row{grid-template-columns:1fr;gap:6px}
-  .about{grid-template-columns:1fr}
-  nav .container{overflow:auto}
-}
+.media.is-empty .ph{display:flex}
 </style>
 </head>
 <body>
+<div style="background:#fbfbf7;color:#1b201c;font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;line-height:1.75;overflow:hidden">
 
-<header>
-  <div class="container topline">
-    <div>
-      <h1 class="name">Portfolio｜Game</h1>
-      <div class="role">王禹尧</div>
-      <p class="intro">
-        统计学与商业数据分析背景，关注 AI-native gameplay、系统设计、UGC 生态与玩家行为数据。
-        希望将玩法机制、AI 生成能力与数据分析方法结合，做出既有新鲜感、又可控可验证的游戏体验。
-      </p>
+  <section style="position:relative;overflow:hidden;background:linear-gradient(180deg,#eef5f0 0%,#fbfbf7 100%)">
+    <div style="position:absolute;top:-180px;right:-140px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,#cfe6da88,transparent 70%)"></div>
+    <div style="position:absolute;bottom:-120px;left:-100px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,#f3e6cf88,transparent 70%)"></div>
+
+    <div style="position:relative;width:min(1240px,calc(100% - 56px));margin:0 auto;padding:22px 0 0">
+
+      <div style="display:flex;justify-content:space-between;gap:20px;align-items:baseline;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#666e68;border-bottom:1px solid #dfe5e0;padding-bottom:14px">
+        <span>王禹尧 / Wang Yuyao</span>
+        <span>Game Design Portfolio — 2026</span>
+      </div><div style="padding:clamp(52px,8vw,100px) 0 clamp(36px,5vw,64px)">
+        <div style="font-family:'Newsreader',serif;font-style:italic;font-weight:300;font-size:clamp(19px,2.3vw,29px);color:#3f7a63;margin-bottom:14px">What should we build next?</div>
+        
+        <h1 style="margin: 0; font-family: 'Newsreader',serif; font-weight: 600; font-size: clamp(46px,10.5vw,150px); line-height: .9; letter-spacing: -.045em; color: #1b201c">GAME<br><span style="color: rgb(63, 122, 99);">PORTFOLIO</span></h1>
+        <div style="margin-top:16px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(20px,2.4vw,30px);letter-spacing:.06em;color:#1b201c">游戏作品集</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px;margin-top:clamp(34px,5vw,60px);padding-top:26px;border-top:1px solid #dfe5e0">
+          <p style="margin:0;grid-column:span 2;max-width:62ch;font-size:16.5px;color:#4b524c;text-wrap:pretty">
+            统计学与商业数据分析背景，关注 AI-native gameplay、系统设计、UGC 生态与玩家行为数据。希望将玩法机制、AI 生成能力与数据分析方法结合，做出既有新鲜感、又可控可验证的游戏体验。关注游戏出海的品类选择、本地化与海外玩家偏好差异。
+          </p>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#4b524c;line-height:2.1">
+            <div style="font-size:10px;letter-spacing:.2em;color:#666e68;margin-bottom:6px">CONTACT</div>
+            <div>yuyaow451@163.com</div>
+            <div>130 3150 2707</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;padding-bottom:26px">
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:14px;padding:18px 20px">
+          <div style="font-family:'Newsreader',serif;font-size:38px;line-height:1;color:#1b201c">2000<span style="color:#3f7a63">+</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#666e68;margin-top:6px">AI 养成游戏体验用户</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:14px;padding:18px 20px">
+          <div style="font-family:'Newsreader',serif;font-size:38px;line-height:1;color:#1b201c">TOP 10</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#666e68;margin-top:6px">蛋仔派对全国竞技排名</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:14px;padding:18px 20px">
+          <div style="font-family:'Newsreader',serif;font-size:38px;line-height:1;color:#1b201c">100<span style="color:#3f7a63">+</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#666e68;margin-top:6px">深度体验的国内外游戏</div>
+        </div>
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:14px;padding:18px 20px">
+          <div style="font-family:'Newsreader',serif;font-size:38px;line-height:1;color:#1b201c">4 <span style="font-size:20px;color:#666e68">+ 4</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#666e68;margin-top:6px">游戏项目 + 拆解长文</div>
+        </div>
+      </div>
     </div>
-    <div class="contact">
-      <div class="contact-label">联系</div>
-      yuyaow451@163.com<br>
-      13031502707
+  </section><nav style="position:sticky;top:0;z-index:30;background:rgba(251,251,247,.92);backdrop-filter:blur(10px);border-top:1px solid #e4eae5;border-bottom:1px solid #e4eae5">
+    <div style="width:min(1240px,calc(100% - 56px));margin:0 auto;display:flex;gap:32px;align-items:center;min-height:52px;overflow:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase">
+      <a href="#featured" style="color:#4b524c;padding:16px 0;white-space:nowrap" class="h1">01 / 项目</a>
+      <a href="#analysis" style="color:#4b524c;padding:16px 0;white-space:nowrap" class="h2">02 / 拆解</a>
+      <a href="#game-experience" style="color:#4b524c;padding:16px 0;white-space:nowrap" class="h3">03 / 经历</a>
+      <a href="#profile" style="color:#4b524c;padding:16px 0;white-space:nowrap" class="h4">04 / 简介</a>
     </div>
-  </div>
-</header>
+  </nav>
 
-<nav>
-  <div class="container">
-    <a href="#featured">游戏项目</a>
-    <a href="#analysis">游戏拆解</a>
-    <a href="#game-experience">游戏相关经历</a>
-    <a href="#profile">个人简介</a>
-  </div>
-</nav>
+  <main style="width:min(1240px,calc(100% - 56px));margin:0 auto">
 
-<main>
+    <section id="featured" style="padding:clamp(52px,7vw,88px) 0 0;scroll-margin-top:60px">
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#3f7a63">01</span>
+        <h2 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(29px,4.2vw,50px);letter-spacing:-.04em;line-height:1.05">游戏项目</h2>
+        <span style="font-family:'Newsreader',serif;font-style:italic;font-size:22px;color:#666e68">Projects</span>
+      </div>
+      <div style="height:1px;background:#d5ddd7;margin-bottom:44px"></div>
 
-<section id="featured">
-  <div class="container">
-    <div class="section-title">
-      <h2>游戏项目</h2>
-    </div>
-
-    <div class="featured">
-
-      <article class="project">
-        <div class="project-head">
+      <article style="margin-bottom:clamp(48px,6vw,80px);background:#ffffff;border:1px solid #e4eae5;border-radius:20px;padding:clamp(24px,3.2vw,42px)">
+        <div style="display:flex;flex-direction:column;gap:clamp(22px,3vw,32px)">
           <div>
-            <h3>爱豆收集梦想生活｜AI 驱动沙盒养成游戏</h3>
-            <div class="meta">独立产品设计 / 全栈开发 · Web · 2026</div>
-          </div>
-          <div class="badges">
-            <span class="badge">AI Gameplay</span>
-            <span class="badge">Simulation</span>
-            <span class="badge">System Design</span>
-          </div>
-        </div>
-
-        <p class="summary">
-          Tomodachi-Life 风格的俯视沙盒养成游戏。核心采用“确定性模拟 + 生成式 AI”混合架构：
-          游戏系统管理时间、角色状态、日程和关系数值，LLM 只负责生成当前情境下的对话与剧情，
-          以提升内容自由度，同时保证世界状态连续、规则可控。
-        </p>
-
-        <div class="project-grid">
-          <div>
-            <ul class="keypoints">
-              <li>设计角色关系、世界事件、虚拟社交平台、角色创建等核心系统。</li>
-              <li>通过结构化 AI 输出，将生成内容解析并写回关系、事件与游戏状态。</li>
-              <li>使用 DeepSeek，并通过上下文裁剪降低 token 消耗与响应成本。</li>
-              <li>结合角色素材包搭建可自定义捏脸系统，并使用 Gemini 生成游戏内角色、美术及场景素材。</li>
-              <li>技术栈：React 19 / TypeScript / Vite / Tailwind CSS v4。</li>
-            </ul>
-            <p class="result"><strong>结果</strong>2000+ 用户体验，出现社交媒体自发传播。</p>
-          </div>
-          <figure class="media">
-            <!-- TODO 视频：录屏放到 media/idol-life.mp4，封面图放到 media/idol-life.jpg -->
-            <video src="media/idol-life.mp4" poster="media/idol-life.jpg"
-                   controls muted loop playsinline preload="none"
-                   aria-label="爱豆收集梦想生活 游玩录像"></video>
-            <div class="placeholder">演示视频整理中</div>
-            <figcaption>角色日程推进与 AI 对话生成实机演示</figcaption>
-          </figure>
-        </div>
-
-        <div class="links">
-          <!-- TODO：如有线上试玩地址，在此补一条试玩链接 -->
-          <a href="docs/idol-life.html">策划案 →</a>
-        </div>
-      </article>
-
-      <article class="project">
-        <div class="project-head">
-          <div>
-            <h3>AI 狼人杀｜1 名玩家 vs 11 个 AI Agent</h3>
-            <div class="meta">独立设计开发 · Multi-Agent Social Deduction · 2026</div>
-          </div>
-          <div class="badges">
-            <span class="badge">Multi-Agent</span>
-            <span class="badge">Social Deduction</span>
-            <span class="badge">AI Behavior</span>
-          </div>
-        </div>
-
-        <p class="summary">
-          玩家独自进入 12 人狼人杀对局，其余 11 个位置由 AI Agent 控制。重点不是“AI 会聊天”，
-          而是让每个 Agent 拥有角色信息、记忆、怀疑、立场与行为决策，形成真实的多人社交推理体验。
-        </p>
-
-        <div class="project-grid">
-          <div>
-            <ul class="keypoints">
-              <li>拆分公开信息、身份私有信息与 Agent 局部记忆。</li>
-              <li>探索不同人格与角色 prompt 对发言、投票、跟票和欺骗行为的影响。</li>
-              <li>重点研究 AI 的 herd behavior、信息污染与错误推理问题。</li>
-            </ul>
-          </div>
-          <figure class="media">
-            <!-- TODO 视频：录屏放到 media/werewolf.mp4，封面图放到 media/werewolf.jpg -->
-            <video src="media/werewolf.mp4" poster="media/werewolf.jpg"
-                   controls muted loop playsinline preload="none"
-                   aria-label="AI 狼人杀 对局录像"></video>
-            <div class="placeholder">演示视频整理中</div>
-            <figcaption>11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
-          </figure>
-        </div>
-
-        <div class="links">
-          <!-- 密钥在前端，公开部署等于公开密钥，故暂无线上试玩，见策划案第 09 节 -->
-          <a href="docs/ai-werewolf.html">策划案 →</a>
-        </div>
-      </article>
-
-      <article class="project">
-        <div class="project-head">
-          <div>
-            <h3>光与影｜双角色机关解谜</h3>
-            <div class="meta">个人开发 · 16 关 · 已上线</div>
-          </div>
-          <div class="badges">
-            <span class="badge">Puzzle</span>
-            <span class="badge">Level Design</span>
-            <span class="badge">Core Mechanic</span>
-          </div>
-        </div>
-
-        <p class="summary">
-          全黑场景，双角色同屏合作解谜，共 16 关。光灵离开光就消散，影灵被光照到就消散；
-          灯可以推着走。<strong>每移动一次灯，两条路径同时反向翻转</strong>——
-          一个人的路打开，另一个人的路随之断开。两人必须同时站进各自的门才算过关。
-        </p>
-
-        <div class="project-grid">
-          <div>
-            <ul class="keypoints">
-              <li>
-                <strong>两个角色的规则严格镜像，这是机制成立的前提。</strong>
-                若限制不对称，一个谜题会退化成两个互不相干的谜题；
-                镜像规则下玩家只需理解「亮暗互补」一件事，就能自动推演两边后果——
-                认知成本减半，谜题深度不变。
-              </li>
-              <li>
-                <strong>光的渲染与致命判定是两套系统，且渲染必须服从判定。</strong>
-                判定阈值在灯半径 55% 处，渲染亮度必须在此之后迅速收掉；
-                否则会出现「看着危险其实安全」的光晕，玩家绕开本可通行的路，
-                解空间被视觉误导缩小，而他只会觉得这关无解。
-              </li>
-              <li>
-                <strong>护盾 0.28 秒是规则参数，不是手感参数。</strong>
-                跳跃穿过光柱的暴露时间约 0.34 秒——护盾设在其下，硬闯必死；
-                一旦放宽到 0.34 秒以上，会跳的玩家可直接冲过所有光柱，
-                「光是屏障」的设定当场失效，全部关卡同时被破解。
-              </li>
-              <li>
-                <strong>三个可达性数字定义了关卡的全部语法。</strong>
-                普通跳 2.5 格、站在灯上 3.4 格、最大水平跳 3.9 格——
-                于是「3 格墙」等于「这里必须用灯」，读格子数就能判断可解性，不必试玩验证。
-              </li>
-              <li>
-                <strong>全程只有一种可交互物件，靠叠加互斥用途换取组合空间。</strong>
-                灯同时是光源、垫脚箱子和常压板配重，三者互相冲突——
-                「只有一盏灯而有两件事要做」因此成为最经济的谜题模板。
-              </li>
-            </ul>
-          </div>
-          <figure class="media">
-            <!-- TODO 视频：录屏放到 media/light-shadow.mp4，封面图放到 media/light-shadow.jpg -->
-            <video src="media/light-shadow.mp4" poster="media/light-shadow.jpg"
-                   controls muted loop playsinline preload="none"
-                   aria-label="光与影 关卡演示录像"></video>
-            <div class="placeholder">演示视频整理中</div>
-            <figcaption>推动光源，同时改变光灵与影灵的可行路径</figcaption>
-          </figure>
-        </div>
-
-        <div class="links">
-          <a href="https://wangyy992.github.io/Unlit/">试玩 →</a>
-          <a href="docs/unlit.html">策划案 →</a>
-        </div>
-      </article>
-
-      <article class="project">
-        <div class="project-head">
-          <div>
-            <h3>ちいかわ 跑酷｜IP 向横版跑酷</h3>
-            <div class="meta">个人开发 · Web · 已上线</div>
-          </div>
-          <div class="badges">
-            <span class="badge">IP Game</span>
-            <span class="badge">Runner</span>
-            <span class="badge">Game Feel</span>
-          </div>
-        </div>
-
-        <p class="summary">
-          以《ちいかわ》（Chiikawa）为素材的横版跑酷，已上线可玩。
-          玩家被讨伐队追赶，靠躲避怪物与荆棘拉开距离；金币成串悬在<strong>每个障碍的正上方</strong>——
-          吃到它们能补充领先距离，而领先距离决定能跑多远。
-          进度不是分数，是原作设定里的<strong>「除草检定」等级</strong>，每跑 800m 晋一级。
-        </p>
-
-        <div class="project-grid">
-          <div>
-            <ul class="keypoints">
-              <li>
-                <strong>选题来自市场观察，不是个人偏好。</strong>
-                ちいかわ 从推特短篇连载起家，2023 年起在国内快速扩散，
-                是目前谷子经济里最活跃的 IP 之一——联名频次高、线下快闪常态化排队、
-                核心受众是购买力强的年轻女性。这类高热度 IP 的授权游戏正在变多，
-                做这个项目是想弄清一个具体问题：<strong>IP 授权游戏里，设计该在哪里让位给 IP，又该在哪里坚持。</strong>
-              </li>
-              <li>
-                <strong>把「打工考证」而不是「战斗」设为核心目标。</strong>
-                ちいかわ 的识别点是「可爱外表 + 残酷规则」——角色靠讨伐怪物和除草打工谋生，
-                除草还要考等级检定。做成战斗跑酷会丢掉这层反差，
-                变成任何萌系角色都能替换的皮；做成考证跑酷，这个 IP 才是不可替代的。
-              </li>
-              <li>
-                <strong>撞到障碍不是即死，而是被追击者拉近。</strong>
-                撞一次损失 80px 领先距离，约需 6 秒不失误才能补回。
-                即死表达的是「一击致命」，消耗表达的是「被追得筋疲力尽」——
-                后者才是原作角色的真实处境。失误可挽回但要付出时间，
-                这段「我得稳一会儿」的状态本身就是有质感的体验。
-              </li>
-              <li>
-                <strong>收集物悬在危险正上方，用风险换生存资源。</strong>
-                每个障碍生成时，4 枚金币同时挂在它正上方 55px；连击每 5 枚补充领先距离。
-                所以玩家不是为「凑够数量」冒险，而是为「活得更久」冒险——
-                收益连续而非阶跃，决策因此一直存在。实测两种跑法收益相差约 2 倍。
-              </li>
-              <li>
-                <strong>用 IP 自带的晋级框架替代自建数值。</strong>
-                除草检定在原作里已是读者熟悉的等级体系，直接拿来当进度，
-                省掉一整套自定义成长系统的设计与教学成本。
-              </li>
-              <li>
-                <strong>难度用两条相反的曲线控制。</strong>
-                速度随距离升到 1.62 倍后封顶，而障碍间距持续放宽——
-                后期压力从「反应速度」转移到「领先距离的经营」，难度的性质变了而不只是数值变了。
-              </li>
-            </ul>
-            <p class="result">
-              <strong>这个项目验证的是</strong>
-              IP 的「已知性」本身就是可以直接消费的设计资产——
-              它同时提供世界观规则、进度框架与视觉语言。用好能大幅压缩设计成本，用不好就只是贴图换肤。
-              技术上为零依赖零构建、固定步长 1/120s、可直接 file:// 打开。
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;background:#e6f1eb;color:#2c5a49;padding:5px 10px;border-radius:999px">AI Gameplay</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Simulation</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">System Design</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px">
+              <span style="font-family:'Newsreader',serif;font-size:34px;color:#c6d5cc;line-height:1">01</span>
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(25px,3vw,36px);line-height:1.2;letter-spacing:-.04em;text-wrap:balance">爱豆收集梦想生活</h3>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:20px;color:#666e68;margin:6px 0 10px">AI 驱动沙盒养成游戏</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#666e68;padding-bottom:18px;border-bottom:1px solid #eaefeb">独立产品设计 / 全栈开发 · Web · 2026</div>
+            <figure style="margin:22px 0 0">
+            <div class="media">
+              <video src="media/idol-life.mp4" poster="media/idol-life.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#f1f5f2;border:1px solid #e4eae5;border-radius:16px"></video>
+              <div class="ph" style="aspect-ratio:16/9;border:1px dashed #cddcd4;border-radius:16px;background:repeating-linear-gradient(45deg,#f1f5f2,#f1f5f2 9px,#f8faf9 9px,#f8faf9 18px);display:none;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#666e68">演示视频整理中</div>
+            </div>
+            <figcaption style="margin-top:10px;font-size:13px;color:#666e68">角色日程推进与 AI 对话生成实机演示</figcaption>
+            </figure>
+            <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
+              Tomodachi-Life 风格的俯视沙盒养成游戏。核心采用“确定性模拟 + 生成式 AI”混合架构：游戏系统管理时间、角色状态、日程和关系数值，LLM 只负责生成当前情境下的对话与剧情，以提升内容自由度，同时保证世界状态连续、规则可控。
             </p>
+            <div style="display:grid;gap:9px">
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>设计角色关系、世界事件、虚拟社交平台、角色创建等核心系统。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">02</span><span>通过结构化 AI 输出，将生成内容解析并写回关系、事件与游戏状态。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">03</span><span>使用 DeepSeek，并通过上下文裁剪降低 token 消耗与响应成本。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">04</span><span>结合角色素材包搭建可自定义捏脸系统，并使用 Gemini 生成游戏内角色、美术及场景素材。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">05</span><span>技术栈：React 19 / TypeScript / Vite / Tailwind CSS v4。</span></div>
+            </div>
+            <div style="margin-top:18px;background:#e6f1eb;border-radius:14px;padding:16px 20px">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;color:#2c5a49;margin-bottom:6px">RESULT</div>
+              <div style="font-family:'Noto Serif SC',serif;font-size:17px;color:#1b201c">2000+ 用户体验，出现社交媒体自发传播。</div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.1em">
+              <a href="docs/idol-life.html" style="border:1px solid #cddcd4;color:#2c5a49;padding:9px 16px;border-radius:999px" class="h5">策划案 →</a>
+            </div>
           </div>
-          <figure class="media">
-            <!-- TODO 视频：录屏放到 media/chiikawa-runner.mp4，封面图放到 media/chiikawa-runner.jpg -->
-            <video src="media/chiikawa-runner.mp4" poster="media/chiikawa-runner.jpg"
-                   controls muted loop playsinline preload="none"
-                   aria-label="ちいかわ 跑酷 游玩录像"></video>
-            <div class="placeholder">演示视频整理中</div>
-            <figcaption>除草推进与怪物障碍的实机演示</figcaption>
-          </figure>
-        </div>
-
-        <p class="note">
-          非商业同人作品。《ちいかわ》角色、怪物及相关设定版权归原作者ナガノ及授权方所有，本作不用于任何商业用途。
-        </p>
-
-        <div class="links">
-          <a href="https://wangyy992.github.io/chiiiikawa/">试玩 →</a>
-          <a href="docs/chiikawa-runner.html">策划案 →</a>
+          
         </div>
       </article>
 
-    </div>
-  </div>
-</section>
-
-<section id="analysis">
-  <div class="container">
-    <div class="section-title">
-      <h2>游戏拆解</h2>
-      <p>四篇长文，每篇一个核心论点与可迁移结论。</p>
-    </div>
-
-    <div class="case-list">
-      <div class="case-row">
-        <h3>蛋仔派对</h3>
-        <p>UGC 生态赢在「创作 → 分发 → 反馈」的循环转速，不在编辑器上限。拆统一操作语法如何把成本转移给消费端、纯外观商业化为什么是结构性约束，以及约每 10 天一次的 IP 联动为什么不是营销动作，而是同时给商业化、创作与消费三个循环供料。</p>
-        <a href="analysis/eggy-party.html">阅读全文 · 14 分钟 →</a>
-      </div>
-
-      <div class="case-row">
-        <h3>锈湖</h3>
-        <p>两人团队把「不解释」制度化：符号复用制造关联，硬谜题保成就感，软逻辑留讨论空间，解释权外包给社区，形成边际成本为零的内容飞轮。</p>
-        <a href="analysis/rusty-lake.html">阅读全文 · 11 分钟 →</a>
-      </div>
-
-      <div class="case-row">
-        <h3>Royal Match</h3>
-        <p>玩法几乎没有创新，胜负手在把「失败」而非「通关」当主战场设计，以及 meta 层只做正反馈、不引入第二个失败点。成熟品类的竞争已转移到买量效率。</p>
-        <a href="analysis/royal-match.html">阅读全文 · 12 分钟 →</a>
-      </div>
-
-      <div class="case-row">
-        <h3>Status AI</h3>
-        <p>推理成本让游戏的边际成本不再趋近于零，直接推翻 F2P 的经济模型前提。四个结构性约束里，哪些会被模型进步解决，哪些不会。</p>
-        <a href="analysis/status-ai.html">阅读全文 · 15 分钟 →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section id="game-experience">
-  <div class="container">
-    <div class="section-title">
-      <h2>游戏相关经历</h2>
-      <p>高玩经历、校园游戏社群运营与海外独立游戏研究。</p>
-    </div>
-    <div class="timeline">
-        <div class="timeline-row">
-          <div class="date">2020 — 至今</div>
+      <article style="margin-bottom:clamp(48px,6vw,80px);background:#ffffff;border:1px solid #e4eae5;border-radius:20px;padding:clamp(24px,3.2vw,42px)">
+        <div style="display:flex;flex-direction:column;gap:clamp(22px,3vw,32px)">
+          
           <div>
-            <h3>蛋仔派对｜全国前 10 玩家</h3>
-            <p>竞技水平曾达到全国前十，并曾收到斗鱼平台签约主播邀约。长期深度参与游戏竞技与玩家社区，对核心玩法、玩家成长、社区内容与用户激励机制有较深入的一线理解。</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;background:#e6f1eb;color:#2c5a49;padding:5px 10px;border-radius:999px">Multi-Agent</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Social Deduction</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">AI Behavior</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px">
+              <span style="font-family:'Newsreader',serif;font-size:34px;color:#c6d5cc;line-height:1">02</span>
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(25px,3vw,36px);line-height:1.2;letter-spacing:-.04em;text-wrap:balance">AI 狼人杀</h3>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:20px;color:#666e68;margin:6px 0 10px">1 名玩家 vs 11 个 AI Agent</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#666e68;padding-bottom:18px;border-bottom:1px solid #eaefeb">独立设计开发 · Multi-Agent Social Deduction · 2026</div>
+            <figure style="margin:22px 0 0">
+            <div class="media">
+              <video src="media/werewolf.mp4" poster="media/werewolf.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#f1f5f2;border:1px solid #e4eae5;border-radius:16px"></video>
+              <div class="ph" style="aspect-ratio:16/9;border:1px dashed #cddcd4;border-radius:16px;background:repeating-linear-gradient(45deg,#f1f5f2,#f1f5f2 9px,#f8faf9 9px,#f8faf9 18px);display:none;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#666e68">演示视频整理中</div>
+            </div>
+            <figcaption style="margin-top:10px;font-size:13px;color:#666e68">11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
+            </figure>
+            <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
+              玩家独自进入 12 人狼人杀对局，其余 11 个位置由 AI Agent 控制。重点不是“AI 会聊天”，而是让每个 Agent 拥有角色信息、记忆、怀疑、立场与行为决策，形成真实的多人社交推理体验。
+            </p>
+            <div style="display:grid;gap:9px">
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>拆分公开信息、身份私有信息与 Agent 局部记忆。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">02</span><span>探索不同人格与角色 prompt 对发言、投票、跟票和欺骗行为的影响。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">03</span><span>重点研究 AI 的 herd behavior、信息污染与错误推理问题。</span></div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.1em">
+              <a href="docs/ai-werewolf.html" style="border:1px solid #cddcd4;color:#2c5a49;padding:9px 16px;border-radius:999px" class="h6">策划案 →</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article style="margin-bottom:clamp(48px,6vw,80px);background:#ffffff;border:1px solid #e4eae5;border-radius:20px;padding:clamp(24px,3.2vw,42px)">
+        <div style="display:flex;flex-direction:column;gap:clamp(22px,3vw,32px)">
+          <div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;background:#e6f1eb;color:#2c5a49;padding:5px 10px;border-radius:999px">Puzzle</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Level Design</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Core Mechanic</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px">
+              <span style="font-family:'Newsreader',serif;font-size:34px;color:#c6d5cc;line-height:1">03</span>
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(25px,3vw,36px);line-height:1.2;letter-spacing:-.04em;text-wrap:balance">光与影</h3>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:20px;color:#666e68;margin:6px 0 10px">双角色机关解谜</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#666e68;padding-bottom:18px;border-bottom:1px solid #eaefeb">个人开发 · 已上线</div>
+            <figure style="margin:22px 0 0">
+            <div class="media">
+              <video src="media/light-shadow.mp4" poster="media/light-shadow.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#f1f5f2;border:1px solid #e4eae5;border-radius:16px"></video>
+              <div class="ph" style="aspect-ratio:16/9;border:1px dashed #cddcd4;border-radius:16px;background:repeating-linear-gradient(45deg,#f1f5f2,#f1f5f2 9px,#f8faf9 9px,#f8faf9 18px);display:none;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#666e68">演示视频整理中</div>
+            </div>
+            <figcaption style="margin-top:10px;font-size:13px;color:#666e68">推动光源，同时改变光灵与影灵的可行路径</figcaption>
+            </figure>
+            <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
+              全黑场景，双角色同屏合作解谜。光灵离开光就消散，影灵被光照到就消散；灯可以推着走。<strong style="font-weight:700;box-shadow:inset 0 -9px 0 #d9ebe1">每移动一次灯，两条路径同时反向翻转</strong>——一个人的路打开，另一个人的路随之断开。两人必须同时站进各自的门才算过关。
+            </p>
+            <div style="display:grid;gap:9px">
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>两个角色的规则严格镜像：玩家只需理解「亮暗互补」一件事，就能自动推演两边后果。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">02</span><span>光的渲染必须服从致命判定，阈值在灯半径 55%——否则光晕会误导玩家，缩小解空间。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">03</span><span>灯同时是光源、垫脚箱子和压板配重，三种互斥用途撑起全部谜题组合。</span></div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.1em">
+              <a href="https://wangyy992.github.io/Unlit/" style="background:#2c5a49;color:#f7faf8;padding:9px 16px;border-radius:999px" class="h7">试玩 →</a>
+              <a href="docs/unlit.html" style="border:1px solid #cddcd4;color:#2c5a49;padding:9px 16px;border-radius:999px" class="h8">策划案 →</a>
+            </div>
+          </div>
+          
+        </div>
+      </article>
+
+      <article style="margin-bottom:clamp(48px,6vw,80px);background:#ffffff;border:1px solid #e4eae5;border-radius:20px;padding:clamp(24px,3.2vw,42px)">
+        <div style="display:flex;flex-direction:column;gap:clamp(22px,3vw,32px)">
+          
+          <div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;background:#e6f1eb;color:#2c5a49;padding:5px 10px;border-radius:999px">IP Game</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Runner</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border:1px solid #dfe5e0;color:#4b524c;padding:5px 10px;border-radius:999px">Game Feel</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:14px">
+              <span style="font-family:'Newsreader',serif;font-size:34px;color:#c6d5cc;line-height:1">04</span>
+              <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(25px,3vw,36px);line-height:1.2;letter-spacing:-.04em;text-wrap:balance">ちいかわ 跑酷</h3>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:20px;color:#666e68;margin:6px 0 10px">IP 向横版跑酷</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#666e68;padding-bottom:18px;border-bottom:1px solid #eaefeb">个人开发 · Web · 已上线</div>
+            <figure style="margin:22px 0 0">
+            <div class="media">
+              <video src="media/chiikawa-runner.mp4" poster="media/chiikawa-runner.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#f1f5f2;border:1px solid #e4eae5;border-radius:16px"></video>
+              <div class="ph" style="aspect-ratio:16/9;border:1px dashed #cddcd4;border-radius:16px;background:repeating-linear-gradient(45deg,#f1f5f2,#f1f5f2 9px,#f8faf9 9px,#f8faf9 18px);display:none;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#666e68">演示视频整理中</div>
+            </div>
+            <figcaption style="margin-top:10px;font-size:13px;color:#666e68">除草推进与怪物障碍的实机演示</figcaption>
+            </figure>
+            <p style="margin:18px 0 22px;font-family:'Noto Serif SC',serif;font-size:18px;line-height:1.8;color:#26302a;text-wrap:pretty">
+              以《ちいかわ》（Chiikawa）为素材的横版跑酷，已上线可玩。玩家被讨伐队追赶，靠躲避怪物与荆棘拉开距离；金币成串悬在<strong style="font-weight:700;box-shadow:inset 0 -9px 0 #d9ebe1">每个障碍的正上方</strong>——吃到它们能补充领先距离，而领先距离决定能跑多远。进度不是分数，是原作设定里的<strong style="font-weight:700;box-shadow:inset 0 -9px 0 #d9ebe1">「除草检定」等级</strong>，每跑 800m 晋一级。
+            </p>
+            <div style="display:grid;gap:9px">
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">01</span><span>选题来自市场观察：ちいかわ 是谷子经济里最活跃的 IP 之一，想弄清授权游戏里设计该在哪让位给 IP、又在哪坚持。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">02</span><span>把「打工考证」而不是「战斗」设为核心目标——「可爱外表 + 残酷规则」的反差才是这个 IP 不可替代的部分。</span></div>
+              <div style="background:#f7faf8;border:1px solid #eaefeb;border-radius:12px;padding:12px 15px;font-size:14.5px;color:#3b423c;display:grid;grid-template-columns:26px 1fr;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f7a63;padding-top:3px">03</span><span>撞障碍不是即死，而是损失 80px 领先距离；金币悬在障碍正上方，用风险换生存资源。</span></div>
+            </div>
+            
+            <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.1em">
+              <a href="https://wangyy992.github.io/chiiiikawa/" style="background:#2c5a49;color:#f7faf8;padding:9px 16px;border-radius:999px" class="h9">试玩 →</a>
+              <a href="docs/chiikawa-runner.html" style="border:1px solid #cddcd4;color:#2c5a49;padding:9px 16px;border-radius:999px" class="h10">策划案 →</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="analysis" style="padding:clamp(28px,4vw,48px) 0 0;scroll-margin-top:60px">
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#3f7a63">02</span>
+        <h2 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(29px,4.2vw,50px);letter-spacing:-.04em;line-height:1.05">游戏拆解</h2>
+        <span style="font-family:'Newsreader',serif;font-style:italic;font-size:22px;color:#666e68">Essays</span>
+      </div>
+      <div style="height:1px;background:#d5ddd7;margin-bottom:24px"></div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+        <a href="analysis/eggy-party.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h11">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
+            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">蛋仔派对</h3>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">派对竞技 / UGC · 网易 · 2022 公测</div>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">UGC 生态赢在「创作 → 分发 → 反馈」的循环转速，不在编辑器上限。拆统一操作语法如何把成本转移给消费端、纯外观商业化为什么是结构性约束，以及约每 10 天一次的 IP 联动为什么不是营销动作，而是同时给商业化、创作与消费三个循环供料。</p>
+          <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">14 MIN</span></div>
+        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">🥚</span>
+        </a>
+        <a href="analysis/rusty-lake.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h12">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
+            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">锈湖</h3>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">点击解谜 · Rusty Lake（荷兰，两人团队）· 2015 起系列</div>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">两人团队把「不解释」制度化：符号复用制造关联，硬谜题保成就感，软逻辑留讨论空间，解释权外包给社区，形成边际成本为零的内容飞轮。</p>
+          <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">11 MIN</span></div>
+        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">🔑</span>
+        </a>
+        <a href="analysis/royal-match.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h13">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
+            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Royal Match</h3>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">三消 · Dream Games（土耳其）· 2021</div>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">玩法几乎没有创新，胜负手在把「失败」而非「通关」当主战场设计，以及 meta 层只做正反馈、不引入第二个失败点。成熟品类的竞争已转移到买量效率。</p>
+          <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">12 MIN</span></div>
+        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">👑</span>
+        </a>
+        <a href="analysis/status-ai.html" style="display:block;position:relative;background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px;color:inherit" class="h14">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px">
+            <h3 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:22px;letter-spacing:-.03em">Status AI</h3>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:#666e68;margin:-2px 0 12px">AI 社交模拟 / 同人 roleplay · WishRoll（YC）· 2024</div>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">推理成本让游戏的边际成本不再趋近于零，直接推翻 F2P 的经济模型前提。四个结构性约束里，哪些会被模型进步解决，哪些不会。</p>
+          <div style="margin-top:14px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63"><span>阅读全文 →</span><span style="color:#666e68;font-size:11px">15 MIN</span></div>
+        <span aria-hidden="true" style="position:absolute;right:22px;top:20px;font-size:26px;line-height:1;opacity:.85">💬</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="game-experience" style="padding:clamp(48px,6vw,80px) 0 0;scroll-margin-top:60px">
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#3f7a63">03</span>
+        <h2 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(29px,4.2vw,50px);letter-spacing:-.04em;line-height:1.05">游戏相关经历</h2>
+        <span style="font-family:'Newsreader',serif;font-style:italic;font-size:22px;color:#666e68">Background</span>
+      </div>
+      <div style="height:1px;background:#d5ddd7;margin-bottom:14px"></div>
+      <p style="margin:0 0 24px;font-size:14.5px;color:#666e68">高玩经历、校园游戏社群运营与海外独立游戏研究。</p>
+
+      <div style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:32px;padding:22px 0;border-bottom:1px solid #e4eae5">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;letter-spacing:.06em">2022 — 2024</div>
+        <div>
+          <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:19px">蛋仔派对｜全国前 10 玩家</h3>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">竞技水平曾达到全国前十，并曾收到斗鱼平台签约主播邀约。长期深度参与游戏竞技与玩家社区，对核心玩法、玩家成长、社区内容与用户激励机制有较深入的一线理解。</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:32px;padding:22px 0;border-bottom:1px solid #e4eae5">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;letter-spacing:.06em">2023.03 — 2024.06</div>
+        <div>
+          <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:19px">蛋仔派对校园社群｜创始人 &amp; 运营负责</h3>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">从零搭建 100+ 人校园社群，策划线下赛事及跨校联赛，并与上海交通大学校园社群合作；获得官方礼品赞助。持续追踪社群活跃度与活动转化数据，根据反馈优化活动形式与运营节奏，并沉淀双校 UGC 内容生态。</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:180px minmax(0,1fr);gap:32px;padding:22px 0;border-bottom:1px solid #e4eae5">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;letter-spacing:.06em">长期积累</div>
+        <div>
+          <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:19px">独立游戏海外市场研究｜100+ 款游戏深度体验</h3>
+          <p style="margin:0;font-size:14.5px;color:#555c56;text-wrap:pretty">累计深度体验 100+ 款国内外游戏，并长期参与游戏社群、剧情分析等二次创作内容。法国 EMLYON 交流期间曾与锈湖开发团队开发者直接沟通，并广泛接触欧洲本地玩家，积累对欧美玩家在叙事深度、世界观构建与社交属性等方面偏好的第一手观察。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile" style="padding:clamp(48px,6vw,80px) 0 0;scroll-margin-top:60px">
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:10px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#3f7a63">04</span>
+        <h2 style="margin:0;font-family:'Noto Serif SC',serif;font-weight:900;font-size:clamp(29px,4.2vw,50px);letter-spacing:-.04em;line-height:1.05">个人简介</h2>
+        <span style="font-family:'Newsreader',serif;font-style:italic;font-size:22px;color:#666e68">Profile</span>
+      </div>
+      <div style="height:1px;background:#d5ddd7;margin-bottom:14px"></div>
+      <p style="margin:0 0 28px;font-size:14.5px;color:#666e68">教育背景、实习经历、个人技能与个人评价。</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px">
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#666e68;text-transform:uppercase;margin-bottom:16px">Education</div>
+          <div style="padding-bottom:16px;border-bottom:1px solid #eaefeb">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;margin-bottom:4px">2024.09 — 2026.06</div>
+            <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:17.5px">香港城市大学｜商业数据分析（商学院）｜硕士</h3>
+            <p style="margin:0;font-size:14px;color:#555c56">主修课程：数据库管理系统、数据可视化、统计数据分析、数据挖掘、生成式 AI 商业应用。</p>
+            <p style="margin:5px 0 0;font-size:14px;color:#555c56">学术交流：法国里昂商学院 EMLYON（2025.09 — 2025.12）。</p>
+          </div>
+          <div style="padding-top:16px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;margin-bottom:4px">2020.09 — 2024.06</div>
+            <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:17.5px">华东师范大学｜统计学（统计学院）｜学士</h3>
+            <p style="margin:0;font-size:14px;color:#555c56">主修课程：概率论、数理统计、回归分析、经济学、统计软件、多元统计分析、经济统计。</p>
           </div>
         </div>
 
-        <div class="timeline-row">
-          <div class="date">2023.03 — 2024.06</div>
-          <div>
-            <h3>蛋仔派对校园社群｜创始人 &amp; 运营负责</h3>
-            <p>从零搭建 100+ 人校园社群，策划线下赛事及跨校联赛，并与上海交通大学校园社群合作；获得官方礼品赞助。持续追踪社群活跃度与活动转化数据，根据反馈优化活动形式与运营节奏，并沉淀双校 UGC 内容生态。</p>
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#666e68;text-transform:uppercase;margin-bottom:16px">Internships</div>
+          <div style="padding-bottom:16px;border-bottom:1px solid #eaefeb">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;margin-bottom:4px">2023.09 — 2024.02</div>
+            <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:17.5px">巴斯夫（中国）有限公司｜油田与矿业解决方案部｜市场实习生</h3>
+            <p style="margin:0;font-size:14px;color:#555c56;text-wrap:pretty">整合三大销售区域历史销售记录与问卷反馈，构建客户偏好与区域渗透模型；使用 Python 进行客户聚类，识别 3 类潜在高价值客户群体，并协助定向营销测试与反馈跟踪。</p>
+          </div>
+          <div style="padding-top:16px">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3f7a63;margin-bottom:4px">2023.07 — 2023.09</div>
+            <h3 style="margin:0 0 6px;font-family:'Noto Serif SC',serif;font-weight:700;font-size:17.5px">东兴证券｜研究部｜金融工程实习生</h3>
+            <p style="margin:0;font-size:14px;color:#555c56;text-wrap:pretty">使用 Python 完成 10+ 个选股因子的提取、数据清洗与多因子模型回测，并制作收益分布、回撤曲线等可视化输出。</p>
           </div>
         </div>
 
-        <div class="timeline-row">
-          <div class="date">长期积累</div>
-          <div>
-            <h3>独立游戏海外市场研究｜100+ 款游戏深度体验</h3>
-            <p>累计深度体验 100+ 款国内外游戏，重点关注欧美独立游戏，并长期参与游戏社群、剧情分析等二次创作内容。法国 EMLYON 交流期间曾与锈湖开发团队开发者直接沟通，并广泛接触欧洲本地玩家，积累对欧美玩家在叙事深度、世界观构建与社交属性等方面偏好的第一手观察。</p>
+        <div style="background:#ffffff;border:1px solid #e4eae5;border-radius:18px;padding:24px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#666e68;text-transform:uppercase;margin-bottom:16px">Skills</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Game Design</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">System Design</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Level Design</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">AI / LLM</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Prompt Engineering</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">React</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">TypeScript</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Python</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">SQL</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Tableau</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3b423c;background:#f2f7f4;border-radius:999px;padding:5px 11px">Data Analysis</span>
           </div>
+          <p style="margin:16px 0 0;font-size:14px;color:#555c56">语言：普通话（母语）、英语（精通）、粤语（良好）、法语（基础）。</p>
+        </div>
+
+        <div style="background:#e6f1eb;border:1px solid #d9ebe1;border-radius:18px;padding:24px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#2c5a49;text-transform:uppercase;margin-bottom:16px">Statement</div>
+          <p style="margin:0;font-family:'Noto Serif SC',serif;font-size:16px;line-height:1.85;color:#22302a;text-wrap:pretty">重度游戏玩家，具备顶尖玩家视角与独立游戏开发经验；拥有统计学与商业数据分析背景，能将数据结果转化为产品与运营判断。具备 AI 游戏产品落地经验，熟悉 Prompt Engineering 与 Vibe Coding，并拥有法国交流及欧美独立游戏、玩家社群的一手观察经验。</p>
         </div>
       </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<section id="profile">
-  <div class="container">
-    <div class="section-title">
-      <h2>个人简介</h2>
-      <p>教育背景、实习经历、个人技能与个人评价。</p>
+  <footer style="margin-top:clamp(48px,6vw,80px);background:#eef5f0;border-top:1px solid #e4eae5">
+    <div style="width:min(1240px,calc(100% - 56px));margin:0 auto;padding:26px 0 56px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#666e68">
+      <span>Portfolio · 个人作品集 · 王禹尧 · 2026</span>
+      <span>yuyaow451@163.com</span>
     </div>
-
-    <div style="margin-bottom:42px;">
-      <h3 style="font-size:19px;margin:0 0 16px;">教育背景</h3>
-      <div class="timeline">
-        <div class="timeline-row">
-          <div class="date">2024.09 — 2026.06</div>
-          <div>
-            <h3>香港城市大学｜商业数据分析（商学院）｜硕士</h3>
-            <p>主修课程：数据库管理系统、数据可视化、统计数据分析、数据挖掘、生成式 AI 商业应用。</p>
-            <p style="margin-top:5px;">学术交流：法国里昂商学院 EMLYON（2025.09 — 2025.12）。</p>
-          </div>
-        </div>
-        <div class="timeline-row">
-          <div class="date">2020.09 — 2024.06</div>
-          <div>
-            <h3>华东师范大学｜统计学（统计学院）｜学士</h3>
-            <p>主修课程：概率论、数理统计、回归分析、经济学、统计软件、多元统计分析、经济统计。</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:42px;">
-      <h3 style="font-size:19px;margin:0 0 16px;">实习经历</h3>
-      <div class="timeline">
-        <div class="timeline-row">
-          <div class="date">2023.09 — 2024.02</div>
-          <div>
-            <h3>巴斯夫（中国）有限公司｜油田与矿业解决方案部｜市场实习生</h3>
-            <p>整合三大销售区域历史销售记录与问卷反馈，构建客户偏好与区域渗透模型；使用 Python 进行客户聚类，识别 3 类潜在高价值客户群体，并协助定向营销测试与反馈跟踪。</p>
-          </div>
-        </div>
-        <div class="timeline-row">
-          <div class="date">2023.07 — 2023.09</div>
-          <div>
-            <h3>东兴证券｜研究部｜金融工程实习生</h3>
-            <p>使用 Python 完成 10+ 个选股因子的提取、数据清洗与多因子模型回测，并制作收益分布、回撤曲线等可视化输出。</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="about">
-      <div class="about-box">
-        <h3>个人技能</h3>
-        <div class="skills">
-          <span class="skill">Game Design</span>
-          <span class="skill">System Design</span>
-          <span class="skill">Level Design</span>
-          <span class="skill">AI / LLM</span>
-          <span class="skill">Prompt Engineering</span>
-          <span class="skill">React</span>
-          <span class="skill">TypeScript</span>
-          <span class="skill">Python</span>
-          <span class="skill">SQL</span>
-          <span class="skill">Tableau</span>
-          <span class="skill">Data Analysis</span>
-        </div>
-        <p style="margin:16px 0 0;color:var(--muted);font-size:14px;">
-          语言：普通话（母语）、英语（精通）、粤语（良好）、法语（基础）。
-        </p>
-      </div>
-
-      <div class="about-box">
-        <h3>个人评价</h3>
-        <p style="margin:0;color:var(--muted);font-size:14px;">
-          重度游戏玩家，具备顶尖玩家视角与独立游戏开发经验；拥有统计学与商业数据分析背景，
-          能将数据结果转化为产品与运营判断。具备 AI 游戏产品落地经验，熟悉 Prompt Engineering
-          与 Vibe Coding，并拥有法国交流及欧美独立游戏、玩家社群的一手观察经验。
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-</main>
-
+  </footer>
+</div>
 <script>
-// 没有对应视频文件时，用占位框代替空播放器（视频一旦放进 media/ 就自动恢复）
 document.querySelectorAll('.media video').forEach(function (v) {
   var probe = new Image();
   probe.onerror = function () { v.parentNode.classList.add('is-empty'); };
   probe.src = v.getAttribute('poster');
 });
-
-// 导航高亮当前章节：取最后一个顶部已越过阈值的章节
-(function () {
-  var links = [].slice.call(document.querySelectorAll('nav a[href^="#"]'));
-  if (!links.length) return;
-
-  var pairs = [];
-  links.forEach(function (a) {
-    var el = document.querySelector(a.getAttribute('href'));
-    if (el) pairs.push({ link: a, el: el });
-  });
-  if (!pairs.length) return;
-
-  var ticking = false;
-  function update() {
-    ticking = false;
-    var current = pairs[0];
-    for (var i = 0; i < pairs.length; i++) {
-      if (pairs[i].el.getBoundingClientRect().top <= 90) current = pairs[i];
-    }
-    pairs.forEach(function (p) { p.link.classList.remove('active'); });
-    current.link.classList.add('active');
-  }
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(update);
-  }
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll);
-  update();
-})();
 </script>
-
-<footer>
-  <div class="container">
-    Portfolio · 个人作品集 · 王禹尧 · 2026
-  </div>
-</footer>
-
 </body>
 </html>
