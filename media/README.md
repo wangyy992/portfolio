@@ -25,3 +25,20 @@ ffmpeg -i idol-life.mp4 -ss 3 -vframes 1 -q:v 3 idol-life.jpg
 ```
 
 `-an` 是去掉音轨。页面里视频默认静音，留着音轨只是白白增加体积；如果某个项目的音效本身是卖点，就去掉 `-an`，同时把 `index.html` 里那个 `<video>` 的 `muted` 删掉。
+
+---
+
+## 拆解配图
+
+游戏官方 / 角色美术，用于游戏拆解文章的配图。
+
+| 文件 | 尺寸 | 用途 |
+|---|---|---|
+| `char-eggy.png` | 475×480 | 蛋仔派对 |
+| `char-royal-match.png` | 463×480 | Royal Match |
+| `char-rusty-lake.png` | 163×480 | 锈湖 |
+| `char-status-ai.png` | 480×480 | Status AI |
+| `char-status-ai-cut.png` | 430×480 | Status AI（另一版裁切） |
+| `rusty-lake-hero.png` | 1536×1024 | 锈湖主视觉（2.3MB，若用于网页需先压缩） |
+
+版权归各游戏的开发商与发行商所有，此处仅作为评论性文章的配图使用。
