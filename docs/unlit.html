@@ -77,6 +77,30 @@
 th{background:#f1f1ef;color:#6b5115}
 .toc a.active{color:#6b5115;border-left-color:#d9a441}
 .doc-foot{background:#0b0b0d;border-top:none;color:#7d7a72}
+figure.diagram.art{background:#0b0b0d;border-color:#241f16}
+figure.diagram.art figcaption{border-top-color:#241f16;color:#8e8b82}
+figure.diagram.art figcaption strong{color:#d8d4cb}
+.art-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:20px;
+  justify-items:center;
+  align-items:end;
+}
+.art-cell{display:flex;flex-direction:column;align-items:center;gap:10px}
+.art-cell img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  image-rendering:auto;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,.6));
+}
+.art-label{
+  font-size:12.5px;
+  letter-spacing:.04em;
+  color:#8e8b82;
+  font-family:var(--mono)
+}
 .doc-foot a{color:#d9a441}
 </style>
 </head>
@@ -467,6 +491,26 @@ th{background:#f1f1ef;color:#6b5115}
         <li><strong>机关门用流动的能量条表示「还关着」</strong>，与已开启状态在静止画面里也能区分。</li>
         <li><strong>光照区内飘浮尘埃</strong>，让「哪里有光」在没有物体的空中也能被看见；每帧只抽样更新五分之一以控制视线检测开销。</li>
       </ul>
+
+      <figure class="diagram art">
+        <div class="art-row">
+          <div class="art-cell">
+            <img src="../media/unlit-door-lumen.png" alt="光灵的门：暗内腔加金色发光门框">
+            <span class="art-label">光灵的门</span>
+          </div>
+          <div class="art-cell">
+            <img src="../media/unlit-door-umbra.png" alt="影灵的门：暗内腔加紫色发光门框">
+            <span class="art-label">影灵的门</span>
+          </div>
+        </div>
+        <figcaption>
+          两扇门的内腔都是<strong>纯黑</strong>，只有门框发光。这不是风格选择，是判读需求：
+          门可能出现在光照区里，如果内腔跟着场景一起被照亮，门就和墙融成一片。
+          <strong>纯黑内腔保证门在任何光照条件下都是画面里最暗的一块</strong>，永远能被一眼找到。
+          门框的暖金与冷紫，则承担「这扇门是谁的」这一条信息——
+          与角色配色同源，玩家不需要额外记忆。
+        </figcaption>
+      </figure>
 
       <h3>音效覆盖率是个真问题</h3>
       <div class="callout risk">
