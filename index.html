@@ -75,28 +75,6 @@ header{
   color:#9a9a94;
   margin-bottom:4px;
 }
-.stats{
-  display:flex;
-  flex-wrap:wrap;
-  margin-top:36px;
-  padding-top:26px;
-  border-top:1px solid var(--line);
-}
-.stat{padding-right:62px}
-.stat b{
-  display:block;
-  font-size:40px;
-  line-height:1;
-  letter-spacing:-.045em;
-  font-weight:750;
-}
-.stat span{
-  display:block;
-  margin-top:8px;
-  font-size:11.5px;
-  letter-spacing:.13em;
-  color:#9a9a94;
-}
 nav{
   position:sticky;
   top:0;
@@ -247,27 +225,20 @@ section{padding:54px 0;scroll-margin-top:64px}
   border:1px solid var(--line);
   border-radius:8px;
 }
-.keynum{
-  padding-left:20px;
-  border-left:2px solid var(--accent);
-  margin-bottom:20px;
+.media .placeholder{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  aspect-ratio:16/9;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  background:var(--soft);
+  color:#9a9a94;
+  font-size:14px;
 }
-.keynum b{
-  display:block;
-  font-size:46px;
-  line-height:1;
-  letter-spacing:-.045em;
-  font-weight:750;
-}
-.keynum span{
-  display:block;
-  margin-top:9px;
-  font-size:13.5px;
-  color:var(--muted);
-}
-.media.is-empty video,
-.media.is-empty figcaption{display:none}
-.media.is-empty .keynum{margin-bottom:0}
+.media.is-empty video{display:none}
+.media.is-empty .placeholder{display:flex}
 .media figcaption{
   margin-top:8px;
   color:var(--muted);
@@ -393,9 +364,6 @@ footer{
   .timeline-row{grid-template-columns:1fr;gap:6px}
   .about{grid-template-columns:1fr}
   nav .container{overflow:auto}
-  .stat{padding-right:0;width:50%;margin-bottom:20px}
-  .stat b{font-size:32px}
-  .keynum b{font-size:38px}
 }
 </style>
 </head>
@@ -416,13 +384,6 @@ footer{
       yuyaow451@163.com<br>
       13031502707
     </div>
-  </div>
-
-  <div class="container stats">
-    <div class="stat"><b>4</b><span>游戏项目</span></div>
-    <div class="stat"><b>4</b><span>游戏拆解</span></div>
-    <div class="stat"><b>4</b><span>项目策划案</span></div>
-    <div class="stat"><b>2000+</b><span>用户体验过</span></div>
   </div>
 </header>
 
@@ -476,11 +437,11 @@ footer{
             <p class="result"><strong>结果</strong>2000+ 用户体验，出现社交媒体自发传播。</p>
           </div>
           <figure class="media">
-            <div class="keynum"><b>2000+</b><span>用户体验过，出现社交媒体自发传播</span></div>
             <!-- TODO 视频：录屏放到 media/idol-life.mp4，封面图放到 media/idol-life.jpg -->
             <video src="media/idol-life.mp4" poster="media/idol-life.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="爱豆收集梦想生活 游玩录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>角色日程推进与 AI 对话生成实机演示</figcaption>
           </figure>
         </div>
@@ -518,11 +479,11 @@ footer{
             </ul>
           </div>
           <figure class="media">
-            <div class="keynum"><b>12</b><span>人标准局：1 名玩家对 11 个 AI Agent</span></div>
             <!-- TODO 视频：录屏放到 media/werewolf.mp4，封面图放到 media/werewolf.jpg -->
             <video src="media/werewolf.mp4" poster="media/werewolf.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="AI 狼人杀 对局录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>11 个 Agent 的发言、怀疑与投票实机对局</figcaption>
           </figure>
         </div>
@@ -586,11 +547,11 @@ footer{
             </ul>
           </div>
           <figure class="media">
-            <div class="keynum"><b>16</b><span>关，双角色规则互为镜像</span></div>
             <!-- TODO 视频：录屏放到 media/light-shadow.mp4，封面图放到 media/light-shadow.jpg -->
             <video src="media/light-shadow.mp4" poster="media/light-shadow.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="光与影 关卡演示录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>推动光源，同时改变光灵与影灵的可行路径</figcaption>
           </figure>
         </div>
@@ -669,11 +630,11 @@ footer{
             </p>
           </div>
           <figure class="media">
-            <div class="keynum"><b>800m</b><span>晋一级除草检定，速度同步升至 1.62 倍</span></div>
             <!-- TODO 视频：录屏放到 media/chiikawa-runner.mp4，封面图放到 media/chiikawa-runner.jpg -->
             <video src="media/chiikawa-runner.mp4" poster="media/chiikawa-runner.jpg"
                    controls muted loop playsinline preload="none"
                    aria-label="ちいかわ 跑酷 游玩录像"></video>
+            <div class="placeholder">演示视频整理中</div>
             <figcaption>除草推进与怪物障碍的实机演示</figcaption>
           </figure>
         </div>
