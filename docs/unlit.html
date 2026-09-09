@@ -6,6 +6,79 @@
 <title>光与影 策划案｜王禹尧</title>
 <meta name="description" content="双角色合作解谜《光与影》设计说明：对称规则、光的判定与渲染分离、由引擎常量倒推的关卡设计约束、教学曲线。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+/* 光与影 专属：全黑场景 + 一盏灯 */
+:root{
+  --bg:#f8f8f7;
+  --line:#e4e4e2;
+  --hair:#ececea;
+  --soft:#f1f1ef;
+  --accent:#8a6a1f;
+  --accent-deep:#6b5115;
+  --accent-soft:#f7f0dc;
+  --accent-line:#d9a441;
+  --muted:#66655f;
+  --body:#525149;
+  --text:#16161a;
+}
+::selection{background:#f2e2b8}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  border-bottom:none;
+  padding:52px 0 54px;
+  background:#0b0b0d;
+}
+.doc-head .container{position:relative;z-index:1}
+.doc-head::before{
+  content:"";
+  position:absolute;
+  left:-10%;
+  top:-40%;
+  width:70%;
+  height:180%;
+  background:radial-gradient(closest-side, rgba(255,214,140,.30), rgba(255,214,140,.08) 55%, transparent 72%);
+  pointer-events:none;
+}
+.doc-head::after{
+  content:"";
+  position:absolute;
+  right:-6%;
+  bottom:-70%;
+  width:56%;
+  height:150%;
+  background:radial-gradient(closest-side, rgba(120,150,255,.16), transparent 70%);
+  pointer-events:none;
+}
+.doc-head h1{color:#f4f1ea;letter-spacing:-.05em}
+.doc-head .sub{color:#8e8b82}
+.kicker{color:#d9a441}
+.back{color:#7d7a72}
+.back:hover{color:#d9a441}
+.doc-head .thesis{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(217,164,65,.22);
+  border-left:3px solid #d9a441;
+  border-radius:0 16px 16px 0;
+  color:#d8d4cb;
+  max-width:min(720px,100%);
+}
+.doc-head .thesis strong{color:#f4f1ea}
+.doc-head .thesis b{color:#d9a441}
+.doc-head .thesis em{box-shadow:inset 0 -9px 0 rgba(217,164,65,.28);color:#f4f1ea}
+.metabar dt{color:#8e8b82}
+.metabar dd{color:#d8d4cb}
+.doc-links a{border-color:rgba(217,164,65,.45);color:#f0d79a}
+.doc-links a:hover{background:rgba(217,164,65,.16)}
+.doc em{box-shadow:inset 0 -9px 0 #f2e2b8}
+.pull{border-left-color:#d9a441}
+.callout.take{background:#f7f0dc;border-color:#eadfc2}
+.callout.take .label{color:#6b5115}
+th{background:#f1f1ef;color:#6b5115}
+.toc a.active{color:#6b5115;border-left-color:#d9a441}
+.doc-foot{background:#0b0b0d;border-top:none;color:#7d7a72}
+.doc-foot a{color:#d9a441}
+</style>
 </head>
 <body>
 
