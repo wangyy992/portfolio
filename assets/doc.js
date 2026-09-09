@@ -13,31 +13,32 @@
   }
 
   var links = [].slice.call(document.querySelectorAll('.toc a'));
-  if (!links.length || !('IntersectionObserver' in window)) return;
+  if (!links.length) return;
 
-  var map = {};
-  var seen = [];
+  var pairs = [];
   links.forEach(function (a) {
     var el = document.querySelector(a.getAttribute('href'));
-    if (el) { map[el.id] = a; seen.push(el); }
+    if (el) pairs.push({ link: a, el: el });
   });
+  if (!pairs.length) return;
 
-  var visible = {};
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
-    var current = null;
-    for (var i = 0; i < seen.length; i++) {
-      if (visible[seen[i].id]) { current = seen[i].id; break; }
+  // 取最后一个顶部已越过阈值的小节；比「文档顺序里第一个可见」更符合阅读位置
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var current = pairs[0];
+    for (var i = 0; i < pairs.length; i++) {
+      if (pairs[i].el.getBoundingClientRect().top <= 120) current = pairs[i];
     }
-    // 全部划出视口时（长小节内部），退回到最后一个已越过顶部的小节
-    if (!current) {
-      for (var j = 0; j < seen.length; j++) {
-        if (seen[j].getBoundingClientRect().top <= 80) current = seen[j].id;
-      }
-    }
-    links.forEach(function (a) { a.classList.remove('active'); });
-    if (current && map[current]) map[current].classList.add('active');
-  }, { rootMargin: '-72px 0px -55% 0px', threshold: 0 });
-
-  seen.forEach(function (el) { io.observe(el); });
+    pairs.forEach(function (p) { p.link.classList.remove('active'); });
+    current.link.classList.add('active');
+  }
+  function onTocScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+  addEventListener('scroll', onTocScroll, { passive: true });
+  addEventListener('resize', onTocScroll);
+  update();
 })();

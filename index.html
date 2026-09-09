@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio｜个人作品集｜王禹尧</title>
+<title>王禹尧｜游戏作品集</title>
+<meta name="description" content="王禹尧的游戏作品集：AI 驱动沙盒养成、多 Agent 社交推理、双角色合作解谜与 IP 跑酷原型，附四篇游戏拆解与项目策划案。">
+<meta property="og:title" content="王禹尧｜游戏作品集">
+<meta property="og:description" content="四个游戏项目、四篇游戏拆解、四份策划案。关注 AI-native gameplay、系统设计与玩家行为数据。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23365f73'/%3E%3Crect x='8' y='8' width='11' height='11' rx='2' fill='%23f6f6f3'/%3E%3Crect x='15' y='15' width='9' height='9' rx='2' fill='%23f6f6f3' opacity='.55'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#f6f6f3;
@@ -38,18 +43,24 @@ header{
   gap:24px;
   align-items:flex-start;
 }
+.eyebrow{
+  font-size:12px;
+  letter-spacing:.18em;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:16px;
+}
 .name{
-  font-size:42px;
-  line-height:1.1;
-  margin:0 0 12px;
-  letter-spacing:-0.04em;
+  font-size:46px;
+  line-height:1.05;
+  margin:0 0 10px;
+  letter-spacing:-0.045em;
   font-weight:750;
 }
-.role{
-  font-size:18px;
-  color:var(--accent);
-  margin-bottom:16px;
-  font-weight:650;
+.tagline{
+  font-size:16px;
+  color:var(--muted);
+  margin:0 0 20px;
 }
 .intro{
   max-width:760px;
@@ -61,7 +72,14 @@ header{
   text-align:right;
   color:var(--muted);
   font-size:14px;
+  line-height:1.9;
   white-space:nowrap;
+}
+.contact-label{
+  font-size:11px;
+  letter-spacing:.14em;
+  color:#9a9a94;
+  margin-bottom:4px;
 }
 nav{
   position:sticky;
@@ -78,11 +96,25 @@ nav .container{
   min-height:52px;
 }
 nav a{
+  position:relative;
+  display:block;
+  padding:16px 0;
   font-size:14px;
   color:var(--muted);
+  transition:color .18s ease;
 }
 nav a:hover{color:var(--text)}
-section{padding:54px 0}
+nav a.active{color:var(--text);font-weight:650}
+nav a.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:2px;
+  background:var(--accent);
+}
+section{padding:54px 0;scroll-margin-top:64px}
 .section-title{
   display:flex;
   justify-content:space-between;
@@ -95,6 +127,14 @@ section{padding:54px 0}
   font-size:26px;
   letter-spacing:-.02em;
 }
+.section-title h2::before{
+  content:"";
+  display:block;
+  width:26px;
+  height:2px;
+  background:var(--accent);
+  margin-bottom:15px;
+}
 .section-title p{
   margin:0;
   color:var(--muted);
@@ -105,23 +145,36 @@ section{padding:54px 0}
   display:grid;
   grid-template-columns:1fr;
   gap:18px;
+  counter-reset:proj;
 }
 .project{
   background:var(--paper);
   border:1px solid var(--line);
   border-radius:10px;
   padding:24px;
+  transition:border-color .18s ease;
 }
+.project:hover{border-color:#c8d5da}
 .project-head{
   display:grid;
   grid-template-columns:1fr auto;
   gap:20px;
   align-items:start;
 }
+.project{counter-increment:proj}
 .project h3{
   margin:0 0 6px;
   font-size:22px;
   letter-spacing:-.02em;
+}
+.project h3::before{
+  content:counter(proj,decimal-leading-zero);
+  display:block;
+  font-size:12px;
+  letter-spacing:.14em;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:9px;
 }
 .meta{
   color:var(--muted);
@@ -241,6 +294,9 @@ section{padding:54px 0}
   font-size:14px;
   font-weight:650;
 }
+.case-row{transition:background-color .18s ease}
+.case-row:hover{background:#fbfbf9}
+.case-row a:hover{text-decoration:underline}
 .timeline{
   border-top:1px solid var(--line);
 }
@@ -321,16 +377,18 @@ footer{
 <header>
   <div class="container topline">
     <div>
-      <h1 class="name">Portfolio｜Game</h1>
-      <div class="role">王禹尧</div>
+      <div class="eyebrow">PORTFOLIO · GAME</div>
+      <h1 class="name">王禹尧</h1>
+      <p class="tagline">系统设计 · AI-native Gameplay · 关卡设计</p>
       <p class="intro">
         统计学与商业数据分析背景，关注 AI-native gameplay、系统设计、UGC 生态与玩家行为数据。
         希望将玩法机制、AI 生成能力与数据分析方法结合，做出既有新鲜感、又可控可验证的游戏体验。
       </p>
     </div>
     <div class="contact">
+      <div class="contact-label">联系</div>
       yuyaow451@163.com<br>
-      13031502707<br>
+      13031502707
     </div>
   </div>
 </header>
@@ -761,6 +819,38 @@ document.querySelectorAll('.media video').forEach(function (v) {
   probe.onerror = function () { v.parentNode.classList.add('is-empty'); };
   probe.src = v.getAttribute('poster');
 });
+
+// 导航高亮当前章节：取最后一个顶部已越过阈值的章节
+(function () {
+  var links = [].slice.call(document.querySelectorAll('nav a[href^="#"]'));
+  if (!links.length) return;
+
+  var pairs = [];
+  links.forEach(function (a) {
+    var el = document.querySelector(a.getAttribute('href'));
+    if (el) pairs.push({ link: a, el: el });
+  });
+  if (!pairs.length) return;
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var current = pairs[0];
+    for (var i = 0; i < pairs.length; i++) {
+      if (pairs[i].el.getBoundingClientRect().top <= 90) current = pairs[i];
+    }
+    pairs.forEach(function (p) { p.link.classList.remove('active'); });
+    current.link.classList.add('active');
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
+})();
 </script>
 
 <footer>
