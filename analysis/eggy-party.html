@@ -6,6 +6,87 @@
 <title>蛋仔派对拆解：UGC 平台的转速问题｜王禹尧</title>
 <meta name="description" content="蛋仔派对从 Party Game 到 UGC 平台的结构拆解：编辑器取舍、分发机制、纯外观商业化，以及高频 IP 联动如何同时供给商业化、创作与消费三个循环。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+/* 蛋仔派对专属：明黄派对底 + 糖果圆角 */
+:root{
+  --bg:#fdfbf4;
+  --line:#eee7d4;
+  --hair:#f4eee0;
+  --soft:#fbf5e2;
+  --accent:#a6761c;
+  --accent-deep:#7d570f;
+  --accent-soft:#fdf3d8;
+  --accent-line:#e8c34a;
+  --muted:#6b6455;
+  --body:#55514a;
+  --text:#201c14;
+}
+::selection{background:#fbe6a6}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  border-bottom:none;
+  padding:44px 0 48px;
+  background:
+    radial-gradient(680px 420px at 82% 22%, #ffe07a 0%, rgba(255,224,122,0) 66%),
+    radial-gradient(520px 360px at 8% 92%, #ffd0b3 0%, rgba(255,208,179,0) 70%),
+    linear-gradient(180deg,#fff3c8 0%, var(--bg) 100%);
+}
+.doc-head .container{position:relative;z-index:1}
+.doc-head::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(#ffffff9c 2px, transparent 2px);
+  background-size:26px 26px;
+  opacity:.55;
+  pointer-events:none;
+}
+.doc-head h1{color:#201c14}
+.doc-head .sub{color:#7d6a3f;font-style:normal;font-family:var(--serif);font-weight:500;font-size:19px}
+.kicker{color:#a6761c}
+.eggy{
+  position:absolute;
+  right:2%;
+  bottom:-10px;
+  width:190px;
+  height:auto;
+  filter:drop-shadow(0 16px 26px rgba(160,120,20,.28));
+  pointer-events:none;
+  z-index:2;
+}
+.doc-head .thesis{
+  background:rgba(255,255,255,.82);
+  border:1px solid #f0e2b4;
+  border-left:4px solid #e8c34a;
+  border-radius:0 18px 18px 0;
+  max-width:min(700px,calc(100% - 220px));
+}
+.thesis b{color:#a6761c}
+.doc h2 span{color:#a6761c}
+.doc em{box-shadow:inset 0 -9px 0 #fbe6a6}
+.pull{border-left-color:#e8c34a}
+.callout.take{background:#fdf3d8;border-color:#f0e2b4}
+.callout.take .label{color:#7d570f}
+.table-wrap,.callout,figure.diagram,.hub a{border-radius:18px}
+th{background:#fdf3d8;color:#7d570f}
+.toc a.active{color:#7d570f;border-left-color:#e8c34a}
+.doc-foot{background:#fff3c8;border-top:1px solid #f0e2b4;color:#6b6455}
+.doc-foot a{color:#a6761c}
+@media(max-width:1080px){
+  .eggy{right:0;width:170px}
+  .doc-head .thesis{max-width:calc(100% - 190px)}
+}
+@media(max-width:820px){
+  .eggy{right:0;top:34px;bottom:auto;width:104px}
+  .doc-head h1,.doc-head .sub{padding-right:118px}
+  .doc-head .thesis{max-width:none}
+}
+@media(max-width:520px){
+  .eggy{width:84px;top:30px}
+  .doc-head h1,.doc-head .sub{padding-right:96px}
+}
+</style>
 </head>
 <body>
 
@@ -13,6 +94,7 @@
 
 <header class="doc-head">
   <div class="container">
+    <img class="eggy" src="../media/char-eggy.png" alt="" aria-hidden="true">
     <a class="back" href="../index.html#analysis">← 返回作品集</a>
     <div class="kicker">游戏拆解 / 01</div>
     <h1>蛋仔派对</h1>
@@ -347,7 +429,7 @@
       <p>
         蛋仔派对的 IP 联动密度在国内游戏里是异常值。据行业媒体统计，
         它的联动节奏<strong>大约每 10–11 天一次</strong>，折算下来一年三十余次。
-        合作对象横跨三个完全不同的品类：
+        合作对象横跨五个完全不同的品类，从动画 IP 一路铺到非遗剧种：
       </p>
 
       <div class="table-wrap">
@@ -355,19 +437,29 @@
         <thead><tr><th>类型</th><th>代表合作方</th><th>在游戏里变成什么</th></tr></thead>
         <tbody>
           <tr>
-            <td><b>形象 IP</b></td>
-            <td>三丽鸥（酷洛米、大耳狗）、奥特曼、光遇</td>
+            <td><b>动画 / 形象 IP</b></td>
+            <td>三丽鸥家族（酷洛米、大耳狗等）、奥特曼、喜羊羊与灰太狼、猪猪侠、果宝特攻、中国奇谭</td>
             <td>1:1 还原的外观皮肤、配饰、主题场景与限时玩法</td>
           </tr>
           <tr>
+            <td><b>游戏 IP</b></td>
+            <td>光·遇、第五人格、我的世界、梦幻西游、鹅鸭杀</td>
+            <td>跨游戏形象互换、联动玩法与专属地图</td>
+          </tr>
+          <tr>
             <td><b>快消 / 餐饮品牌</b></td>
-            <td>肯德基、奥利奥、王老吉、必胜客、海底捞、三只松鼠、绿箭、思念</td>
+            <td>肯德基、蜜雪冰城、奥利奥、王老吉、必胜客、海底捞、三只松鼠、绿箭、思念、阿尔卑斯</td>
             <td>联名外观 + 线下商品互导</td>
           </tr>
           <tr>
-            <td><b>互联网产品</b></td>
-            <td>支付宝、菜狗</td>
-            <td>跨端活动与形象植入</td>
+            <td><b>互联网产品 / 机构</b></td>
+            <td>多邻国、支付宝、网易云音乐、百度地图、中国邮政</td>
+            <td>跨端活动、形象植入与公益企划</td>
+          </tr>
+          <tr>
+            <td><b>文化 / 线下</b></td>
+            <td>莆仙戏《踏伞行》（非遗剧种）、欢乐谷、Flying DongDong（潮玩）</td>
+            <td>主题场景、限时任务与线下乐园联动</td>
           </tr>
         </tbody>
       </table>
@@ -460,7 +552,8 @@
       </p>
       <p>
         玩家做的地图必须让别人<em>一眼认出来</em>——这是它能在地图广场上被点开的前提。
-        三丽鸥、奥特曼这类「一个剪影就能认出」的形象 IP 最适配；
+        三丽鸥、奥特曼、喜羊羊与灰太狼这类「一个剪影就能认出」的形象 IP 最适配，
+        多邻国那只绿色猫头鹰同理——符号足够简单，玩家在编辑器里也搭得出来；
         而叙事深厚但视觉符号弱的 IP，玩家无法在一张 3 分钟的跑酷图里表达它，
         联动效果会退化成单纯的皮肤销售。
       </p>
@@ -537,7 +630,7 @@
 
     <section id="transfer">
       <h2><span>09</span>可迁移的结论</h2>
-      <p>如果我要做一个内容平台型产品，从蛋仔这里我会带走四条：</p>
+      <p>如果我要做一个内容平台型产品，从蛋仔这里我会带走五条：</p>
       <ol>
         <li>
           <strong>先做能独立成立的单机体验，再平台化。</strong>
