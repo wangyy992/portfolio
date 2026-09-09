@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>蛋仔派对拆解：UGC 平台的转速问题｜王禹尧</title>
-<meta name="description" content="蛋仔派对从 Party Game 到 UGC 平台的结构拆解：编辑器取舍、分发机制、纯外观商业化与 UGC 生态之间的耦合关系。">
+<meta name="description" content="蛋仔派对从 Party Game 到 UGC 平台的结构拆解：编辑器取舍、分发机制、纯外观商业化，以及高频 IP 联动如何同时供给商业化、创作与消费三个循环。">
 <link rel="stylesheet" href="../assets/doc.css">
 </head>
 <body>
@@ -30,7 +30,7 @@
       <div><dt>上线</dt><dd>2022 年 5 月</dd></div>
       <div><dt>品类</dt><dd>休闲派对竞技 + UGC 平台</dd></div>
       <div><dt>分析视角</dt><dd>系统设计 / 生态结构</dd></div>
-      <div><dt>篇幅</dt><dd>约 4300 字 · 11 分钟</dd></div>
+      <div><dt>篇幅</dt><dd>约 5700 字 · 14 分钟</dd></div>
       <div><dt>最后更新</dt><dd>2026-09</dd></div>
     </dl>
   </div>
@@ -47,9 +47,10 @@
       <li><a href="#editor">04　编辑器的取舍</a></li>
       <li><a href="#distribution">05　分发：马太效应与对冲</a></li>
       <li><a href="#monetization">06　为什么必须是纯外观</a></li>
-      <li><a href="#risk">07　结构性风险</a></li>
-      <li><a href="#transfer">08　可迁移的结论</a></li>
-      <li><a href="#data">09　数据与来源</a></li>
+      <li><a href="#ip">07　IP 联动：内容供给</a></li>
+      <li><a href="#risk">08　结构性风险</a></li>
+      <li><a href="#transfer">09　可迁移的结论</a></li>
+      <li><a href="#data">10　数据与来源</a></li>
     </ol>
   </nav>
 
@@ -341,8 +342,156 @@
       </p>
     </section>
 
+    <section id="ip">
+      <h2><span>07</span>IP 联动：不是营销，是内容供给</h2>
+      <p>
+        蛋仔派对的 IP 联动密度在国内游戏里是异常值。据行业媒体统计，
+        它的联动节奏<strong>大约每 10–11 天一次</strong>，折算下来一年三十余次。
+        合作对象横跨三个完全不同的品类：
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>类型</th><th>代表合作方</th><th>在游戏里变成什么</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>形象 IP</b></td>
+            <td>三丽鸥（酷洛米、大耳狗）、奥特曼、光遇</td>
+            <td>1:1 还原的外观皮肤、配饰、主题场景与限时玩法</td>
+          </tr>
+          <tr>
+            <td><b>快消 / 餐饮品牌</b></td>
+            <td>肯德基、奥利奥、王老吉、必胜客、海底捞、三只松鼠、绿箭、思念</td>
+            <td>联名外观 + 线下商品互导</td>
+          </tr>
+          <tr>
+            <td><b>互联网产品</b></td>
+            <td>支付宝、菜狗</td>
+            <td>跨端活动与形象植入</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>为什么这件事在蛋仔身上尤其成立</h3>
+      <p>
+        第 06 节论证了商业化<strong>必须</strong>是纯外观。但纯外观有一个未被提及的代价：
+        <em>外观是唯一收入来源，而官方美术团队的产能是有限的。</em>
+        一年能原创多少套有吸引力的皮肤，直接封住了收入天花板。
+      </p>
+      <p>
+        IP 联动首先解决的就是这个产能问题——<strong>它是外观品类的外部产能</strong>。
+        联动皮肤不需要从零设计角色形象，IP 方已经把最难的部分（辨识度）做完了。
+      </p>
+      <p>但真正让它区别于普通「上架新皮肤」的，是下面这件事：</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 760 268" role="img" aria-label="一次 IP 联动同时供给三个循环的示意图" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="arip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
+            </marker>
+          </defs>
+
+          <rect x="0" y="92" width="162" height="66" rx="7" fill="#fafaf8" stroke="#deded8"/>
+          <g stroke="#deded8" fill="#fafaf8">
+            <rect x="272" y="10" width="300" height="56" rx="7"/>
+            <rect x="272" y="182" width="300" height="56" rx="7"/>
+          </g>
+          <rect x="272" y="90" width="300" height="70" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
+
+          <g font-size="13" fill="#171717" text-anchor="middle">
+            <text x="81" y="120">一次 IP 联动</text>
+            <text x="81" y="139" font-size="11.5" fill="#6e6e6a">约每 10–11 天</text>
+
+            <text x="422" y="33">新外观上架</text>
+            <text x="422" y="53" font-size="11.5" fill="#6e6e6a">→ 商业化循环：直接收入</text>
+
+            <text x="422" y="116" font-weight="700" fill="#365f73">给创作者一个新命题</text>
+            <text x="422" y="137" font-size="11.5" fill="#365f73">→ 创作循环：知道该做什么图</text>
+
+            <text x="422" y="205">玩家自制的主题地图</text>
+            <text x="422" y="225" font-size="11.5" fill="#6e6e6a">→ 消费循环：有新东西可玩</text>
+          </g>
+
+          <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#arip)">
+            <path d="M162,110 L212,110 Q224,110 224,98 L224,50 Q224,38 236,38 L267,38"/>
+            <path d="M162,125 L267,125"/>
+            <path d="M162,140 L212,140 Q224,140 224,152 L224,198 Q224,210 236,210 L267,210"/>
+          </g>
+
+          <g font-size="11.5" fill="#8a5a2b" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">
+            <text x="380" y="262" text-anchor="middle">一次普通的皮肤更新只喂到第一条</text>
+          </g>
+        </svg>
+        <figcaption>
+          IP 联动的收益是<strong>三重</strong>的：它同时是商品、是创作命题、是内容供给。
+          这是它能维持十天一次的频率而不显疲劳的根本原因。
+        </figcaption>
+      </figure>
+
+      <h3>创作命题，是 UGC 平台最稀缺的东西</h3>
+      <p>
+        第 05 节说过，官方主题活动是新创作者的两条对冲管道之一。
+        <strong>IP 联动就是主题活动的最高强度形态。</strong>
+      </p>
+      <p>
+        UGC 平台的创作者最常卡住的地方不是「不会做」，而是<em>「不知道做什么」</em>——
+        空白的编辑器是最劝退的界面。一次联动同时给出了题目、美术参照和确定的时间窗口，
+        创作者不需要自己想创意，只要把已经存在的世界观翻译成关卡就行。
+      </p>
+      <div class="callout take">
+        <span class="label">案例</span>
+        <p>
+          三丽鸥联动期间，官方投放的是皮肤、庄园、乐园、活动与场景的全维度内容；
+          而据媒体报道，<strong>玩家自制的三丽鸥主题 UGC 地图中，最受欢迎的几张游玩人数超过 500 万，点赞数接近 30 万。</strong>
+        </p>
+        <p>
+          这个数字的意义在于：<em>这批内容官方一分钱没花，却是联动期间玩家实际消耗的主要内容。</em>
+          官方出的是命题和素材，玩家出的是产能。
+          <strong>在一个 UGC 平台上做 IP 联动，投入产出比和在非 UGC 产品上完全不是一个量级。</strong>
+        </p>
+      </div>
+
+      <h3>这决定了它该选什么样的 IP</h3>
+      <p>
+        既然联动的核心价值之一是激发 UGC，那么选择标准就被反推出来了：
+        <strong>视觉辨识度 &gt; 内容深度。</strong>
+      </p>
+      <p>
+        玩家做的地图必须让别人<em>一眼认出来</em>——这是它能在地图广场上被点开的前提。
+        三丽鸥、奥特曼这类「一个剪影就能认出」的形象 IP 最适配；
+        而叙事深厚但视觉符号弱的 IP，玩家无法在一张 3 分钟的跑酷图里表达它，
+        联动效果会退化成单纯的皮肤销售。
+      </p>
+      <p>
+        这也解释了为什么合作名单里会大量出现食品饮料品牌：
+        它们的包装、配色、产品形状本身就是高辨识度的视觉资产，
+        <em>做成地图里的障碍物和装饰件毫无障碍</em>。
+      </p>
+
+      <div class="callout risk">
+        <span class="label">这套打法的三个风险</span>
+        <p>
+          <strong>一、脱敏。</strong>十天一次的频率下，「又联动了」会从惊喜变成日常。
+          一旦玩家把联动当成常规更新，单次联动的拉新与回流效果就会衰减，
+          而频率是很难往回降的——降下来会被读成「热度下滑」。
+        </p>
+        <p>
+          <strong>二、UGC 的授权边界。</strong>玩家用联动 IP 的形象自制地图，
+          这些内容的版权归属处在灰色地带。平台需要在授权协议里预先覆盖 UGC 场景，
+          否则最有价值的那部分内容（玩家自制主题图）反而是合规风险最高的部分。
+          <em>这是 UGC 平台做 IP 联动特有的问题，非 UGC 产品不会遇到。</em>
+        </p>
+        <p>
+          <strong>三、产能不自主。</strong>联动依赖对方的档期、授权与审批。
+          把内容节奏押在外部 IP 上，等于把一部分运营主动权让渡出去。
+        </p>
+      </div>
+    </section>
+
     <section id="risk">
-      <h2><span>07</span>结构性风险</h2>
+      <h2><span>08</span>结构性风险</h2>
 
       <h3>一、推荐算法会把生态推向「低难度快节奏」</h3>
       <p>
@@ -387,7 +536,7 @@
     </section>
 
     <section id="transfer">
-      <h2><span>08</span>可迁移的结论</h2>
+      <h2><span>09</span>可迁移的结论</h2>
       <p>如果我要做一个内容平台型产品，从蛋仔这里我会带走四条：</p>
       <ol>
         <li>
@@ -409,11 +558,19 @@
           纯算法分发的平台，新创作者的存活率会低到无法维持供给。
           社交分发不是补充功能，是生态的安全阀。
         </li>
+        <li>
+          <strong>在 UGC 平台上，外部 IP 是三重资产而不是一重。</strong>
+          它同时是商品（外观收入）、是创作命题（解决创作者「不知道做什么」）、
+          是内容供给（玩家自制的主题内容）。
+          因此选 IP 的标准应当是<b>视觉辨识度优先于内容深度</b>——
+          玩家要能在自己的作品里一眼把它表达出来。
+          同时要在授权协议里预先覆盖 UGC 场景，否则最有价值的那部分内容合规风险最高。
+        </li>
       </ol>
     </section>
 
     <section id="data">
-      <h2><span>09</span>数据与来源</h2>
+      <h2><span>10</span>数据与来源</h2>
       <p>
         本文的论证建立在机制推演上，不依赖具体数值。
         以下数据如果补入，能显著增强说服力，但<strong>必须附可查来源</strong>：
@@ -425,11 +582,22 @@
           <li>累计 UGC 地图数量与创作者数量 —— 用于第 03 节的供给规模</li>
           <li>UGC 地图占总对局时长的比例 —— 这是本文最关键的一个数字，直接决定「平台化是否真的成立」</li>
           <li>流水规模与外观 / 通行证的收入结构 —— 用于第 06 节</li>
-          <li>玩家年龄结构 —— 用于第 07 节第四条</li>
+          <li>玩家年龄结构 —— 用于第 08 节第四条</li>
+          <li>历次联动的拉新 / 回流数据，以及联动期与非联动期的 UGC 地图新增量对比 —— 这是第 07 节「三重收益」论断最直接的检验，如果联动期的地图新增量没有显著上升，该论断需要修正</li>
         </ul>
       </div>
+      <div class="callout risk" style="margin-top:18px">
+        <span class="label">第 07 节数据的口径</span>
+        <p>
+          该节引用的联动频率（约 10–11 天一次）、三丽鸥主题 UGC 地图的游玩与点赞量、
+          以及各合作方名单，均来自<strong>行业媒体报道</strong>（游戏陀螺、游戏日报、GameLook、
+          界面新闻等），<strong>非官方审计数据</strong>。引用时应注明出处与时间点，
+          并注意联动名单随时间持续增加，本文所列并不完整。
+        </p>
+      </div>
       <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
-        建议来源：网易财报及电话会议纪要、七麦 / 点点数据、Sensor Tower 行业报告、官方公布的周年数据。
+        建议来源：网易财报及电话会议纪要、七麦 / 点点数据、Sensor Tower 行业报告、官方公布的周年数据；
+        联动相关另见游戏陀螺、游戏日报、GameLook 的专题报道与官方新闻页。
         引用时标注口径与时间点——UGC 平台的数字口径差异很大，「地图数」和「有效地图数」不是一回事。
       </p>
     </section>
