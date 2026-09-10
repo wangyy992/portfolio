@@ -117,6 +117,7 @@ code{background:#f1efe9;color:#7a2b25}
       <div><dt>项目定位</dt><dd>单人对 AI 的社交推理游戏</dd></div>
       <div><dt>局配置</dt><dd>4 狼 · 4 民 · 预女猎白</dd></div>
       <div><dt>技术</dt><dd>React · TypeScript · Vite · Vercel 函数</dd></div>
+      <div><dt>模型</dt><dd>DeepSeek（deepseek-v4-flash）</dd></div>
       <div><dt>文档更新</dt><dd>2026-09-10</dd></div>
     </dl>
 
@@ -547,8 +548,15 @@ code{background:#f1efe9;color:#7a2b25}
 
       <h3>模型与密钥口径</h3>
       <p>
-        当前代码默认模型标识为 <code>deepseek-chat</code>，可通过环境配置覆盖；
-        <strong>不能据此确认线上实际使用的型号</strong>，更不能写成未经核对的 <code>deepseek-v4-flash</code>。
+        模型标识分两层，容易混淆，这里写清楚：
+        <strong>代码里的默认值是 <code>deepseek-chat</code></strong>
+        （<code>src/services/aiService.ts</code> 与 <code>api/chat.js</code> 各有一处，
+        分别由 <code>VITE_AI_MODEL</code> 与 <code>AI_MODEL</code> 覆盖）；
+        <strong>线上部署实际配置的是 <code>deepseek-v4-flash</code></strong>。
+      </p>
+      <p>
+        <em>读代码只能读到前者，读不到后者</em>——这类「默认值不等于线上值」的差异，
+        在任何靠环境变量注入配置的项目里都存在，写文档时值得单独标注。
       </p>
       <p>
         生产默认经服务端转发读取 <code>DEEPSEEK_API_KEY</code>。
