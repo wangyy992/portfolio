@@ -77,3 +77,16 @@ meadow 无透明通道、为照片式背景，转 JPEG 1400×933 / 106 KB。合�
 `public/videos/roles/` 下的命名对齐——中文路径在 URL 里需百分号编码，
 部分 CDN 与代理处理不当。策划案第 05 节以 `preload="none"` 引用，
 点击前不产生下载。
+
+### 爱豆收集梦想生活 · Gemini 生成素材
+
+| 文件 | 来源 | 处理 |
+|---|---|---|
+| `idol-city-map.jpg` | `idolTomodachiLifev2/public/maps/idol-city.png` | 原生 1536×1024 / 3.48 MB PNG → 1400×933 JPEG q80 / 400 KB |
+| `idol-scene-*.webp`（6 张） | `idolTomodachiLifev2/public/scenes/*.webp` | 1920×1072 → 1200×670 WebP q82，合计 466 KB |
+
+选取的六个地点：练习室、汉江（夜）、公司天台、演唱会现场、咖啡厅、商圈。
+其中「晚上 / 汉江 / 天台」对应策划案第 07 节里程碑的触发条件。
+
+游戏内每张场景另有 `*_blur.webp` 预模糊版（3–11 KB），
+用作失焦背景层以避免对大图实时做 CSS blur，该做法写在策划案第 09 节。

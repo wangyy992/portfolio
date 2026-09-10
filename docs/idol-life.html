@@ -66,6 +66,14 @@ code{background:#fbf1f0;color:#8f3a5e}
 .doc-links a:hover{background:#fceaf1}
 .doc-foot{background:#fff2f6;border-top:1px solid #f4d9e2;color:#6f636a}
 .doc-foot a{color:#b8517a}
+figure.art{margin:22px 0;padding:0;overflow:hidden;background:#1a1420;border:1px solid #e7d2dc;border-radius:18px}
+figure.art img{display:block;width:100%;height:auto}
+figure.art figcaption{padding:14px 20px 16px;background:var(--paper);border-top:1px solid #f0e3e2;font-size:13.5px;color:var(--muted)}
+figure.art figcaption strong{color:var(--text)}
+.scenes{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:18px 0}
+.scenes figure{margin:0}
+.scenes img{display:block;width:100%;aspect-ratio:1200/670;object-fit:cover;border:1px solid #f0e3e2;border-radius:14px}
+.scenes figcaption{margin-top:7px;text-align:center;font-size:12.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -523,12 +531,59 @@ code{background:#fbf1f0;color:#8f3a5e}
             <td><code>api/chat.ts</code> 服务端转发</td>
             <td><b>密钥不进前端包</b>——服务端读 <code>DEEPSEEK_API_KEY</code> 后转发到 <code>api.deepseek.com</code></td>
           </tr>
-          <tr><td>美术</td><td>像素 tileset 素材包 + 生成式素材</td><td>室内/室外分层，含大量家具、门、电视动图等</td></tr>
+          <tr><td>美术</td><td>像素 tileset 素材包 + <b>Gemini 生成式插画</b></td><td>室内/室外分层，含大量家具、门、电视动图等；城市地图与场景背景为 Gemini 产出，见下</td></tr>
           <tr><td>捏脸</td><td><code>FaceCustomizer.tsx</code> + 素材组合</td><td>基于分层素材的自定义外观</td></tr>
           <tr><td>部署</td><td>含 Dockerfile 与国内直连部署说明</td><td>—</td></tr>
         </tbody>
       </table>
       </div>
+      <h3>城市地图与场景背景</h3>
+      <p>
+        世界视图右上角的城市地图与各地点的场景背景，均由 <strong>Gemini</strong> 生成。
+        地图不是装饰性插画，而是<strong>导航界面本身</strong>——地点以可访问的坐标标记呈现在图上，
+        并携带锁定原因、当前人数与前往按钮（<code>CityMap.tsx</code>）。
+      </p>
+
+      <figure class="art">
+        <img src="../media/idol-city-map.jpg" alt="生成式城市地图：练习室、电视台、宿舍、商圈、演唱会场馆与汉江由道路串联">
+        <figcaption>
+          <strong>一张图同时承担世界观与导航两件事。</strong>
+          练习室、电视台、打歌舞台、演唱会场馆、商圈、便利店与汉江沿岸在同一张图上被道路串联，
+          玩家看到的「去哪里」和策划案里的地点表是同一份东西——
+          地点不是下拉菜单里的字符串，而是图上一个有位置关系的点。
+        </figcaption>
+      </figure>
+
+      <p>
+        各地点另有独立的场景背景，由 <code>sceneConfig.ts</code> 按地点 id 映射：
+      </p>
+      <div class="scenes">
+        <figure><img src="../media/idol-scene-practice.webp" alt="练习室场景"><figcaption>练习室</figcaption></figure>
+        <figure><img src="../media/idol-scene-hangang_night.webp" alt="汉江夜晚场景"><figcaption>汉江 · 夜</figcaption></figure>
+        <figure><img src="../media/idol-scene-rooftop.webp" alt="公司天台场景"><figcaption>公司天台</figcaption></figure>
+        <figure><img src="../media/idol-scene-concert.webp" alt="演唱会现场场景"><figcaption>演唱会现场</figcaption></figure>
+        <figure><img src="../media/idol-scene-cafe.webp" alt="咖啡厅场景"><figcaption>咖啡厅</figcaption></figure>
+        <figure><img src="../media/idol-scene-district.webp" alt="商圈场景"><figcaption>商圈</figcaption></figure>
+      </div>
+      <p class="src-note" style="font-size:13.5px;color:var(--muted)">
+        「晚上 / 汉江 / 天台」正是第 07 节里程碑的触发条件之一——
+        <em>能说心里话的时空是被具体画出来的，不是一个抽象的 flag。</em>
+      </p>
+
+      <div class="callout take">
+        <span class="label">一处很小但值得记的优化</span>
+        <p>
+          每张场景背景都另存了一份<strong>预先模糊的缩略版</strong>（<code>*_blur.webp</code>），
+          用作场景后方的失焦背景层，而不是对原图施加 CSS <code>filter: blur()</code>。
+        </p>
+        <p>
+          差距是数量级的：原图 37–150 KB，预模糊版只有 <strong>3–11 KB</strong>。
+          更重要的是<em>大尺寸图的实时高斯模糊在移动端是持续的 GPU 开销</em>，
+          而一张已经糊掉的小图，放大拉伸后视觉上没有区别，代价却接近于零。
+          <strong>模糊这件事可以在构建期做完，就不该留到每一帧。</strong>
+        </p>
+      </div>
+
       <p>
         密钥处理这一点与同期的 AI 狼人杀项目形成对比：那个项目把 key 放在前端
         （<code>dangerouslyAllowBrowser</code>），因此无法公开部署。
