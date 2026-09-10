@@ -277,7 +277,7 @@ code{background:#f1efe9;color:#7a2b25}
     <section id="animation">
       <h2><span>05</span>身份动画与素材</h2>
       <p>
-        <strong>六段身份视频已经接入游戏，并完成本地浏览器实际播放检查。</strong>
+        <strong>六段身份视频由<b>可灵</b>生成，已接入游戏，并完成本地浏览器实际播放检查。</strong>
         它们不是仅存放于仓库的备用文件。以下为同一批素材，可直接在本页播放：
       </p>
 
@@ -326,7 +326,7 @@ code{background:#f1efe9;color:#7a2b25}
         <tbody>
           <tr><td>全身静态立绘</td><td>11 名 AI 的常驻场景形象</td><td><span class="badge">已接入</span></td></tr>
           <tr><td>轻量前端动效</td><td>呼吸、发言高亮、选中、出局变虚</td><td><span class="badge">已实现</span></td></tr>
-          <tr><td>短视频</td><td>六种身份揭晓与重播</td><td><span class="badge">已接入并播放验证</span></td></tr>
+          <tr><td>短视频<br><span style="font-size:12.5px;color:var(--muted)">可灵生成</span></td><td>六种身份揭晓与重播</td><td><span class="badge">已接入并播放验证</span></td></tr>
           <tr><td>技能与死亡演出</td><td>狼刀、毒杀、放逐、猎人开枪的独立表现</td><td><span class="badge plan">待实现</span></td></tr>
           <tr><td>专属胜利演出</td><td>各身份不同的结算表现</td><td><span class="badge plan">待实现</span></td></tr>
         </tbody>
@@ -336,9 +336,31 @@ code{background:#f1efe9;color:#7a2b25}
         广场人物<strong>当前不是逐帧视频循环</strong>，也没有骨骼动画或口型同步。
         短视频集中用于身份揭示，常驻演出采用轻量动效，避免为每个状态制作长视频。
       </p>
+
+      <div class="callout take">
+        <span class="label">生成式素材用在哪一层，是个成本判断</span>
+        <p>
+          身份揭晓是<strong>一次性、低频、高仪式感</strong>的时刻：一局只播一次，
+          六种身份合起来也只有六段素材，且不需要与任何游戏状态对齐。
+          <em>这正好是生成式视频最划算的位置</em>——用<b>可灵</b>产出六段 3–4 秒的成片，
+          换来的开场质感是纯前端动效做不出来的，而总量封顶、不会随玩法扩张。
+        </p>
+        <p>
+          反过来，广场上的常驻演出<strong>不适合走生成式视频</strong>：
+          它需要跟随发言、选中、出局等实时状态变化，组合数量随角色与状态相乘，
+          而且必须与交互精确同步。这一层用轻量前端动效（呼吸、高亮、变虚）成本接近于零，
+          可控性还更高。
+        </p>
+        <p>
+          立绘的处理逻辑相同：全身图为生成式产出，酒馆老板多余的悬空手杯、
+          薇拉残留的袖片则用 imagegen 局部修补，而不是重抽整张——
+          <strong>生成用于产出，修补用于收敛，两者的成本结构不一样。</strong>
+        </p>
+      </div>
       <p>
-        全身原图位于 <code>public/images/characters/</code>。酒馆老板多余的悬空手杯、薇拉残留袖片已使用 imagegen 修补，
-        并另存修补版；原图与提示词记录保留。白狼王素材作为扩展资源保留，不参与当前标准局。
+        全身原图位于 <code>public/images/characters/</code>，修补版另存，
+        <strong>原图与提示词记录一并保留</strong>——生成式素材的可复现性依赖提示词存档，
+        丢了提示词就等于丢了这批素材的续作能力。白狼王素材作为扩展资源保留，不参与当前标准局。
       </p>
     </section>
 
