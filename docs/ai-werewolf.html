@@ -312,12 +312,6 @@ code{background:#f1efe9;color:#7a2b25}
           <figcaption><b>平民</b>约 3 秒</figcaption>
         </figure>
       </div>
-      <p class="src-note">
-        竖版 784×1172，H.264。游戏内路径为 <code>public/videos/roles/</code>，
-        Vite 中 public 目录下的文件以根路径访问（例如 <code>/videos/roles/seer.mp4</code>）；
-        本页为便于查看另存了一份到作品集的 <code>media/</code> 下。六段合计约 15 MB，<strong>设为点击后才加载</strong>；上面显示的封面是各段视频的首帧（另存为 JPEG，六张合计 282 KB），<em>因此在点开之前不会产生任何视频流量</em>。
-      </p>
-
       <h3>播放位置</h3>
       <ol>
         <li><strong>身份揭晓：</strong>抽牌后自动播放本人身份对应的视频，默认静音、行内播放。</li>
@@ -470,22 +464,6 @@ code{background:#f1efe9;color:#7a2b25}
       </table>
       </div>
       <div class="callout take">
-        <span class="label">这一步的性质要说清楚</span>
-        <p>
-          这是<strong>把观察到的打法翻译成人写的规则条目</strong>，
-          不是把对局文本喂给模型去学。<em>没有导入训练集，没有微调，没有 RAG 检索。</em>
-          产出物是 <code>SYSTEM_PROMPT</code> 里的结构化文字，可以逐条阅读、逐条修改、逐条推翻——
-          <b>这正是它的优点</b>：第 08 节前面那些错误引导之所以能被定位并改掉，
-          就是因为策略知识是明文而不是权重。
-        </p>
-        <p>
-          代价也很清楚，第 09 节会讲：所有 Agent 共享同一份条目，
-          <strong>打法会趋同</strong>。看的是同一批比赛，学的是同一套范式，
-          十一个 AI 就容易打得像同一个人。
-        </p>
-      </div>
-
-      <div class="callout take">
         <span class="label">策略性说谎 ≠ 事实幻觉</span>
         <p>
           狼人假称预言家是玩法；AI 把不存在的「上一轮发言」当证据是质量缺陷。
@@ -493,7 +471,7 @@ code{background:#f1efe9;color:#7a2b25}
         </p>
       </div>
       <p class="src-note">
-        再说明一次口径：<strong>参考比赛录像提炼策略条目，不等于导入训练集</strong>。
+        口径说明：<strong>参考比赛录像提炼策略条目，不等于导入训练集</strong>。
         目前未做模型微调，也没有完成大规模发言质量评测。
         本轮属于提示词、信息组织与部分兜底修正。
       </p>
