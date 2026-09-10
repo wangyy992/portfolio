@@ -92,7 +92,7 @@ code{background:#fbf1f0;color:#8f3a5e}
       <div><dt>结果</dt><dd>2000+ 用户体验</dd></div>
       <div><dt>模型</dt><dd>DeepSeek（deepseek-v4-flash）</dd></div>
       <div><dt>技术</dt><dd>React 19 / TypeScript / Vite / Tailwind v4</dd></div>
-      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+      <div><dt>最后更新</dt><dd>2026-09 · v2 稳定性改造</dd></div>
     </dl>
 
   </div>
@@ -517,7 +517,7 @@ code{background:#fbf1f0;color:#8f3a5e}
         <thead><tr><th>项</th><th>选择</th><th>说明</th></tr></thead>
         <tbody>
           <tr><td>前端</td><td>React 19 / TypeScript / Vite / Tailwind CSS v4</td><td>—</td></tr>
-          <tr><td>模型</td><td>DeepSeek <code>deepseek-v4-flash</code></td><td>玩家可自带 key 与模型；未提供时走默认</td></tr>
+          <tr><td>模型</td><td>DeepSeek <code>deepseek-v4-flash</code></td><td>浏览器不保存服务端密钥；部署端通过 <code>DEEPSEEK_API_KEY</code> 统一转发</td></tr>
           <tr>
             <td><b>密钥处理</b></td>
             <td><code>api/chat.ts</code> 服务端转发</td>
@@ -532,18 +532,27 @@ code{background:#fbf1f0;color:#8f3a5e}
       <p>
         密钥处理这一点与同期的 AI 狼人杀项目形成对比：那个项目把 key 放在前端
         （<code>dangerouslyAllowBrowser</code>），因此无法公开部署。
-        <strong>本项目加了一层服务端转发，才使公开试玩成为可能</strong>——
-        2000+ 用户体验的前提就在这里。
+        <strong>本项目加了一层服务端转发，才使公开试玩成为可能</strong>；
+        公开部署时必须在 Vercel 等平台配置 <code>DEEPSEEK_API_KEY</code>，否则接口会安全地返回 503。
       </p>
     </section>
 
     <section id="next">
       <h2><span>10</span>已知问题与下一步</h2>
-      <h3>已知问题</h3>
+      <h3>本轮已落地的改造</h3>
       <ul>
-        <li><strong>审计中仍有未修项。</strong>13 条里已修的只是一部分，F2–F5 等需要逐条落地。</li>
-        <li><strong>App.tsx 达 2393 行。</strong>状态机、UI、AI 调度混在一处，继续加系统会越来越难改。</li>
-        <li><strong>打歌评分仍有双源风险</strong>（F5），在完全切到代码算分前，结果可能不一致。</li>
+        <li><strong>对话状态可恢复。</strong>每次会话按天数、时段、地点和成员生成唯一键；离开场景后重新进入会继续原对话，不会误接到另一段剧情。</li>
+        <li><strong>需求完成状态独立保存。</strong>完成照顾后需求从世界视图消失，避免「已经完成却仍显示」的重复引导。</li>
+        <li><strong>关系变化受代码约束。</strong>AI 只能提交白名单成员、有限范围的关系增量；不能覆盖地点、时间、档期或其他核心世界状态。</li>
+        <li><strong>私信行为有明确语义。</strong>问候、鼓励和邀约分别产生不同结果；普通私信不再自动扣除曝光或凭空增加好感。</li>
+        <li><strong>城市地图改为真实插画。</strong>右上角地图使用生成式城市图，地点以可访问的坐标标记呈现，并保留锁定原因、人数和前往按钮。</li>
+        <li><strong>AI 请求具备服务端保护。</strong>API 统一校验请求体、限制输出大小、超时取消并执行按客户端和全局的频率限制。</li>
+      </ul>
+      <h3>仍需关注的问题</h3>
+      <ul>
+        <li><strong>部署环境必须配置 <code>DEEPSEEK_API_KEY</code>。</strong>缺少服务端密钥时，<code>/api/chat</code> 会返回 503，这是部署配置错误而不是前端回退逻辑。</li>
+        <li><strong>模型输出仍需观测。</strong>结构化块已经做了白名单与容错解析，但仍应持续记录异常格式、请求耗时和实际 token 消耗。</li>
+        <li><strong>移动端地图与低带宽体验。</strong>城市插画需要进一步压缩与懒加载，避免首次打开地图时产生不必要的下载等待。</li>
       </ul>
       <h3>下一步要验证的问题</h3>
       <ol>
