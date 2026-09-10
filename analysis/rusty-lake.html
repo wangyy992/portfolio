@@ -531,19 +531,80 @@
     <section id="data">
       <h2><span>10</span>数据与来源</h2>
       <p>本文论证基于机制分析与公开可见的产品结构，未使用未经核实的数值。</p>
-      <div class="todo-data">
-        <span class="label">待补充（附来源链接）</span>
-        <ul>
-          <li>各作品的下载量 / 销量量级，特别是免费线与付费线的比例 —— 用于验证第 02 节的双轨分工</li>
-          <li>Steam 评测数与好评率、平均游玩时长 —— 用于第 04 节关于完成率的论断</li>
-          <li>社区规模指标：subreddit 订阅数、B 站解析视频的播放量级、wiki 条目数 —— 用于第 07 节的飞轮论证</li>
-          <li>「锈湖 剧情解析」类关键词的搜索量 vs 游戏名本身的搜索量 —— 这是第 07 节最关键的一个对比，如果能拿到会非常有力</li>
-          <li>团队规模与单作开发周期 —— 用于第 06 节的成本结构</li>
-        </ul>
-      </div>
-      <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
-        建议来源：SteamDB、SteamSpy、官方博客与开发者访谈、r/rustylake、Rusty Lake Wiki、Google Trends。
+      <p>
+        本文论证基于机制分析与公开可见的产品结构。以下为已核实、可复查的部分，
+        <strong>每条附来源与时间点</strong>。核实时间：2026-09。
       </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>数据</th><th>数值</th><th>来源与口径</th><th>用于</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>累计下载量</b></td>
+            <td>7500 万+<br><span style="font-size:12.5px;color:#a2978d">终身累计，以移动端为主</span></td>
+            <td><a href="https://newsletter.gamediscover.co/p/how-rusty-lakes-immersive-puzzle" target="_blank" rel="noopener">GameDiscoverCo，2023-11</a>，<b>引述创始人 Robin Ras</b>。非第三方审计，但属一手口径</td>
+            <td>01</td>
+          </tr>
+          <tr>
+            <td><b>免费线与付费线<br>的量级差</b></td>
+            <td><i>Samsara Room</i>（免费）移动约 900 万、PC 150 万+<br><i>The Past Within</i>（$6）Steam 约 100 万套<br><i>Underground Blossom</i>（$5）首月跨平台 25 万+</td>
+            <td>同上。<b>这组数字是第 02 节双轨分工最直接的证据</b>——免费线的量级比付费线高一个数量级，它承担的是漏斗口而非收入</td>
+            <td><b>02</b></td>
+          </tr>
+          <tr>
+            <td><b>付费玩家的<br>平台迁移</b></td>
+            <td>2018 年初：移动 70% / PC 30%<br>近期：Steam 60% / 移动 35% / Itch.io + GOG 5%</td>
+            <td>同上。付费重心从移动整体迁移到 Steam，与免费线仍以移动为主形成对照</td>
+            <td>02 / 08</td>
+          </tr>
+          <tr>
+            <td><b>团队规模与产量</b></td>
+            <td>约 <b>4 名全职</b> + 自由职业者<br>2015 年春至今 <b>19 款</b>作品</td>
+            <td>前者见 GameDiscoverCo 同篇，后者见<a href="https://www.rustylake.com/about/" target="_blank" rel="noopener">官方 About 页</a>。人均产出极高，是第 06 节成本结构成立的前提</td>
+            <td><b>06</b></td>
+          </tr>
+          <tr>
+            <td><b>社区渠道的<br>结构</b></td>
+            <td>YouTube <b>33.6 万</b><br>Facebook 16.9 万 · Instagram 14.1 万 · Twitter 5.8 万</td>
+            <td><a href="https://www.rustylake.com/about/" target="_blank" rel="noopener">官方 About 页</a>公示。<b>视频渠道量级显著高于图文与社交平台</b></td>
+            <td><b>07</b></td>
+          </tr>
+          <tr>
+            <td><b>口碑水位</b></td>
+            <td><i>Cube Escape Collection</i>（$4.99，2020-10-14）<br>Steam 评测 1906 条，好评率 <b>97%</b></td>
+            <td><a href="https://store.steampowered.com/app/1292940/Cube_Escape_Collection/" target="_blank" rel="noopener">Steam 商店页</a>。「特别好评」评级；评测数相对下载量级很小——<em>解谜品类的评测转化率本就低</em>，此数不能反推游玩人数</td>
+            <td>04</td>
+          </tr>
+          <tr>
+            <td><b>地域结构</b></td>
+            <td>亚洲约占玩家基础的 <b>50%</b></td>
+            <td>GameDiscoverCo 同篇，创始人口径</td>
+            <td>01 / 08</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout take">
+        <span class="label">社区渠道那条值得单独说</span>
+        <p>
+          第 07 节的论断是「解释权外包给社区，玩家的考据与二创反过来成为新玩家的主要入口」。
+          社媒数据给了它一个侧面支持：<strong>YouTube 订阅数（33.6 万）接近 Twitter（5.8 万）的六倍</strong>，
+          也高于 Facebook 与 Instagram。
+        </p>
+        <p>
+          对多数游戏来说，官方社媒的第一大盘通常是图文社交平台；
+          <em>而一个把「不解释」制度化的产品，其官方渠道的重心落在视频上</em>——
+          这与「玩家靠解析视频入坑」的机制是自洽的。
+        </p>
+        <p>
+          <b>但要说清楚这只是间接证据。</b>它反映的是官方渠道的粉丝结构，
+          不等于新玩家的实际来源分布。要真正验证第 07 节，需要的是
+          「锈湖 剧情解析」类关键词与游戏名本身的搜索量对比，
+          <strong>这个对比本文没有拿到</strong>。
+        </p>
+      </div>
     </section>
 
   </article>

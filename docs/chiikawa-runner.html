@@ -133,18 +133,19 @@ code{background:#f3f4e6;color:#455c22}
   <nav class="toc">
     <div class="toc-title">目录</div>
     <ol>
-      <li><a href="#scope">01　定位与 scope 边界</a></li>
-      <li><a href="#ip">02　IP 选择与使用边界</a></li>
-      <li><a href="#loop">03　核心循环</a></li>
-      <li><a href="#exam">04　除草检定：进度系统</a></li>
-      <li><a href="#obstacle">05　障碍与地形</a></li>
-      <li><a href="#feel">06　手感参数规格</a></li>
-      <li><a href="#pacing">07　关卡节奏</a></li>
-      <li><a href="#fail">08　失败与追击</a></li>
-      <li><a href="#asset">09　资产策略</a></li>
-      <li><a href="#plan">10　技术实现</a></li>
-      <li><a href="#next">11　已知问题与下一步</a></li>
-      <li><a href="#legal">12　IP 合规声明</a></li>
+      <li><a href="#what">01　这是个什么游戏</a></li>
+      <li><a href="#scope">02　定位与 scope 边界</a></li>
+      <li><a href="#ip">03　IP 选择与使用边界</a></li>
+      <li><a href="#loop">04　核心循环</a></li>
+      <li><a href="#exam">05　除草检定：进度系统</a></li>
+      <li><a href="#obstacle">06　障碍与地形</a></li>
+      <li><a href="#feel">07　手感参数规格</a></li>
+      <li><a href="#pacing">08　关卡节奏</a></li>
+      <li><a href="#fail">09　失败与追击</a></li>
+      <li><a href="#asset">10　资产策略</a></li>
+      <li><a href="#plan">11　技术实现</a></li>
+      <li><a href="#next">12　已知问题与下一步</a></li>
+      <li><a href="#legal">13　IP 合规声明</a></li>
     </ol>
   </nav>
 
@@ -160,8 +161,51 @@ code{background:#f3f4e6;color:#455c22}
       </p>
     </div>
 
+    <section id="what">
+      <h2><span>01</span>这是个什么游戏</h2>
+      <p>
+        一句话：<strong>横版无尽跑酷。</strong>
+        角色自动向前跑，玩家只做一件事——<em>跳</em>。
+        身后有一只奇美拉在追，前面是杂草与蘑菇；被撞到会让它逼近一点，追上就结束。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>项</th><th>实现</th></tr></thead>
+        <tbody>
+          <tr><td><b>操作</b></td><td>只有跳。<code>MAX_JUMPS = 2</code>，即一次二段跳；落地后才恢复次数</td></tr>
+          <tr><td><b>失败</b></td><td>两种：被奇美拉追上（<code>lead ≤ 0</code>），或掉出屏幕</td></tr>
+          <tr><td><b>追逐条</b></td><td><code>LEAD_START = 200</code>px，上限 <code>235</code>。撞障碍扣，吃到东西回一点——<b>失败是消耗式的，不是一碰即死</b></td></tr>
+          <tr><td><b>速度曲线</b></td><td><code>290 → 470</code> px/s，每米 <code>+0.11</code>；难度靠速度自然爬升，不靠改关卡</td></tr>
+          <tr><td><b>收集</b></td><td>金币（HUD 叫「打工报酬」）；距离每 <b>800 m</b> 晋升一级（「除草检定」）</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3>三个角色，三个被动</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>角色</th><th>被动</th><th>它改变的是什么</th></tr></thead>
+        <tbody>
+          <tr><td><b>吉伊</b></td><td>勇气守护 · 撞到障碍时，怪物逼近得更少</td><td>容错——最适合新手</td></tr>
+          <tr><td><b>小八</b></td><td>发现好物 · 金币吸附范围更大</td><td>收益——不改变难度，改变收集效率</td></tr>
+          <tr><td><b>乌萨奇</b></td><td>呀哈弹跳 · 第二段跳得更高</td><td>可达性——能吃到别人吃不到的高处金币</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        三个被动分别落在<strong>容错、收益、可达性</strong>三个不同维度上，而不是「攻击力 +10%」式的同质数值。
+        <em>选角色因此是一次真实的玩法选择，而不只是换个皮肤。</em>
+        这一点与下一节要讲的 IP 观直接相关——角色的性格本来就不同，被动只是把已有的人设翻译成机制。
+      </p>
+
+      <p class="pull">
+        整个游戏没有剧情、没有关卡编辑、没有存档，只有一条路和一只在后面追的怪物。
+      </p>
+    </section>
+
     <section id="scope">
-      <h2><span>01</span>定位与 scope 边界</h2>
+      <h2><span>02</span>定位与 scope 边界</h2>
       <p>
         目标不是做一款完整的商业游戏，而是<strong>用一个可玩版本回答一个具体问题</strong>：
         IP 授权游戏里，设计该在哪里让位给 IP，又该在哪里坚持。
@@ -193,7 +237,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="ip">
-      <h2><span>02</span>IP 选择与使用边界</h2>
+      <h2><span>03</span>IP 选择与使用边界</h2>
 
       <h3>为什么是这个 IP</h3>
       <p>
@@ -250,12 +294,12 @@ code{background:#f3f4e6;color:#455c22}
       <p>
         第三行是最容易被违反的一条。做游戏的本能是给玩家成长与胜利感，
         但这个 IP 的成长不是「变强」，而是<strong>「考过下一级」</strong>——
-        这正是第 04 节要把检定当作进度系统的原因。
+        这正是第 05 节要把检定当作进度系统的原因。
       </p>
     </section>
 
     <section id="loop">
-      <h2><span>03</span>核心循环</h2>
+      <h2><span>04</span>核心循环</h2>
       <p>
         循环的关键在一行生成代码里：<code>coinArc(x + w/2, G - h - 55, 4, 30)</code>——
         每个障碍生成的同时，<strong>4 枚金币以该障碍为中心、在它正上方 55px 处排成弧线</strong>。
@@ -331,7 +375,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="exam">
-      <h2><span>04</span>除草检定：进度系统</h2>
+      <h2><span>05</span>除草检定：进度系统</h2>
       <p>
         进度直接使用原作的除草检定等级，由<strong>跑过的距离</strong>推进：
       </p>
@@ -392,13 +436,13 @@ code{background:#f3f4e6;color:#455c22}
         <p>
           这个区间的含义是：稳妥跑法差一点点、需要主动够几串才稳过，但远达不到要求满收集。
           <strong>是否要加这道门槛本身是待定的设计决定</strong>——
-          它会把当前「连续收益」的结构重新变回「阶跃收益」，代价见第 03 节的判断。
+          它会把当前「连续收益」的结构重新变回「阶跃收益」，代价见第 04 节的判断。
         </p>
       </div>
     </section>
 
     <section id="obstacle">
-      <h2><span>05</span>障碍与地形</h2>
+      <h2><span>06</span>障碍与地形</h2>
       <p>
         地面段按<strong>五格循环</strong>铺设（<code>pattern++ % 5</code>），其中一格不是障碍而是可站立平台：
       </p>
@@ -419,13 +463,13 @@ code{background:#f3f4e6;color:#455c22}
       <div class="callout risk">
         <span class="label">与设计意图的差距</span>
         <p>
-          第 02 节主张「障碍取自原作怪物」，但实际实现里<strong>五种障碍中只有两种真的是怪物</strong>：
+          第 03 节主张「障碍取自原作怪物」，但实际实现里<strong>五种障碍中只有两种真的是怪物</strong>：
           荆棘是植物，平台是地形，而<strong>地面怪、飞行怪、以及身后追击的三只，全部共用同一张 chimera.png</strong>。
         </p>
         <p>
-          这在单人开发的资源约束下是正确的取舍——它印证了第 09 节的资产复用原则。
+          这在单人开发的资源约束下是正确的取舍——它印证了第 10 节的资产复用原则。
           但代价是真实的：<em>玩家无法凭形象区分地面威胁与空中威胁</em>，
-          只能靠位置判断。这是第 11 节列为首要待改项的原因。
+          只能靠位置判断。这是第 12 节列为首要待改项的原因。
         </p>
       </div>
 
@@ -434,7 +478,7 @@ code{background:#f3f4e6;color:#455c22}
         尽管形象上有复用，障碍在代码里仍是按<strong>功能</strong>定义的：
         <code>kind</code> 决定尺寸、生成位置与碰撞盒，贴图只是渲染层的一次查表。
         这意味着换一张飞怪贴图不需要动任何关卡逻辑——
-        <strong>形象层与功能层是分离的，第 11 节那项改进的成本因此很低。</strong>
+        <strong>形象层与功能层是分离的，第 12 节那项改进的成本因此很低。</strong>
       </p>
       <p>
         碰撞盒统一比外观小 4px（<code>{x: h.x+4, y: h.y+4, w: h.w-8, h: h.h-8}</code>），
@@ -443,7 +487,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="feel">
-      <h2><span>06</span>手感参数规格</h2>
+      <h2><span>07</span>手感参数规格</h2>
       <p>
         全部手感参数集中在 <code>js/config.js</code>，注释写着「想改手感只动这里」。
         这是开发早期最值得做的一次结构决定：调参不需要读逻辑。
@@ -506,7 +550,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="pacing">
-      <h2><span>07</span>关卡节奏</h2>
+      <h2><span>08</span>关卡节奏</h2>
       <p>
         地形按段生成，节奏由一行决定：<code>if (section % 4 === 2) pushSky(...)</code>——
         <strong>每四段固定出现一段裂谷</strong>，其余为地面段。
@@ -561,7 +605,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="fail">
-      <h2><span>08</span>失败与追击</h2>
+      <h2><span>09</span>失败与追击</h2>
       <p class="pull">
         撞到障碍不会死。这是本作最重要的一条规则。
       </p>
@@ -586,7 +630,7 @@ code{background:#f3f4e6;color:#455c22}
 
       <h3>为什么这个设计比即死更符合 IP</h3>
       <p>
-        第 02 节说过，这个 IP 的角色不擅长战斗，面对怪物的常态是<em>被追着跑、勉强应付</em>。
+        第 03 节说过，这个 IP 的角色不擅长战斗，面对怪物的常态是<em>被追着跑、勉强应付</em>。
         即死机制表达的是「一击致命」，而<strong>消耗机制表达的是「被追得筋疲力尽」</strong>——
         后者才是原作里角色的真实处境。
       </p>
@@ -642,7 +686,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="asset">
-      <h2><span>09</span>资产策略</h2>
+      <h2><span>10</span>资产策略</h2>
       <div class="sprite-row">
         <figure><img src="../media/chiikawa-chiikawa.png" alt="ちいかわ 角色贴图"><figcaption>chiikawa</figcaption></figure>
         <figure><img src="../media/chiikawa-hachiware.png" alt="ハチワレ 角色贴图"><figcaption>hachiware</figcaption></figure>
@@ -684,7 +728,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="plan">
-      <h2><span>10</span>技术实现</h2>
+      <h2><span>11</span>技术实现</h2>
       <div class="table-wrap">
       <table>
         <thead><tr><th>项</th><th>选择</th><th>理由</th></tr></thead>
@@ -707,14 +751,14 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="next">
-      <h2><span>11</span>已知问题与下一步</h2>
+      <h2><span>12</span>已知问题与下一步</h2>
 
       <h3>核对代码时发现的问题</h3>
       <ol>
         <li>
           <strong>飞行怪与地面怪共用 chimera.png。</strong>
           玩家无法凭形象区分空中与地面威胁，只能靠位置判断。
-          由于形象层与功能层已经分离（第 05 节），换一张飞怪贴图不需要改任何关卡逻辑——
+          由于形象层与功能层已经分离（第 06 节），换一张飞怪贴图不需要改任何关卡逻辑——
           <em>这是投入产出比最高的一项改进。</em>
         </li>
         <li>
@@ -724,7 +768,7 @@ code{background:#f3f4e6;color:#455c22}
         </li>
         <li>
           <strong>1636m 之后游戏在缓慢变简单。</strong>
-          速度封顶而间距继续放宽（第 06 节）。这个补偿方向是对的，
+          速度封顶而间距继续放宽（第 07 节）。这个补偿方向是对的，
           但目前没有任何机制在后期重新加压，长距离段最终会趋于平淡。
         </li>
       </ol>
@@ -740,7 +784,7 @@ code{background:#f3f4e6;color:#455c22}
       <ol>
         <li>
           <strong>「跳穿吃币」是否真的被当成决策。</strong>
-          第 04 节的实测确认了两种跑法有 2 倍收益差，但没有验证玩家<em>在有伤害的真实局中</em>是否会主动权衡。
+          第 05 节的实测确认了两种跑法有 2 倍收益差，但没有验证玩家<em>在有伤害的真实局中</em>是否会主动权衡。
           需要观察：玩家在领先距离低时，是否会明显变得保守。如果不会，说明领先距离的显示不够醒目。
         </li>
         <li>
@@ -759,7 +803,7 @@ code{background:#f3f4e6;color:#455c22}
     </section>
 
     <section id="legal">
-      <h2><span>12</span>IP 合规声明</h2>
+      <h2><span>13</span>IP 合规声明</h2>
       <div class="callout risk">
         <span class="label">非商业同人作品</span>
         <p>
@@ -773,7 +817,7 @@ code{background:#f3f4e6;color:#455c22}
         </p>
       </div>
       <p style="font-size:13px;color:#8a8a84;margin-bottom:0">
-        说明：第 05 节坚持「功能先行、形象后绑」的设计顺序，
+        说明：第 06 节坚持「功能先行、形象后绑」的设计顺序，
         除了关卡设计上的理由之外，也使这套设计在移除 IP 素材后仍然完整可用。
       </p>
     </section>

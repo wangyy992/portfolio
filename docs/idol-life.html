@@ -115,23 +115,60 @@ figure.art figcaption strong{color:var(--text)}
   <nav class="toc">
     <div class="toc-title">目录</div>
     <ol>
-      <li><a href="#line">01　分工线</a></li>
-      <li><a href="#needs">02　需求：不调 AI 的心跳</a></li>
-      <li><a href="#calendar">03　年历与档期</a></li>
-      <li><a href="#relation">04　统一关系模型</a></li>
-      <li><a href="#blocks">05　九种结构化输出块</a></li>
-      <li><a href="#cost">06　上下文与成本</a></li>
-      <li><a href="#authored">07　里程碑与结局</a></li>
-      <li><a href="#audit">08　状态所有权审计</a></li>
-      <li><a href="#tech">09　技术实现</a></li>
-      <li><a href="#next">10　已知问题与下一步</a></li>
+      <li><a href="#what">01　这是个什么游戏</a></li>
+      <li><a href="#line">02　分工线</a></li>
+      <li><a href="#needs">03　需求：不调 AI 的心跳</a></li>
+      <li><a href="#calendar">04　年历与档期</a></li>
+      <li><a href="#relation">05　统一关系模型</a></li>
+      <li><a href="#blocks">06　九种结构化输出块</a></li>
+      <li><a href="#cost">07　上下文与成本</a></li>
+      <li><a href="#authored">08　里程碑与结局</a></li>
+      <li><a href="#audit">09　状态所有权审计</a></li>
+      <li><a href="#tech">10　技术实现</a></li>
+      <li><a href="#next">11　已知问题与下一步</a></li>
     </ol>
   </nav>
 
   <article class="doc">
 
+    <section id="what">
+      <h2><span>01</span>这是个什么游戏</h2>
+      <p>
+        一句话：<strong>像素城市里的韩娱生活模拟。</strong>
+        玩家不是爱豆本人，而是<em>参与她们日常的那个人</em>——
+        角色按自己的日程在城市里活动，玩家去见面、照顾她们冒出来的小心愿、发私信、在打歌期应援。
+      </p>
+
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>玩家每个时段实际在做的事</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><b>看世界</b></td><td>城市地图上谁在哪、谁头顶冒了泡；地点有进入条件（在忙 / 在外地 / 未解锁）</td></tr>
+          <tr><td><b>去见面</b></td><td>选一个地点前往，与在场角色进行一段对话；每人每时段一次深度互动</td></tr>
+          <tr><td><b>照顾小心愿</b></td><td>角色头顶的需求冒泡——想吃东西、有心事、想让你牵线……回应后确认「这件事已经办好」</td></tr>
+          <tr><td><b>发私信</b></td><td>手机上问候 / 鼓励 / 提议喝咖啡，每天三条，回复随忙闲与熟悉程度变化</td></tr>
+          <tr><td><b>撮合与围观</b></td><td>同场的两位角色之间会发生有具体原因的事件，同一对每天最多结算一次</td></tr>
+          <tr><td><b>推进时间</b></td><td>上午 → 下午 → 晚上，一天三个时段；一轮 = 游戏内一年</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>
+        长期目标由好感与关系数值推动：积累到阈值触发<strong>里程碑</strong>（更长、更正式的重头戏），
+        最终走向四类结局之一——恋人线、撮合线、见证线、BE。
+        <em>但结局什么时候收由玩家决定，日常可以一直玩下去。</em>
+      </p>
+
+      <p class="pull">
+        对话由 AI 生成；时间、地点、好感、档期、存档全部由游戏管理。
+      </p>
+      <p>
+        这条分界线是整个项目的地基，下一节展开讲它画在哪、为什么画在那里。
+      </p>
+    </section>
+
     <section id="line">
-      <h2><span>01</span>分工线</h2>
+      <h2><span>02</span>分工线</h2>
       <p>
         参考 Stardew Valley 与 Tomodachi Life 的做法，本作确立了一条硬性分工：
       </p>
@@ -152,12 +189,12 @@ figure.art figcaption strong{color:var(--text)}
       <p>
         这条线的实际检验标准很直接：<strong>如果 AI 某一轮完全失败，游戏状态会不会被破坏？</strong>
         在正确的分工下，答案是「不会，只是这一段对话质量差」。
-        第 08 节的审计就是在逐条排查违反这条线的地方。
+        第 09 节的审计就是在逐条排查违反这条线的地方。
       </p>
     </section>
 
     <section id="needs">
-      <h2><span>02</span>需求：不调 AI 的心跳</h2>
+      <h2><span>03</span>需求：不调 AI 的心跳</h2>
       <p>
         Tomodachi Life 类玩法的心跳是「角色主动冒出需求，玩家去满足」。
         朴素做法是每个时段问一次 AI「她现在想干嘛」——
@@ -251,7 +288,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="calendar">
-      <h2><span>03</span>年历与档期</h2>
+      <h2><span>04</span>年历与档期</h2>
       <p>一轮 = 游戏内一年，52 周 × 7 天。档期由哈希确定性排布，带小幅浮动：</p>
       <div class="table-wrap">
       <table>
@@ -283,7 +320,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="relation">
-      <h2><span>04</span>统一关系模型</h2>
+      <h2><span>05</span>统一关系模型</h2>
       <p>
         玩家↔爱豆与爱豆↔爱豆<strong>共用同一套模型</strong>：
         <code>{ affinity, tension, flags }</code>，关系名由数值推导而非直接存储。
@@ -325,7 +362,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="blocks">
-      <h2><span>05</span>九种结构化输出块</h2>
+      <h2><span>06</span>九种结构化输出块</h2>
       <p>
         AI 的回复是自然语言，但其中<strong>需要写回游戏状态的部分必须包在标记块里</strong>，
         由代码解析后才生效。共九种：
@@ -342,7 +379,7 @@ figure.art figcaption strong{color:var(--text)}
           <tr><td><code>WEVERSE</code></td><td>爱豆发的动态</td></tr>
           <tr><td><code>BUBBLE</code></td><td>私信订阅式消息</td></tr>
           <tr><td><code>THEQOO</code></td><td>论坛热帖</td></tr>
-          <tr><td><code>MUSICSHOW</code></td><td>打歌成绩</td><td>见第 08 节——这一块存在双源问题</td></tr>
+          <tr><td><code>MUSICSHOW</code></td><td>打歌成绩</td><td>见第 09 节——这一块存在双源问题</td></tr>
         </tbody>
       </table>
       </div>
@@ -366,8 +403,8 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="cost">
-      <h2><span>06</span>上下文与成本</h2>
-      <p>第 02 节的需求系统已经把调用频次压到最低，剩下的是每次调用的体积控制：</p>
+      <h2><span>07</span>上下文与成本</h2>
+      <p>第 03 节的需求系统已经把调用频次压到最低，剩下的是每次调用的体积控制：</p>
       <div class="table-wrap">
       <table>
         <thead><tr><th>手段</th><th>做法</th><th>作用</th></tr></thead>
@@ -402,7 +439,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="authored">
-      <h2><span>07</span>里程碑与结局</h2>
+      <h2><span>08</span>里程碑与结局</h2>
       <p>
         并非所有内容都交给生成。系统里保留了两类 <strong>authored（人工编写）</strong> 的节点：
       </p>
@@ -438,12 +475,12 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="audit">
-      <h2><span>08</span>状态所有权审计</h2>
+      <h2><span>09</span>状态所有权审计</h2>
       <p>
         项目做过一次专门的审计，逐条排查「AI 抢了游戏该管的东西」的地方，
         产出 <strong>13 条问题，分四类</strong>：时间/世界所有权、玩家能动性、状态可靠性、其它。
       </p>
-      <p>其中几条特别能说明第 01 节那条分工线在实践中会怎么破：</p>
+      <p>其中几条特别能说明第 02 节那条分工线在实践中会怎么破：</p>
 
       <div class="table-wrap">
       <table>
@@ -510,7 +547,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="tech">
-      <h2><span>09</span>技术实现</h2>
+      <h2><span>10</span>技术实现</h2>
       <div class="table-wrap">
       <table>
         <thead><tr><th>项</th><th>选择</th><th>说明</th></tr></thead>
@@ -557,7 +594,7 @@ figure.art figcaption strong{color:var(--text)}
         <figure><img src="../media/idol-scene-district.webp" alt="商圈场景"><figcaption>商圈</figcaption></figure>
       </div>
       <p class="src-note" style="font-size:13.5px;color:var(--muted)">
-        「晚上 / 汉江 / 天台」正是第 07 节里程碑的触发条件之一——
+        「晚上 / 汉江 / 天台」正是第 08 节里程碑的触发条件之一——
         <em>能说心里话的时空是被具体画出来的，不是一个抽象的 flag。</em>
       </p>
 
@@ -578,7 +615,7 @@ figure.art figcaption strong{color:var(--text)}
     </section>
 
     <section id="next">
-      <h2><span>10</span>已知问题与下一步</h2>
+      <h2><span>11</span>已知问题与下一步</h2>
       <h3>本轮已落地的改造</h3>
       <ul>
         <li><strong>对话状态可恢复。</strong>每次会话按天数、时段、地点和成员生成唯一键；离开场景后重新进入会继续原对话，不会误接到另一段剧情。</li>
@@ -602,12 +639,12 @@ figure.art figcaption strong{color:var(--text)}
         </li>
         <li>
           <strong>「好感只在有实质进展时才变」是否真的被模型遵守。</strong>
-          这是第 05 节那条约束的落地检验。做法是记录连续多轮敷衍对话下的好感曲线——
+          这是第 06 节那条约束的落地检验。做法是记录连续多轮敷衍对话下的好感曲线——
           如果仍在稳步上涨，说明约束没生效，需要改为由代码判定是否允许本轮加好感。
         </li>
         <li>
           <strong>实测单用户成本。</strong>
-          第 02 节和第 06 节的所有设计都是为了压成本，但目前<b>缺少实际的 token 消耗数据</b>。
+          第 03 节和第 07 节的所有设计都是为了压成本，但目前<b>缺少实际的 token 消耗数据</b>。
           需要统计人均单次会话的调用次数与 token 量，才能判断这套架构在更大规模下是否成立。
         </li>
       </ol>
