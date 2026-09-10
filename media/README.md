@@ -67,3 +67,13 @@ ffmpeg -i idol-life.mp4 -ss 3 -vframes 1 -q:v 3 idol-life.jpg
 原始压缩包内共 3890 KB（含 2009 KB 的 meadow PNG）。
 七张精灵图经调色板量化（200 色，保留 alpha）压至 240 KB；
 meadow 无透明通道、为照片式背景，转 JPEG 1400×933 / 106 KB。合计 3890 → 346 KB。
+
+### AI 狼人杀 身份动画
+
+`werewolf-role-{seer,witch,wolf,hunter,idiot,villager}.mp4` —— 六段身份揭晓短视频，
+竖版 784×1172 / H.264，时长 3.1–4.1 秒，合计约 15 MB。
+
+原文件名为中文（预言家.mp4 等），已改为 ASCII 并与游戏仓库
+`public/videos/roles/` 下的命名对齐——中文路径在 URL 里需百分号编码，
+部分 CDN 与代理处理不当。策划案第 05 节以 `preload="none"` 引用，
+点击前不产生下载。

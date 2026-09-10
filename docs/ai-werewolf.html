@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 狼人杀 策划案｜王禹尧</title>
-<meta name="description" content="1 名玩家对 11 个 AI Agent 的狼人杀设计说明：15 阶段确定性状态机、按身份分区的上下文构造、结构化输出与兜底降级、上下文与成本控制。">
+<title>灰雾村 · AI 狼人杀 策划案｜王禹尧</title>
+<meta name="description" content="1 名玩家与 11 名 AI 的中世纪村庄狼人杀：玩法规则、场景化交互、身份动画、信息边界与迭代计划。">
 <link rel="stylesheet" href="../assets/doc.css">
 <style>
 /* AI 狼人杀 专属：深夜议事厅 */
@@ -76,10 +76,23 @@ code{background:#f1efe9;color:#7a2b25}
 .toc a.active{color:#7a2b25;border-left-color:#cf8279}
 .doc-foot{background:#111318;border-top:none;color:#837d73}
 .doc-foot a{color:#cf8279}
-</style>
-<style>
-.media.is-empty video{display:none}
-.media.is-empty .ph{display:flex}
+/* 本页新增：状态徽章、要点卡、流程条、身份视频 */
+.badge{display:inline-block;padding:2px 9px;border-radius:5px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;white-space:nowrap;background:#e6efe7;color:#3f6647}
+.badge.partial{background:#f6ecd9;color:#8b6932}
+.badge.plan{background:#eceaef;color:#6b607c}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0}
+.card{padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+.card h3{margin:0 0 7px;font-size:16px;font-family:var(--serif)}
+.card p{margin:0;font-size:14px;color:var(--muted)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:20px 0}
+.flow span{padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:var(--paper);font-size:13px}
+.flow b{color:var(--accent-line)}
+.vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:18px 0}
+.vids figure{margin:0}
+.vids video{display:block;width:100%;aspect-ratio:784/1172;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#1b1d21}
+.vids figcaption{margin-top:8px;text-align:center;font-size:13px;color:var(--muted)}
+.vids figcaption b{display:block;color:var(--text);font-size:14px}
+.src-note{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -89,33 +102,29 @@ code{background:#f1efe9;color:#7a2b25}
 <header class="doc-head">
   <div class="container">
     <a class="back" href="../index.html#featured">← 返回作品集</a>
-    <div class="kicker">策划案 / 系统设计</div>
-    <h1>AI 狼人杀</h1>
-    <p class="sub">1 名玩家 vs 11 个 AI Agent · 12 人标准局 · 设计说明</p>
+    <div class="kicker">策划案 / 系统与体验设计</div>
+    <h1>灰雾村 · AI 狼人杀</h1>
+    <p class="sub">1 名玩家 × 11 名 AI · 12 人预女猎白局 · 中世纪村庄社交推理</p>
 
     <p class="thesis">
       <b>设计主张</b>
-      让 11 个 AI 玩狼人杀，难点不是让它们「会说话」——这一关早就过了。
-      难点是<strong>严格控制每个 Agent 能看见什么</strong>。
-      信息边界一旦破裂，AI 就会「知道」它不该知道的事，整局游戏当场失去意义。
-      因此这个系统的核心不是 prompt，而是<em>一台确定性状态机 + 一个按身份切片的上下文构造器</em>；
-      AI 只在被问到时输出一个结构化决策。
+      让玩家进入一座有人物、有秘密、有身份演出的村庄。
+      <strong>规则代码负责裁决，AI 负责判断与表达，场景负责让玩家看清并参与这场对局。</strong>
+      游戏成立的前提，不只是 AI 能说话，还包括<em>信息不越界、时间线不被编造，以及操作不被界面遮挡</em>。
     </p>
 
     <dl class="metabar">
-      <div><dt>类型</dt><dd>多 Agent 社交推理</dd></div>
-      <div><dt>规模</dt><dd>12 人局 / 15 个阶段</dd></div>
-      <div><dt>模型</dt><dd>DeepSeek（deepseek-v4-flash）</dd></div>
-      <div><dt>技术</dt><dd>React + TypeScript + Vite</dd></div>
-      <div><dt>最后更新</dt><dd>2026-09</dd></div>
+      <div><dt>项目定位</dt><dd>单人对 AI 的社交推理游戏</dd></div>
+      <div><dt>局配置</dt><dd>4 狼 · 4 民 · 预女猎白</dd></div>
+      <div><dt>技术</dt><dd>React · TypeScript · Vite · Vercel 函数</dd></div>
+      <div><dt>文档更新</dt><dd>2026-09-10</dd></div>
     </dl>
-
   </div>
 </header>
 
 <figure style="margin:0;position:relative;background:#111318">
-  <img src="../media/werewolf-cast.jpg" alt="12 位村民角色的立绘阵容" style="display:block;width:100%;height:clamp(160px,26vw,300px);object-fit:cover;object-position:center 34%">
-  <figcaption class="container" style="position:absolute;left:0;right:0;bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cbc5ba;text-shadow:0 1px 8px rgba(0,0,0,.8)">Cast — 11 个 AI Agent 与 1 名玩家共处一局</figcaption>
+  <img src="../media/werewolf-cast.jpg" alt="11 位村民与玩家的角色立绘阵容" style="display:block;width:100%;height:clamp(160px,26vw,300px);object-fit:cover;object-position:center 34%">
+  <figcaption class="container" style="position:absolute;left:0;right:0;bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cbc5ba;text-shadow:0 1px 8px rgba(0,0,0,.8)">Cast — 公开人物设定，不是身份提示</figcaption>
 </figure>
 
 <div class="container layout">
@@ -123,17 +132,18 @@ code{background:#f1efe9;color:#7a2b25}
   <nav class="toc">
     <div class="toc-title">目录</div>
     <ol>
-      <li><a href="#q">01　要解决的问题</a></li>
-      <li><a href="#config">02　局配置</a></li>
-      <li><a href="#fsm">03　确定性状态机</a></li>
-      <li><a href="#partition">04　信息分区</a></li>
-      <li><a href="#output">05　结构化输出与兜底</a></li>
-      <li><a href="#cost">06　上下文与成本</a></li>
-      <li><a href="#halluc">07　防幻觉的三道措施</a></li>
-      <li><a href="#prompt">08　策略知识写在哪</a></li>
-      <li><a href="#tech">09　技术实现</a></li>
-      <li><a href="#next">10　已知限制与下一步</a></li>
-      <li><a href="#intro-anim">11　角色开场动画</a></li>
+      <li><a href="#vision">01　目标与设计原则</a></li>
+      <li><a href="#rules">02　局配置与规则</a></li>
+      <li><a href="#experience">03　玩家体验流程</a></li>
+      <li><a href="#scene">04　村庄与场景交互</a></li>
+      <li><a href="#animation">05　身份动画与素材</a></li>
+      <li><a href="#fsm">06　规则状态机</a></li>
+      <li><a href="#information">07　信息边界</a></li>
+      <li><a href="#ai">08　AI 发言与时间线</a></li>
+      <li><a href="#fallback">09　结构化决策与降级</a></li>
+      <li><a href="#architecture">10　技术与成本</a></li>
+      <li><a href="#verification">11　实现与验证状态</a></li>
+      <li><a href="#roadmap">12　后续迭代</a></li>
     </ol>
   </nav>
 
@@ -142,391 +152,422 @@ code{background:#f1efe9;color:#7a2b25}
     <div class="callout risk">
       <span class="label">文档口径</span>
       <p>
-        本文机制与参数按实际代码核对
-        （<code>src/types.ts</code>、<code>src/constants.ts</code>、<code>src/lib/gameUtils.ts</code>、
-        <code>src/services/geminiService.ts</code>）。
+        本文区分<strong>「已实现」「初步实现」「待实现」</strong>三种状态。依据为
+        <code>App.tsx</code>、<code>VillageStage.tsx</code>、<code>RoleAnimation.tsx</code>、
+        <code>artAssets.ts</code>、<code>constants.ts</code>、<code>types.ts</code>、
+        <code>lib/gameUtils.ts</code>、<code>services/aiService.ts</code> 与 <code>api/chat.js</code>。
+      </p>
+      <p>
+        当前<strong>不是</strong>经过狼人杀语料微调的专用模型，也<strong>不是</strong>已完成全部演出与规则评测的正式成品。
+        本文按当前代码与已完成修改整理，不等同于线上部署验收报告。
       </p>
     </div>
 
-    <section id="q">
-      <h2><span>01</span>要解决的问题</h2>
+    <section id="vision">
+      <h2><span>01</span>目标与设计原则</h2>
       <p>
-        狼人杀是一个<strong>建立在信息不对称之上</strong>的游戏。它的全部乐趣来自：
-        有人知道你不知道的事，而你要从他的发言里把它推出来。
+        项目面向想独自体验完整狼人杀对局的玩家。玩家抽取身份，与 11 名拥有不同公开形象、表达风格的 AI 同场博弈，
+        通过夜间行动、警长竞选、发言和投票决定胜负。
       </p>
+      <div class="cards">
+        <div class="card"><h3>玩法可信</h3><p>死亡、技能、投票和胜负由规则代码处理。不能因为模型说「某人出局」，就改变真实游戏状态。</p></div>
+        <div class="card"><h3>推理有据</h3><p>隐藏信息按身份分配。允许狼人伪装身份和假报查验，但不能把尚未发生的发言当作既成事实。</p></div>
+        <div class="card"><h3>人物在场</h3><p>人物直接站在村庄背景上，以立绘、光效和轻量动效表现状态，而不是只显示一圈头像。</p></div>
+        <div class="card"><h3>操作清楚</h3><p>发言置于上方，历史信息收进卷宗；投票和技能先选择场上人物，再确认执行。</p></div>
+      </div>
+      <p class="pull">
+        本次升级不是给旧界面换背景，而是把「名单与日志面板」改造成「人物、场景与行动」的游戏界面。
+      </p>
+    </section>
+
+    <section id="rules">
+      <h2><span>02</span>局配置与规则</h2>
       <p>
-        把 11 个位置交给 LLM，最容易出的事故不是「AI 说话不像人」，而是<strong>信息边界失守</strong>——
-        一个平民的发言里出现了只有狼人才知道的信息，或者预言家「猜」中了从未查验过的身份。
-        一旦发生，玩家立刻会察觉这局是假的，而且<em>无法通过后续的精彩发言挽回</em>。
+        <strong>固定采用 12 人预女猎白配置。</strong>1 名真人、11 名 AI。
+        玩家座位每局随机，<em>不固定为 1 号</em>；身份与 AI 公开人物分配也会重新随机。
       </p>
-      <p>本文回答三个问题：</p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>身份</th><th>数量</th><th>当前规则</th></tr></thead>
+        <tbody>
+          <tr><td><b>狼人</b></td><td>4</td><td>夜间共同确定击杀目标；白天通过伪装与投票争取胜利。当前实现的可刀目标限制为非狼人。</td></tr>
+          <tr><td><b>预言家</b></td><td>1</td><td>每夜查验一名目标的阵营。当前候选集排除自己与已查验目标。</td></tr>
+          <tr><td><b>女巫</b></td><td>1</td><td>解药、毒药各一瓶；每晚最多使用一瓶，不可自救。</td></tr>
+          <tr><td><b>猎人</b></td><td>1</td><td>被狼人击杀或被投票放逐后可开枪；被女巫毒杀不可开枪。</td></tr>
+          <tr><td><b>白痴</b></td><td>1</td><td>被投票放逐时翻牌免于该次放逐，失去投票权，保留发言权。</td></tr>
+          <tr><td><b>平民</b></td><td>4</td><td>无夜间技能，通过发言与投票帮助好人阵营。</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout risk">
+        <span class="label">「白」是白痴，不是白狼王</span>
+        <p>
+          标准局不随机加入守卫，也不加入白狼王。
+          代码保留部分守卫兼容逻辑、素材保留白狼王视频，<strong>不代表这些角色会被发到标准局中</strong>。
+        </p>
+      </div>
+      <h3>胜负与警长</h3>
+      <ul>
+        <li><strong>好人胜利：</strong>全部狼人出局。</li>
+        <li><strong>狼人胜利：</strong>当前默认使用屠边判定——全部平民出局，或全部神职出局。</li>
+        <li><strong>警长：</strong>第一天竞选；放逐投票权重为 1.5 票，可决定发言方向，死亡时处理警徽移交或撕毁。</li>
+        <li><strong>平票处理：</strong>当前放逐平票不出局，警长竞选平票不设警长；<em>尚未实现完整的平票 PK 流程</em>。</li>
+        <li><strong>身份公开：</strong>不因普通死亡自动向其他玩家公开真实身份；白痴翻牌、玩家自身信息、狼人同伴信息和终局揭示分别处理。</li>
+      </ul>
+      <p class="src-note">这里描述的是本项目采用的规则与简化项，不声称覆盖所有平台的狼人杀规则变体。</p>
+    </section>
+
+    <section id="experience">
+      <h2><span>03</span>玩家体验流程</h2>
+      <div class="flow" aria-label="玩家流程">
+        <span>开始页</span><b>→</b><span>选择背面身份牌</span><b>→</b><span>身份揭晓与短视频</span><b>→</b><span>进入村庄</span><b>→</b><span>夜晚／白天循环</span><b>→</b><span>胜负结算</span>
+      </div>
       <ol>
-        <li>信息边界应该在哪一层强制？prompt 里叮嘱，还是根本不给数据？</li>
-        <li>当模型返回了无法解析的内容时，游戏该怎么办？</li>
-        <li>12 个 Agent、每天多轮发言与投票，成本怎么控制在可接受范围？</li>
+        <li><strong>开始：</strong>玩家主动进入抽牌步骤，不直接落入对局控制台。</li>
+        <li><strong>抽牌：</strong>展示背面牌组，选择后通过身份揭晓界面与动画建立开局仪式感。</li>
+        <li><strong>分配：</strong>身份与座位由初始化逻辑随机生成；<em>当前选牌是揭晓交互，不是十二张牌分别绑定十二种独立身份</em>。</li>
+        <li><strong>行动：</strong>根据阶段显示可操作目标与确认按钮；不适用当前技能的目标不可选。</li>
+        <li><strong>复查：</strong>随时打开卷宗查看日志；身份卡提供对应身份视频的重播入口。</li>
+        <li><strong>结算：</strong>展示胜利阵营与身份信息；<em>角色专属胜利演出尚未完成</em>。</li>
       </ol>
     </section>
 
-    <section id="config">
-      <h2><span>02</span>局配置</h2>
-      <p>12 人标准局。玩家固定为 1 号，其余 11 位由 AI 扮演。</p>
+    <section id="scene">
+      <h2><span>04</span>村庄与场景交互</h2>
+      <h3>公开人物与隐藏身份分离</h3>
+      <p>
+        11 名 AI 使用固定的村民形象；这些是<strong>公开人物设定，不是身份提示</strong>。
+        铁匠可能是预言家，修士可能是狼人，猎户也不必是猎人。
+      </p>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>身份</th><th>数量</th><th>技能</th></tr></thead>
+        <thead><tr><th>公开人物</th><th>职业</th><th>表达方向</th></tr></thead>
         <tbody>
-          <tr><td>🐺 狼人</td><td>4</td><td>每晚集体击杀一名好人；白天伪装</td></tr>
-          <tr><td>🔮 预言家</td><td>1</td><td>每晚查验一人的阵营</td></tr>
-          <tr><td>🧙 女巫</td><td>1</td><td>解药 ×1、毒药 ×1，每晚最多用一瓶，不可自救</td></tr>
-          <tr><td>🏹 猎人</td><td>1</td><td>被击杀或被放逐时开枪带走一人（被毒杀时不可开枪）</td></tr>
-          <tr><td>🛡️ 守卫 <b>或</b> 🃏 白痴</td><td>1</td><td><b>每局随机其一</b>——第 12 个位置是浮动的</td></tr>
-          <tr><td>👤 平民</td><td>4</td><td>无技能</td></tr>
+          <tr><td>老钟</td><td>守钟人</td><td>谨慎、寡言</td></tr>
+          <tr><td>伊芙</td><td>裁缝</td><td>冷静、直接</td></tr>
+          <tr><td>铁匠</td><td>铁匠</td><td>易怒、直率</td></tr>
+          <tr><td>修士</td><td>修士</td><td>条理清晰</td></tr>
+          <tr><td>米拉</td><td>面包师</td><td>敏感、犹豫</td></tr>
+          <tr><td>猎户</td><td>猎户</td><td>强势、果断</td></tr>
+          <tr><td>诺亚</td><td>木匠</td><td>慢热、沉默</td></tr>
+          <tr><td>薇拉</td><td>织布工</td><td>温和、细致</td></tr>
+          <tr><td>酒馆老板</td><td>女性酒馆经营者</td><td>世故、圆滑</td></tr>
+          <tr><td>阿兰</td><td>马夫</td><td>年轻、冲动</td></tr>
+          <tr><td>渡鸦使者</td><td>信使</td><td>神秘、警觉</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <h3>界面分工</h3>
+      <ul>
+        <li><strong>场景主体：</strong>中世纪村庄广场背景，人物直接置于场景之上。当前采用前后两排展开站位，优先保证识别与点击空间，不绘制实体圆桌。</li>
+        <li><strong>当前发言：</strong>固定在上方空白区域，显示发言者与正文，不再把长文本挂在人物身侧。</li>
+        <li><strong>历史记录：</strong>右侧可收起的卷宗，替代永久占据下半屏的日志列表。</li>
+        <li><strong>投票与技能：</strong>点击场上人物选定目标，再通过底部操作区确认；选中对象显示标记。</li>
+        <li><strong>个人身份：</strong>桌面左下角显示身份卡；手机布局会调整位置。</li>
+        <li><strong>查验结果：</strong>真人是预言家时，已验人物旁持续显示「好人／狼人」，并注明仅本人可见。</li>
+        <li><strong>狼队友：</strong>真人是狼人时，同伴人物显示狼帽样式标记，不向好人视角公开。</li>
+        <li><strong>出局状态：</strong>人物变灰、透明度降低，并辅以轻量离场效果。</li>
+      </ul>
+      <p>
+        最近一次布局调整进一步下移前排人物，为后排姓名留出空隙。
+        手机竖屏可展示全部人物，但<em>尺寸仍偏小，后续需要独立优化，而不是只缩小桌面版</em>。
+      </p>
+    </section>
+
+    <section id="animation">
+      <h2><span>05</span>身份动画与素材</h2>
+      <p>
+        <strong>六段身份视频已经接入游戏，并完成本地浏览器实际播放检查。</strong>
+        它们不是仅存放于仓库的备用文件。以下为同一批素材，可直接在本页播放：
+      </p>
+
+      <div class="vids">
+        <figure>
+          <video src="../media/werewolf-role-seer.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>预言家</b>约 4 秒</figcaption>
+        </figure>
+        <figure>
+          <video src="../media/werewolf-role-witch.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>女巫</b>约 4 秒</figcaption>
+        </figure>
+        <figure>
+          <video src="../media/werewolf-role-wolf.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>狼人</b>约 4 秒</figcaption>
+        </figure>
+        <figure>
+          <video src="../media/werewolf-role-hunter.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>猎人</b>约 3 秒</figcaption>
+        </figure>
+        <figure>
+          <video src="../media/werewolf-role-idiot.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>白痴</b>约 3 秒</figcaption>
+        </figure>
+        <figure>
+          <video src="../media/werewolf-role-villager.mp4" controls muted loop playsinline preload="none"></video>
+          <figcaption><b>平民</b>约 3 秒</figcaption>
+        </figure>
+      </div>
+      <p class="src-note">
+        竖版 784×1172，H.264。游戏内路径为 <code>public/videos/roles/</code>，
+        Vite 中 public 目录下的文件以根路径访问（例如 <code>/videos/roles/seer.mp4</code>）；
+        本页为便于查看另存了一份到作品集的 <code>media/</code> 下。六段合计约 15 MB，故设为点击后才加载。
+      </p>
+
+      <h3>播放位置</h3>
+      <ol>
+        <li><strong>身份揭晓：</strong>抽牌后自动播放本人身份对应的视频，默认静音、行内播放。</li>
+        <li><strong>身份动画重播：</strong>点击身份卡旁「▶ 身份动画」，打开带播放控件的弹窗，可重播、调整进度或开启声音，<em>不触发重新抽牌</em>。</li>
+      </ol>
+
+      <h3>低成本演出分层</h3>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>层级</th><th>用途</th><th>当前状态</th></tr></thead>
+        <tbody>
+          <tr><td>全身静态立绘</td><td>11 名 AI 的常驻场景形象</td><td><span class="badge">已接入</span></td></tr>
+          <tr><td>轻量前端动效</td><td>呼吸、发言高亮、选中、出局变虚</td><td><span class="badge">已实现</span></td></tr>
+          <tr><td>短视频</td><td>六种身份揭晓与重播</td><td><span class="badge">已接入并播放验证</span></td></tr>
+          <tr><td>技能与死亡演出</td><td>狼刀、毒杀、放逐、猎人开枪的独立表现</td><td><span class="badge plan">待实现</span></td></tr>
+          <tr><td>专属胜利演出</td><td>各身份不同的结算表现</td><td><span class="badge plan">待实现</span></td></tr>
         </tbody>
       </table>
       </div>
       <p>
-        第 12 个位置随机在守卫与白痴之间二选一，是个成本很低但收益明显的设计：
-        <strong>玩家无法在开局就确定场上有没有守卫</strong>，
-        「昨晚平安夜」这条信息因此同时兼容「守卫守对了」和「女巫用了解药」两种解释，
-        推理空间被显著撑开。
+        广场人物<strong>当前不是逐帧视频循环</strong>，也没有骨骼动画或口型同步。
+        短视频集中用于身份揭示，常驻演出采用轻量动效，避免为每个状态制作长视频。
       </p>
       <p>
-        规则里保留了标准局的复杂交互，包括<em>守卫与解药同时作用于同一人时该玩家反而死亡</em>（奶穿）、
-        白痴翻牌后失去投票权但保留发言权、警长 1.5 票并决定发言顺序、死亡时可传递或撕毁警徽。
-        胜负判定为：狼全灭则好人胜；狼数 ≥ 好人数则狼胜。
+        全身原图位于 <code>public/images/characters/</code>。酒馆老板多余的悬空手杯、薇拉残留袖片已使用 imagegen 修补，
+        并另存修补版；原图与提示词记录保留。白狼王素材作为扩展资源保留，不参与当前标准局。
       </p>
     </section>
 
     <section id="fsm">
-      <h2><span>03</span>确定性状态机</h2>
+      <h2><span>06</span>规则状态机</h2>
       <p>
-        整局由一个 15 阶段的枚举驱动。<strong>阶段推进、死亡结算、胜负判定全部是确定性代码，AI 不参与。</strong>
+        <code>Phase</code> 当前定义 <strong>16 个枚举状态</strong>，包含初始化、结束、兼容守卫阶段与死亡技能中断状态；
+        <em>不应简单描述为每局线性经过 16 步</em>。
       </p>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>时段</th><th>阶段</th></tr></thead>
+        <thead><tr><th>类别</th><th>状态与含义</th></tr></thead>
         <tbody>
-          <tr><td><b>夜晚</b></td><td><code>NIGHT_GUARD</code> → <code>NIGHT_WOLVES</code> → <code>NIGHT_SEER</code> → <code>NIGHT_WITCH</code> → <code>NIGHT_RESULT</code></td></tr>
-          <tr><td><b>警长竞选</b><br><span style="color:#67635c;font-size:12.5px">仅第一天</span></td><td><code>SHERIFF_ELECT</code> → <code>SHERIFF_SPEECH</code> → <code>SHERIFF_VOTE</code> → <code>SHERIFF_RESULT</code></td></tr>
-          <tr><td><b>白天</b></td><td><code>DAY_DISCUSSION</code> → <code>DAY_VOTING</code> → <code>DAY_RESULT</code> → <code>SHERIFF_ACTION</code></td></tr>
           <tr><td><b>边界</b></td><td><code>INIT</code>、<code>GAME_OVER</code></td></tr>
+          <tr><td><b>夜晚</b></td><td><code>NIGHT_GUARD</code> → <code>NIGHT_WOLVES</code> → <code>NIGHT_SEER</code> → <code>NIGHT_WITCH</code> → <code>NIGHT_RESULT</code>。标准局无守卫，兼容阶段跳过。</td></tr>
+          <tr><td><b>首日竞选</b></td><td><code>SHERIFF_ELECT</code> → <code>SHERIFF_SPEECH</code> → <code>SHERIFF_VOTE</code> → <code>SHERIFF_RESULT</code></td></tr>
+          <tr><td><b>白天</b></td><td><code>DAY_DISCUSSION</code> → <code>DAY_VOTING</code> → <code>DAY_RESULT</code></td></tr>
+          <tr><td><b>中断处理</b></td><td><code>HUNTER_SHOOT</code>、<code>SHERIFF_ACTION</code>。满足条件时处理技能或警徽，然后恢复后续流程。</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        AI 只提交发言或行动建议，规则代码负责校验与执行。
+        随机发牌、随机降级等环节仍存在，因此<strong>「规则裁决由代码负责」不等于整局没有随机性</strong>。
+      </p>
+    </section>
+
+    <section id="information">
+      <h2><span>07</span>信息边界</h2>
+      <p>
+        <code>buildGameContext(player, gameState)</code> 为每名 AI 单独构造输入，
+        避免直接把全局真实身份表交给模型。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>信息</th><th>分配方式</th></tr></thead>
+        <tbody>
+          <tr><td>日期、阶段、存活名单、公共事件</td><td>提供给当前调用的 AI。</td></tr>
+          <tr><td>近期记录</td><td>先排除 <code>secret</code> 日志，再取最近 25 条；包括公共事件，不仅是发言。</td></tr>
+          <tr><td>狼人同伴</td><td>仅向狼人提供相应队友信息。</td></tr>
+          <tr><td>预言家查验</td><td>仅向预言家提供查验记录。</td></tr>
+          <tr><td>女巫药品与夜间行动信息</td><td>在女巫对应上下文及行动请求中提供。</td></tr>
+          <tr><td>真人秘密日志</td><td>不进入 AI 的公共历史输入。</td></tr>
+          <tr><td>普通出局者身份</td><td>公共上下文不自动附带真实身份。</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout risk">
+        <span class="label">这是输入隔离，不是绝对安全保证</span>
+        <p>
+          上下文过滤能减少直接泄漏，但仍需检查各行动函数是否带入额外秘密，以及公共记录是否被错误标注。
+          当前<strong>完整状态保存在浏览器</strong>，不具备服务端权威状态与防作弊能力。
+        </p>
+      </div>
+      <p>
+        AI 的公开发言也不应自动升级为系统事实。
+        <em>「某人自称预言家」「某人报查杀」与「系统确认该身份或阵营」必须区分。</em>
+      </p>
+    </section>
+
+    <section id="ai">
+      <h2><span>08</span>AI 发言与时间线</h2>
+      <h3>真实暴露的问题</h3>
+      <p>
+        在首夜结束后的第一位竞选发言中，AI 曾称「因为目标首轮发言沉稳，所以昨晚查验他」，
+        还用「眼神躲闪」判断狼人。<strong>此时并不存在首轮公开发言，纯文字游戏也没有眼神数据。</strong>
+      </p>
+      <p>
+        检查发现，旧策略提示本身包含「首夜根据白天发言验人」「摸牌时表情异常」等错误引导。
+        <em>这不是单纯把语气写得更口语就能解决的问题。</em>
+      </p>
+      <h3>已完成的修正</h3>
+      <ul>
+        <li>明确首夜发生在所有竞选和日间发言之前，不能倒用白天信息解释首夜行动。</li>
+        <li>加入公开发言数量和投票记录存在性提示；没有记录时不得凭空评价历史发言或票型。</li>
+        <li>禁止把眼神、表情、摸牌动作、声音与语速当作本局观测证据。</li>
+        <li>首夜验人允许随机或座位偏好，不再强迫编造「饱满心路历程」。</li>
+        <li>修正「警徽流」与「警徽移交」的混淆：前者是未来查验计划，后者是警徽归属处理。</li>
+        <li>保留狼人悍跳和假报验策略，但要求报验次数与前后说法自洽。</li>
+        <li>已通过 <code>AI_PERSONAS</code> 注入人物表达特点与判断习惯，不再将个体风格全部列为未来功能。</li>
+      </ul>
+      <p>
+        普通发言使用包含内部判断与公开发言的 JSON，提示目标为较短口语表达；内部判断不展示给玩家。
+        但<strong>字数、证据引用与跨轮一致性主要仍依赖提示词，尚非完整的程序化验证</strong>。
+      </p>
+      <div class="callout take">
+        <span class="label">策略性说谎 ≠ 事实幻觉</span>
+        <p>
+          狼人假称预言家是玩法；AI 把不存在的「上一轮发言」当证据是质量缺陷。
+          <strong>不能因为狼人杀允许说谎，就把所有幻觉解释为合理行为。</strong>
+        </p>
+      </div>
+      <p class="src-note">
+        目前未导入真实对局训练集，未进行模型微调，也没有完成大规模发言质量评测。
+        本轮属于提示词、信息组织与部分兜底修正。
+      </p>
+    </section>
+
+    <section id="fallback">
+      <h2><span>09</span>结构化决策与降级</h2>
+      <p>
+        AI 主要通过 JSON 提交结果，随后由代码处理。
+        <code>safeJSON</code> 负责剥离代码围栏并解析 JSON，但 <strong>TypeScript 泛型不是运行时 schema 校验</strong>。
+      </p>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>任务</th><th>输出形态</th><th>当前处理要点</th></tr></thead>
+        <tbody>
+          <tr><td>普通发言</td><td><code>{thought, speech}</code></td><td>展示 speech；失败时使用备用发言。部分备用发言仍需优化。</td></tr>
+          <tr><td>投票</td><td><code>{voteId, reason}</code></td><td>检查是否在候选集中；无效值可转为弃权。请求异常时存在随机合法候选降级。</td></tr>
+          <tr><td>狼人击杀／预言家查验</td><td><code>{targetId}</code></td><td>检查目标合法性；无效或异常时可能从合法候选中随机选择。</td></tr>
+          <tr><td>女巫用药</td><td><code>{action, targetId?}</code></td><td>校验药品、目标和自救限制；异常时可能采用首夜救人降级，否则跳过。</td></tr>
+          <tr><td>猎人开枪</td><td><code>{targetId}</code></td><td>允许主动放弃；非法值或请求异常的部分路径仍可能随机选择目标。</td></tr>
+          <tr><td>是否上警</td><td><code>{run}</code></td><td>部分身份先走代码策略；其他身份在异常时存在概率性上警降级。</td></tr>
+          <tr><td>警徽移交</td><td><code>{targetId}</code></td><td>合法目标才移交，否则可以撕毁。</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>
+        <strong>现有兜底并非全部「什么都不做」。</strong>
+        解析失败、字段无效与网络异常有不同处理分支。
+        随机降级有助于让流程继续，但<em>可能损害策略一致性，必须作为后续改进项</em>。
+      </p>
+    </section>
+
+    <section id="architecture">
+      <h2><span>10</span>技术与成本</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>模块</th><th>职责</th></tr></thead>
+        <tbody>
+          <tr><td><code>App.tsx</code></td><td>对局状态、阶段调度、交互与身份揭晓。</td></tr>
+          <tr><td><code>VillageStage.tsx</code></td><td>场景人物、立绘渲染、选中与私密标记、顶部发言。</td></tr>
+          <tr><td><code>RoleAnimation.tsx</code></td><td>身份视频重播弹窗、播放控件与错误提示。</td></tr>
+          <tr><td><code>artAssets.ts</code></td><td>公开人物立绘、身份图和视频路径映射。</td></tr>
+          <tr><td><code>lib/gameUtils.ts</code></td><td>洗牌、随机座位、胜负、发言顺序与票数统计。</td></tr>
+          <tr><td><code>services/aiService.ts</code></td><td>模型请求、人物风格、角色知识、结构化结果与降级。</td></tr>
+          <tr><td><code>api/chat.js</code></td><td>生产请求转发、服务端密钥与上游超时。</td></tr>
         </tbody>
       </table>
       </div>
       <p class="pull">
-        AI 从不推进游戏，只在游戏问它时回答一个问题。
+        玩家界面 → App.tsx 阶段调度 → aiService 构造上下文 → /api/chat → 服务端读密钥 → 模型 → 结构化结果回到代码校验
+      </p>
+
+      <h3>模型与密钥口径</h3>
+      <p>
+        当前代码默认模型标识为 <code>deepseek-chat</code>，可通过环境配置覆盖；
+        <strong>不能据此确认线上实际使用的型号</strong>，更不能写成未经核对的 <code>deepseek-v4-flash</code>。
       </p>
       <p>
-        这个分工是整个架构的地基。<em>如果让 AI 决定「现在该进入白天了」或「他死了」，
-        游戏状态就会随对话漂移</em>——两个 Agent 可能对当前是第几天产生分歧，
-        而这类不一致在社交推理游戏里是致命的：所有推理都建立在共同的事实基础上。
-      </p>
-    </section>
-
-    <section id="partition">
-      <h2><span>04</span>信息分区</h2>
-      <p>
-        每次调用 AI 前，<code>buildGameContext(player, gameState)</code> 为<strong>那一个具体的 Agent</strong>
-        现场拼装一份上下文。公共信息人人有份，私有信息只发给该身份。
+        生产默认经服务端转发读取 <code>DEEPSEEK_API_KEY</code>。
+        客户端仍保留 <code>VITE_DEEPSEEK_API_KEY</code> 直连兼容路径，
+        因此<em>公开部署时不应配置会进入前端包的真实密钥</em>。
       </p>
 
-      <figure class="diagram">
-        <svg viewBox="0 0 760 262" role="img" aria-label="按身份切片的上下文构造示意" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
-          <defs>
-            <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-              <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
-            </marker>
-          </defs>
-
-          <rect x="0" y="14" width="216" height="66" rx="7" fill="#f1efe9" stroke="#e5e2dc"/>
-          <g stroke="#e5e2dc" fill="#fff">
-            <rect x="0" y="98"  width="216" height="42" rx="7"/>
-            <rect x="0" y="152" width="216" height="42" rx="7"/>
-            <rect x="0" y="206" width="216" height="42" rx="7"/>
-          </g>
-          <rect x="316" y="86" width="150" height="90" rx="7" fill="#f9e9e6" stroke="#9c3b33" stroke-width="1.5"/>
-          <rect x="566" y="98" width="194" height="66" rx="7" fill="#f1efe9" stroke="#e5e2dc"/>
-
-          <g font-size="12.5" fill="#171717">
-            <text x="14" y="38">公共信息</text>
-            <text x="14" y="57" font-size="11" fill="#67635c">存活/出局名单、警长、昨晚死亡</text>
-            <text x="14" y="72" font-size="11" fill="#67635c">近 15 条发言记录</text>
-            <text x="14" y="118">狼队友名单</text>
-            <text x="14" y="134" font-size="11" fill="#8a5a2b">仅狼人</text>
-            <text x="14" y="172">查验记录</text>
-            <text x="14" y="188" font-size="11" fill="#8a5a2b">仅预言家</text>
-            <text x="14" y="226">解药 / 毒药状态</text>
-            <text x="14" y="242" font-size="11" fill="#8a5a2b">仅女巫</text>
-          </g>
-
-          <g font-size="12.5" fill="#9c3b33" text-anchor="middle" font-weight="700">
-            <text x="391" y="122">buildGameContext</text>
-            <text x="391" y="142" font-size="11" font-weight="400">(player, gameState)</text>
-          </g>
-          <g font-size="12.5" fill="#171717" text-anchor="middle">
-            <text x="663" y="126">该 Agent 的上下文</text>
-            <text x="663" y="145" font-size="11" fill="#67635c">其余 11 人看不到这一份</text>
-          </g>
-
-          <g stroke="#9a9a94" stroke-width="1.3" fill="none" marker-end="url(#aw)">
-            <path d="M216,47 L262,47 Q274,47 274,59 L274,119 L311,119"/>
-            <path d="M216,119 L311,119"/>
-            <path d="M216,173 L262,173 Q274,173 274,161 L274,143 L311,143"/>
-            <path d="M216,227 L262,227 Q274,227 274,215 L274,147 L311,147"/>
-            <path d="M466,131 L561,131"/>
-          </g>
-        </svg>
-        <figcaption>
-          边界在<strong>上下文构造时</strong>强制，而不是在 prompt 里叮嘱模型「不要偷看」。
-          模型根本拿不到那份数据。
-        </figcaption>
-      </figure>
-
-      <p>
-        这一点值得说清楚，因为两种做法的可靠性差着数量级：
-      </p>
-      <div class="table-wrap">
-      <table>
-        <thead><tr><th>做法</th><th>可靠性</th><th>失败时的表现</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>把全部信息给模型，在 prompt 里要求「你是平民，不要使用狼人信息」</td>
-            <td><b>不可靠</b>——依赖模型的服从性，且无法验证</td>
-            <td>偶发泄漏，且难以复现和定位</td>
-          </tr>
-          <tr>
-            <td><b>构造上下文时就不放入</b>（本作做法）</td>
-            <td><b>可靠</b>——是代码约束，不是模型行为</td>
-            <td>不会发生</td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
-      <p>
-        公共信息里有一处细节：出局玩家的身份是<em>公开</em>的
-        （<code>3号(狼人,被投票,第2天)</code>），这符合狼人杀的实际规则，
-        也给了 AI 复盘的依据——<strong>它需要能说出「昨天被票出去的是狼，说明当时跟票的人有问题」这种话</strong>。
-      </p>
-    </section>
-
-    <section id="output">
-      <h2><span>05</span>结构化输出与兜底</h2>
-      <p>
-        除了白天发言是自然语言，<strong>所有决策都要求模型返回 JSON</strong>，
-        并通过 <code>response_format: json_object</code> 约束。每种决策有独立的函数与 schema：
-      </p>
-      <div class="table-wrap">
-      <table>
-        <thead><tr><th>决策</th><th>返回</th><th>解析失败时的兜底</th></tr></thead>
-        <tbody>
-          <tr><td>投票</td><td><code>{voteId, reason}</code></td><td><code>{voteId: -1}</code> 弃权</td></tr>
-          <tr><td>狼人击杀</td><td><code>{targetId}</code></td><td><code>-1</code>，由代码兜底</td></tr>
-          <tr><td>预言家查验</td><td><code>{targetId}</code></td><td><code>-1</code></td></tr>
-          <tr><td>女巫用药</td><td><code>{action, targetId?}</code></td><td><code>{action: "skip"}</code> 不用药</td></tr>
-          <tr><td>守卫守护</td><td><code>{targetId}</code></td><td><code>-1</code> 空守</td></tr>
-          <tr><td>猎人开枪</td><td><code>{targetId}</code></td><td><code>-1</code> 不开枪</td></tr>
-          <tr><td>是否上警</td><td><code>{run}</code></td><td><code>false</code> 不上警</td></tr>
-          <tr><td>警徽移交</td><td><code>{targetId}</code></td><td><code>-1</code> 撕毁</td></tr>
-        </tbody>
-      </table>
-      </div>
-
-      <p>
-        解析统一走 <code>safeJSON&lt;T&gt;(text, fallback)</code>：先剥掉模型可能包裹的
-        <code>```json</code> 围栏，再 <code>JSON.parse</code>，失败则返回兜底值。
-      </p>
-
-      <div class="callout take">
-        <span class="label">判断</span>
-        <p>
-          注意每个兜底值的共同点：<strong>它们都是合法的「什么都不做」，而不是随机值或抛错。</strong>
-        </p>
-        <p>
-          这是与 LLM 集成时最重要的一条工程原则。模型偶尔会返回无法解析的内容，
-          这是概率性的、无法完全消除的。如果解析失败就崩溃，游戏在长局里必然中断；
-          如果失败就随机选一个目标，会产生玩家无法理解的诡异行为。
-          <em>降级成一个合法的空操作，游戏继续，玩家最多觉得「这个 AI 今晚没动」</em>——
-          而这在真实牌局里也会发生。
-        </p>
-      </div>
-    </section>
-
-    <section id="cost">
-      <h2><span>06</span>上下文与成本</h2>
-      <p>
-        一局 12 人狼人杀的调用量是可观的：每天每个存活 AI 至少一次发言 + 一次投票，
-        夜里还有各神职的行动。<strong>如果每次都把完整历史塞进去，token 消耗会随天数平方增长。</strong>
-      </p>
-      <h3>控制手段</h3>
+      <h3>成本控制</h3>
       <ul>
-        <li>
-          <strong>发言记录只取最近 15 条</strong>（<code>logs.slice(-15)</code>）。
-          狼人杀的推理主要依赖近期发言与当前存活结构；更早的内容已经沉淀进「出局名单 + 身份公开」里，
-          <em>被压缩成了结构化状态，不需要以原文形式重复携带。</em>
-        </li>
-        <li>
-          <strong>局面以结构化摘要而非原文呈现。</strong>存活/出局、警长、药品、查验记录都是短标签，
-          不是叙述性文字。
-        </li>
-        <li>
-          <strong>决策类调用限制输出为 JSON</strong>，输出 token 极少。
-        </li>
-        <li>
-          <strong>选用 flash 级模型</strong>（<code>deepseek-v4-flash</code>）。
-          社交推理需要的是快速的立场判断，不是长链推理。
-        </li>
+        <li>公共日志窗口限制为最近 25 条，避免每次携带完整历史。</li>
+        <li>当前名单、药品、查验和阶段以结构化摘要提供。</li>
+        <li>发言采用短文本提示，行动采用紧凑 JSON；<em>这不等于已有统一输出 token 硬上限</em>。</li>
+        <li>存在请求超时和降级，避免一次挂起永久卡住流程。</li>
+        <li>角色动画使用可重复播放的静态媒体，不会在每次播放时重新调用生成模型。</li>
       </ul>
       <p>
-        「近 15 条 + 结构化摘要」这个组合本质上是一套<strong>分层记忆</strong>：
-        近期用原文、中期用结构化事实、远期直接丢弃。
-        它没有引入向量检索，因为狼人杀的信息量天然有界——<em>一局最多十几天，
-        重要事实不超过几十条，用不着检索。</em>
+        目前<strong>没有统一的 token、延迟、单局费用与失败率统计</strong>。
+        25 条滑动窗口也不等于完整的长期记忆：早期站边、假报验与承诺可能丢失，后续需要补充关键事件记忆。
       </p>
     </section>
 
-    <section id="halluc">
-      <h2><span>07</span>防幻觉的三道措施</h2>
-      <p>
-        社交推理里最伤的幻觉是<strong>捏造游戏事件</strong>——
-        AI 说「昨天 5 号跳了预言家」而实际上没有。
-        这会污染其他 Agent 的推理，并让玩家彻底失去信任。三道措施依次生效：
-      </p>
-      <ol>
-        <li>
-          <strong>不给不该有的数据</strong>（第 04 节）。大部分越界从源头被切断。
-        </li>
-        <li>
-          <strong>上下文末尾的硬性声明。</strong>每次调用都以这一行结尾：
-          <em>「⚠️ 重要：你只能基于以上真实信息发言，严禁捏造不存在的游戏事件！」</em>
-          位置在上下文最末、紧邻任务指令，是模型注意力最强的位置。
-        </li>
-        <li>
-          <strong>决策与表达分离。</strong>投票、击杀、查验这些<b>会改变游戏状态</b>的动作走 JSON，
-          由代码校验后执行；自然语言只用于发言。
-          <em>即使发言里含有幻觉，它也无法直接改写世界状态</em>——最多影响其他 Agent 的判断，
-          而这在真实牌局里叫「造谣」，本来就是玩法的一部分。
-        </li>
-      </ol>
-      <div class="callout take">
-        <span class="label">判断</span>
-        <p>
-          第 3 条是这个架构最幸运的一点：<strong>狼人杀恰好是一个「说谎是合法玩法」的游戏。</strong>
-          在别的产品里，AI 说错话是 bug；在这里，只要它改不了事实，说错话最多是一次糟糕的发言。
-          <em>选对了题材，一半的 AI 可靠性问题被规则本身吸收了。</em>
-        </p>
-      </div>
-    </section>
-
-    <section id="prompt">
-      <h2><span>08</span>策略知识写在哪</h2>
-      <p>
-        <code>SYSTEM_PROMPT</code> 注入每一次调用，包含三部分：身份构成、各角色技能的完整规则、
-        以及<strong>按身份分列的核心策略</strong>。
-      </p>
-      <p>
-        策略部分写得相当具体，例如预言家一条写着
-        <em>「必须在第一天警长竞选时上警起跳，争夺警徽——这是铁则」</em>。
-      </p>
-      <div class="callout risk">
-        <span class="label">这里有个待验证的取舍</span>
-        <p>
-          把策略写死进 system prompt，好处是 AI 的行为符合真实牌局的套路，玩家不会觉得对手在乱打。
-          代价是<strong>所有 Agent 共享同一套策略认知，打法趋同</strong>——
-          11 个 AI 可能表现得像同一个人的 11 个分身。
-        </p>
-        <p>
-          真实牌局的乐趣有相当一部分来自玩家<em>风格各异</em>：有人激进有人保守，有人爱冲票有人爱苟。
-          下一步应当在共享规则之上，为每个 Agent 叠加一层<b>个体风格</b>
-          （激进度、话痨度、跟票倾向），并观察它对发言多样性与跟票行为的实际影响。
-        </p>
-      </div>
-    </section>
-
-    <section id="tech">
-      <h2><span>09</span>技术实现</h2>
+    <section id="verification">
+      <h2><span>11</span>实现与验证状态</h2>
       <div class="table-wrap">
       <table>
-        <thead><tr><th>项</th><th>选择</th></tr></thead>
+        <thead><tr><th>项目</th><th>状态</th><th>说明</th></tr></thead>
         <tbody>
-          <tr><td>前端</td><td>React + TypeScript + Vite</td></tr>
-          <tr><td>模型</td><td>DeepSeek <code>deepseek-v4-flash</code>，经 OpenAI SDK 指向 <code>api.deepseek.com</code></td></tr>
-          <tr><td>状态</td><td>全部在前端，单文件 <code>App.tsx</code> 驱动状态机（801 行）</td></tr>
-          <tr><td>类型</td><td><code>types.ts</code> 定义 Role / Side / Phase / Player / GameLog / WitchStatus / SeerRecord</td></tr>
-          <tr><td>发牌</td><td>Fisher-Yates 洗牌；第 12 个身份在守卫与白痴间随机</td></tr>
+          <tr><td>固定预女猎白、随机座位</td><td><span class="badge">已实现</span></td><td>不再固定真人为 1 号，也不随机插入守卫。</td></tr>
+          <tr><td>11 张全身图与两张修补版</td><td><span class="badge">已接入</span></td><td>完成桌面及手机截图检查，保留原图。</td></tr>
+          <tr><td>上方发言、卷宗、人物选中</td><td><span class="badge">已实现</span></td><td>移除旧的常驻左侧阵容面板与大面积底部日志。</td></tr>
+          <tr><td>预言家私密查验标记</td><td><span class="badge">已实现</span></td><td>根据真人身份显示，不作为其他 AI 的公共知识。</td></tr>
+          <tr><td>六段身份视频</td><td><span class="badge">播放验证通过</span></td><td>本地浏览器确认 3–4 秒视频可播放；重播弹窗可打开和关闭。</td></tr>
+          <tr><td>构建与基础交互</td><td><span class="badge">已检查</span></td><td>生产构建、类型检查，以及使用模拟接口的投票和卷宗流程检查。</td></tr>
+          <tr><td>AI 人味与事实一致性</td><td><span class="badge partial">初步修正</span></td><td>提示词与部分兜底已改，未完成真实模型批量评测。</td></tr>
+          <tr><td>线上部署</td><td><span class="badge partial">待线上核验</span></td><td>修改已合并 main；<b>不将 GitHub 合并等同于 Vercel 部署成功</b>。</td></tr>
         </tbody>
       </table>
       </div>
-      <div class="callout risk">
-        <span class="label">两处代码问题</span>
-        <p>
-          <strong>一、密钥在浏览器里。</strong>客户端以 <code>dangerouslyAllowBrowser: true</code> 初始化，
-          API key 走 <code>VITE_</code> 前缀进前端包。这是本项目<strong>没有部署到 GitHub Pages 的直接原因</strong>——
-          公开部署等于公开密钥。需要一个服务端转发层才能对外开放试玩。
-        </p>
-        <p>
-          <strong>二、文件名与实现不符。</strong><code>services/geminiService.ts</code> 里实际调用的是 DeepSeek，
-          文件名是早期版本的遗留。应当改名，否则会误导后来读代码的人。
-        </p>
-      </div>
+      <p class="src-note">
+        基础测试通过<strong>不代表</strong>所有角色组合、死亡链与长局流程均已覆盖。
+      </p>
     </section>
 
-    <section id="next">
-      <h2><span>10</span>已知限制与下一步</h2>
-      <h3>已知限制</h3>
+    <section id="roadmap">
+      <h2><span>12</span>后续迭代</h2>
+
+      <h3>P0 · 先让规则和事实可靠</h3>
       <ul>
-        <li><strong>无法公开试玩</strong>（密钥问题，见上）。</li>
-        <li><strong>Agent 无跨局记忆。</strong>每局从零开始，AI 不会记得玩家上一局的打法。</li>
-        <li><strong>无对局日志导出。</strong>目前只能在界面里回看，不便于批量分析行为模式。</li>
+        <li>导出对局日志，区分公共事件、玩家主张和私密记录，建立可重复的回归样例。</li>
+        <li>加入关键事件编号与引用校验，检查「某号何时说过什么」，减少虚构前情。</li>
+        <li>复查首夜信息、女巫刀口可见性、警长竞选顺序、平票和技能死亡链，明确项目采用的规则变体。</li>
+        <li>为结构化输出增加运行时 schema 校验，统一异常处理，减少随机降级带来的不合理行动。</li>
+        <li>核验线上视频、接口配置与部署结果；公开推广前补充接口限流、请求大小限制等保护。</li>
       </ul>
-      <h3>下一步要验证的问题</h3>
-      <ol>
-        <li>
-          <strong>跟票行为（herd behavior）的实际强度。</strong>
-          需要先加对局日志导出，统计「第二个投某人的 Agent，有多大比例跟随了第一个投票者」。
-          如果显著高于随机，说明 AI 在用「别人投了」代替独立判断——
-          <em>这既可能是缺陷，也可能恰好模拟了真实玩家的从众心理，需要数据才能判断。</em>
-        </li>
-        <li>
-          <strong>个体风格对发言多样性的影响</strong>（见第 08 节）。
-        </li>
-        <li>
-          <strong>错误推断的扩散路径。</strong>一个 Agent 的错误结论会进入公共发言记录，
-          被其他 Agent 当作事实引用。需要观察这类污染在一局内能传播多远，
-          以及「近 15 条」的窗口是加速还是抑制了它。
-        </li>
-      </ol>
-    </section>
 
+      <h3>P1 · 让 AI 更像不同的玩家</h3>
+      <ul>
+        <li>整理有授权或可合法使用的对局文本，先用于案例提示与评测；是否微调，依据基线结果与成本再决定。</li>
+        <li>持久保存本局各 AI 的报验、站边、承诺与改口原因，避免窗口截断后自相矛盾。</li>
+        <li>评估事实虚构率、身份越界率、重复套话率、承诺一致性和角色风格可辨识度。</li>
+        <li>不要把发言流畅、语气强势直接视为好人证据，也不要将所有公开查杀直接视为真预言家结论。</li>
+      </ul>
 
-    <section id="intro-anim">
-      <h2><span>11</span>角色开场动画</h2>
-      <p>六段竖版开场，用于对局开始时的身份揭示。文件放进 <code>media/</code>，命名为 <code>werewolf-intro-1..6.mp4</code> 即可自动显示。</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px">
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-1.mp4" poster="../media/werewolf-intro-1.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-1.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">预言家 开场</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-2.mp4" poster="../media/werewolf-intro-2.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-2.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">女巫 开场</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-3.mp4" poster="../media/werewolf-intro-3.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-3.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">猎人 开场</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-4.mp4" poster="../media/werewolf-intro-4.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-4.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">守卫 开场</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-5.mp4" poster="../media/werewolf-intro-5.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-5.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">狼人 开场</figcaption>
-      </figure>
-      <figure style="margin:0">
-        <div class="media"><video src="../media/werewolf-intro-6.mp4" poster="../media/werewolf-intro-6.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-6.mp4</div></div>
-        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">平民 开场</figcaption>
-      </figure>
+      <h3>P2 · 完成场景与演出</h3>
+      <ul>
+        <li>针对手机重新规划人物尺寸、站位和标签，减少对横屏的依赖。</li>
+        <li>统一真人身份形象与 AI 立绘的场景融合方式，改善背景残留、边缘与落地阴影。</li>
+        <li>以轻量特效优先实现狼刀、毒杀、放逐和猎人开枪的差异化演出。</li>
+        <li>补充六种身份的胜利结算表现，复用既有素材，控制新增视频制作费用。</li>
+      </ul>
+
+      <div class="callout take">
+        <span class="label">下一阶段的验收重点</span>
+        <p>
+          玩家能看清所有人、顺利完成行动；<strong>AI 的每条事实依据能追溯</strong>；已有视频在正确时机播放。
+          满足这些条件后，再扩展更复杂的动画与玩法。
+        </p>
       </div>
     </section>
+
   </article>
 
   <div class="related">
@@ -541,18 +582,11 @@ code{background:#f1efe9;color:#7a2b25}
 
 <footer class="doc-foot">
   <div class="container">
-    <div>策划案 · AI 狼人杀 · 王禹尧</div>
+    <div>策划案 · 灰雾村 AI 狼人杀 · 王禹尧</div>
     <div><a href="../index.html#featured">← 返回作品集</a></div>
   </div>
 </footer>
 
 <script src="../assets/doc.js"></script>
-<script>
-document.querySelectorAll('.media video').forEach(function (v) {
-  var probe = new Image();
-  probe.onerror = function () { v.parentNode.classList.add('is-empty'); };
-  probe.src = v.getAttribute('poster');
-});
-</script>
 </body>
 </html>
