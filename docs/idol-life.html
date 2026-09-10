@@ -6,6 +6,67 @@
 <title>爱豆收集梦想生活 策划案｜王禹尧</title>
 <meta name="description" content="AI 驱动沙盒养成的设计说明：确定性模拟与生成层的分工线、哈希驱动的需求心跳、九种结构化输出块、状态所有权审计。">
 <link rel="stylesheet" href="../assets/doc.css">
+<style>
+/* 爱豆收集梦想生活 专属：粉桃软光 */
+:root{
+  --bg:#fdfaf9;
+  --line:#f0e3e2;
+  --hair:#f6ecec;
+  --soft:#fbf1f0;
+  --accent:#b8517a;
+  --accent-deep:#8f3a5e;
+  --accent-soft:#fceaf1;
+  --accent-line:#e79bb8;
+  --muted:#6f636a;
+  --body:#5a5158;
+  --text:#221a1f;
+}
+::selection{background:#fbd9e5}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  border-bottom:none;
+  padding:46px 0 50px;
+  background:
+    radial-gradient(620px 420px at 80% 16%, #ffd7e6 0%, rgba(255,215,230,0) 68%),
+    radial-gradient(520px 380px at 6% 96%, #ffe7c9 0%, rgba(255,231,201,0) 70%),
+    linear-gradient(180deg,#fff2f6 0%, var(--bg) 100%);
+}
+.doc-head .container{position:relative;z-index:1}
+.doc-head::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.85) 2px, transparent 2px);
+  background-size:30px 30px;
+  opacity:.5;
+  pointer-events:none;
+}
+.doc-head h1{color:#221a1f}
+.doc-head .sub{color:#8b6b76}
+.kicker{color:#b8517a}
+.doc-head .thesis{
+  background:rgba(255,255,255,.86);
+  border:1px solid #f4d9e2;
+  border-left:4px solid #e79bb8;
+  border-radius:0 18px 18px 0;
+  max-width:min(720px,100%);
+}
+.thesis b{color:#b8517a}
+.doc h2 span{color:#b8517a}
+.doc em{box-shadow:inset 0 -9px 0 #fbd9e5}
+.pull{border-left-color:#e79bb8}
+.callout.take{background:#fceaf1;border-color:#f4d9e2}
+.callout.take .label{color:#8f3a5e}
+.table-wrap,.callout,figure.diagram{border-radius:18px}
+th{background:#fceaf1;color:#8f3a5e}
+code{background:#fbf1f0;color:#8f3a5e}
+.toc a.active{color:#8f3a5e;border-left-color:#e79bb8}
+.doc-links a{border-color:#f0c9d8;color:#8f3a5e}
+.doc-links a:hover{background:#fceaf1}
+.doc-foot{background:#fff2f6;border-top:1px solid #f4d9e2;color:#6f636a}
+.doc-foot a{color:#b8517a}
+</style>
 </head>
 <body>
 
@@ -112,25 +173,25 @@
               <path d="M0,0 L10,5 L0,10 z" fill="#9a9a94"/>
             </marker>
           </defs>
-          <g stroke="#deded8" fill="#fafaf8">
+          <g stroke="#f0e3e2" fill="#fbf1f0">
             <rect x="0"   y="92"  width="146" height="58" rx="7"/>
             <rect x="190" y="92"  width="168" height="58" rx="7"/>
             <rect x="404" y="22"  width="176" height="54" rx="7"/>
           </g>
-          <rect x="404" y="152" width="176" height="54" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
-          <rect x="616" y="152" width="144" height="54" rx="7" fill="#fafaf8" stroke="#deded8"/>
+          <rect x="404" y="152" width="176" height="54" rx="7" fill="#fceaf1" stroke="#b8517a" stroke-width="1.5"/>
+          <rect x="616" y="152" width="144" height="54" rx="7" fill="#fbf1f0" stroke="#f0e3e2"/>
 
           <g font-size="13" fill="#171717" text-anchor="middle">
             <text x="73"  y="115">每位爱豆</text>
-            <text x="73"  y="134" font-size="11" fill="#6e6e6a">× 每个时段</text>
+            <text x="73"  y="134" font-size="11" fill="#6f636a">× 每个时段</text>
             <text x="274" y="115">确定性哈希</text>
             <text x="274" y="134" font-size="11" fill="#8a5a2b">45% 有需求 · 定类型</text>
             <text x="492" y="45">头顶冒泡 / 心情表情</text>
-            <text x="492" y="64" font-size="11" fill="#6e6e6a">零 API 调用</text>
-            <text x="492" y="175" font-weight="700" fill="#365f73">玩家点击才调 LLM</text>
-            <text x="492" y="194" font-size="11" fill="#365f73">演一段碎片剧场</text>
+            <text x="492" y="64" font-size="11" fill="#6f636a">零 API 调用</text>
+            <text x="492" y="175" font-weight="700" fill="#b8517a">玩家点击才调 LLM</text>
+            <text x="492" y="194" font-size="11" fill="#b8517a">演一段碎片剧场</text>
             <text x="688" y="175">结构化块回写</text>
-            <text x="688" y="194" font-size="11" fill="#6e6e6a">好感 / 记忆 / 社媒</text>
+            <text x="688" y="194" font-size="11" fill="#6f636a">好感 / 记忆 / 社媒</text>
           </g>
 
           <g stroke="#9a9a94" stroke-width="1.4" fill="none" marker-end="url(#ai)">

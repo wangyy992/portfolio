@@ -7,16 +7,79 @@
 <meta name="description" content="1 名玩家对 11 个 AI Agent 的狼人杀设计说明：15 阶段确定性状态机、按身份分区的上下文构造、结构化输出与兜底降级、上下文与成本控制。">
 <link rel="stylesheet" href="../assets/doc.css">
 <style>
-figure.diagram.cast{padding:0;overflow:hidden;background:#1b1b1e;border-color:#2a2a2e}
-figure.diagram.cast img{display:block;width:100%;height:auto}
-figure.diagram.cast figcaption{
-  margin-top:0;
-  padding:14px 20px 16px;
-  border-top:1px solid #2a2a2e;
-  color:#9a978f;
+/* AI 狼人杀 专属：深夜议事厅 */
+:root{
+  --bg:#f9f8f6;
+  --line:#e5e2dc;
+  --hair:#edeae4;
+  --soft:#f1efe9;
+  --accent:#9c3b33;
+  --accent-deep:#7a2b25;
+  --accent-soft:#f9e9e6;
+  --accent-line:#cf8279;
+  --muted:#67635c;
+  --body:#54514b;
+  --text:#191713;
 }
-figure.diagram.cast figcaption strong{color:#e6e3dc}
-figure.diagram.cast figcaption b{color:#e6e3dc}
+::selection{background:#f4d8d3}
+.doc-head{
+  position:relative;
+  overflow:hidden;
+  border-bottom:none;
+  padding:48px 0 52px;
+  background:#111318;
+}
+.doc-head .container{position:relative;z-index:1}
+.doc-head::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(520px 300px at 50% -12%, rgba(255,226,170,.20), transparent 70%),
+    radial-gradient(460px 320px at 88% 88%, rgba(156,59,51,.30), transparent 72%);
+}
+.doc-head::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.10) 1.5px, transparent 1.5px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(closest-side at 50% 0%, rgba(0,0,0,.9), transparent 78%);
+  pointer-events:none;
+}
+.doc-head h1{color:#f2efe9}
+.doc-head .sub{color:#948e83}
+.kicker{color:#cf8279}
+.back{color:#837d73}
+.back:hover{color:#cf8279}
+.doc-head .thesis{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(207,130,121,.22);
+  border-left:3px solid #9c3b33;
+  border-radius:0 16px 16px 0;
+  color:#d6d1c8;
+  max-width:min(720px,100%);
+}
+.doc-head .thesis strong{color:#f2efe9}
+.doc-head .thesis b{color:#cf8279}
+.doc-head .thesis em{box-shadow:inset 0 -9px 0 rgba(207,130,121,.3);color:#f2efe9}
+.metabar dt{color:#948e83}
+.metabar dd{color:#d6d1c8}
+.doc-links a{border-color:rgba(207,130,121,.45);color:#e8b3ab}
+.doc-links a:hover{background:rgba(156,59,51,.2)}
+.doc em{box-shadow:inset 0 -9px 0 #f4d8d3}
+.pull{border-left-color:#cf8279}
+.callout.take{background:#f9e9e6;border-color:#efd8d3}
+.callout.take .label{color:#7a2b25}
+th{background:#f1efe9;color:#7a2b25}
+code{background:#f1efe9;color:#7a2b25}
+.toc a.active{color:#7a2b25;border-left-color:#cf8279}
+.doc-foot{background:#111318;border-top:none;color:#837d73}
+.doc-foot a{color:#cf8279}
+</style>
+<style>
+.media.is-empty video{display:none}
+.media.is-empty .ph{display:flex}
 </style>
 </head>
 <body>
@@ -50,6 +113,11 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
   </div>
 </header>
 
+<figure style="margin:0;position:relative;background:#111318">
+  <img src="../media/werewolf-cast.jpg" alt="12 位村民角色的立绘阵容" style="display:block;width:100%;height:clamp(160px,26vw,300px);object-fit:cover;object-position:center 34%">
+  <figcaption class="container" style="position:absolute;left:0;right:0;bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cbc5ba;text-shadow:0 1px 8px rgba(0,0,0,.8)">Cast — 11 个 AI Agent 与 1 名玩家共处一局</figcaption>
+</figure>
+
 <div class="container layout">
 
   <nav class="toc">
@@ -65,6 +133,7 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
       <li><a href="#prompt">08　策略知识写在哪</a></li>
       <li><a href="#tech">09　技术实现</a></li>
       <li><a href="#next">10　已知限制与下一步</a></li>
+      <li><a href="#intro-anim">11　角色开场动画</a></li>
     </ol>
   </nav>
 
@@ -101,18 +170,6 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
     <section id="config">
       <h2><span>02</span>局配置</h2>
       <p>12 人标准局。玩家固定为 1 号，其余 11 位由 AI 扮演。</p>
-
-      <figure class="diagram cast">
-        <img src="../media/werewolf-cast.jpg" alt="12 名村民的角色立绘，一字排开">
-        <figcaption>
-          十二个人站在一起，<strong>外形不透露任何身份信息</strong>。
-          这不是省事，是规则要求：狼人和平民必须长得一样重要，
-          否则「谁是狼」这个问题在第一眼就被美术回答掉了。
-          身份的全部线索只能来自发言、投票与夜间结果——
-          也就是第 04 节要处理的那套信息分区。
-          <b>注意：</b>此为角色设定稿，当前线上版本尚未接入该套立绘。
-        </figcaption>
-      </figure>
       <div class="table-wrap">
       <table>
         <thead><tr><th>身份</th><th>数量</th><th>技能</th></tr></thead>
@@ -149,7 +206,7 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
         <thead><tr><th>时段</th><th>阶段</th></tr></thead>
         <tbody>
           <tr><td><b>夜晚</b></td><td><code>NIGHT_GUARD</code> → <code>NIGHT_WOLVES</code> → <code>NIGHT_SEER</code> → <code>NIGHT_WITCH</code> → <code>NIGHT_RESULT</code></td></tr>
-          <tr><td><b>警长竞选</b><br><span style="color:#6e6e6a;font-size:12.5px">仅第一天</span></td><td><code>SHERIFF_ELECT</code> → <code>SHERIFF_SPEECH</code> → <code>SHERIFF_VOTE</code> → <code>SHERIFF_RESULT</code></td></tr>
+          <tr><td><b>警长竞选</b><br><span style="color:#67635c;font-size:12.5px">仅第一天</span></td><td><code>SHERIFF_ELECT</code> → <code>SHERIFF_SPEECH</code> → <code>SHERIFF_VOTE</code> → <code>SHERIFF_RESULT</code></td></tr>
           <tr><td><b>白天</b></td><td><code>DAY_DISCUSSION</code> → <code>DAY_VOTING</code> → <code>DAY_RESULT</code> → <code>SHERIFF_ACTION</code></td></tr>
           <tr><td><b>边界</b></td><td><code>INIT</code>、<code>GAME_OVER</code></td></tr>
         </tbody>
@@ -180,19 +237,19 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
             </marker>
           </defs>
 
-          <rect x="0" y="14" width="216" height="66" rx="7" fill="#fafaf8" stroke="#deded8"/>
-          <g stroke="#deded8" fill="#fff">
+          <rect x="0" y="14" width="216" height="66" rx="7" fill="#f1efe9" stroke="#e5e2dc"/>
+          <g stroke="#e5e2dc" fill="#fff">
             <rect x="0" y="98"  width="216" height="42" rx="7"/>
             <rect x="0" y="152" width="216" height="42" rx="7"/>
             <rect x="0" y="206" width="216" height="42" rx="7"/>
           </g>
-          <rect x="316" y="86" width="150" height="90" rx="7" fill="#eaf0f3" stroke="#365f73" stroke-width="1.5"/>
-          <rect x="566" y="98" width="194" height="66" rx="7" fill="#fafaf8" stroke="#deded8"/>
+          <rect x="316" y="86" width="150" height="90" rx="7" fill="#f9e9e6" stroke="#9c3b33" stroke-width="1.5"/>
+          <rect x="566" y="98" width="194" height="66" rx="7" fill="#f1efe9" stroke="#e5e2dc"/>
 
           <g font-size="12.5" fill="#171717">
             <text x="14" y="38">公共信息</text>
-            <text x="14" y="57" font-size="11" fill="#6e6e6a">存活/出局名单、警长、昨晚死亡</text>
-            <text x="14" y="72" font-size="11" fill="#6e6e6a">近 15 条发言记录</text>
+            <text x="14" y="57" font-size="11" fill="#67635c">存活/出局名单、警长、昨晚死亡</text>
+            <text x="14" y="72" font-size="11" fill="#67635c">近 15 条发言记录</text>
             <text x="14" y="118">狼队友名单</text>
             <text x="14" y="134" font-size="11" fill="#8a5a2b">仅狼人</text>
             <text x="14" y="172">查验记录</text>
@@ -201,13 +258,13 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
             <text x="14" y="242" font-size="11" fill="#8a5a2b">仅女巫</text>
           </g>
 
-          <g font-size="12.5" fill="#365f73" text-anchor="middle" font-weight="700">
+          <g font-size="12.5" fill="#9c3b33" text-anchor="middle" font-weight="700">
             <text x="391" y="122">buildGameContext</text>
             <text x="391" y="142" font-size="11" font-weight="400">(player, gameState)</text>
           </g>
           <g font-size="12.5" fill="#171717" text-anchor="middle">
             <text x="663" y="126">该 Agent 的上下文</text>
-            <text x="663" y="145" font-size="11" fill="#6e6e6a">其余 11 人看不到这一份</text>
+            <text x="663" y="145" font-size="11" fill="#67635c">其余 11 人看不到这一份</text>
           </g>
 
           <g stroke="#9a9a94" stroke-width="1.3" fill="none" marker-end="url(#aw)">
@@ -439,6 +496,37 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
       </ol>
     </section>
 
+
+    <section id="intro-anim">
+      <h2><span>11</span>角色开场动画</h2>
+      <p>六段竖版开场，用于对局开始时的身份揭示。文件放进 <code>media/</code>，命名为 <code>werewolf-intro-1..6.mp4</code> 即可自动显示。</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px">
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-1.mp4" poster="../media/werewolf-intro-1.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-1.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">预言家 开场</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-2.mp4" poster="../media/werewolf-intro-2.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-2.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">女巫 开场</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-3.mp4" poster="../media/werewolf-intro-3.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-3.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">猎人 开场</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-4.mp4" poster="../media/werewolf-intro-4.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-4.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">守卫 开场</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-5.mp4" poster="../media/werewolf-intro-5.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-5.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">狼人 开场</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <div class="media"><video src="../media/werewolf-intro-6.mp4" poster="../media/werewolf-intro-6.jpg" controls muted loop playsinline preload="none" style="display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border:1px solid var(--line);border-radius:14px;background:#f1efe9"></video><div class="ph" style="aspect-ratio:9/16;border:1px dashed rgba(207,130,121,.5);border-radius:14px;background:repeating-linear-gradient(45deg,#f1efe9,#f1efe9 9px,#f7f5f0 9px,#f7f5f0 18px);display:none;align-items:center;justify-content:center;text-align:center;padding:10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#67635c">media/werewolf-intro-6.mp4</div></div>
+        <figcaption style="margin-top:7px;font-size:12.5px;color:#67635c;text-align:center">平民 开场</figcaption>
+      </figure>
+      </div>
+    </section>
   </article>
 
   <div class="related">
@@ -459,5 +547,12 @@ figure.diagram.cast figcaption b{color:#e6e3dc}
 </footer>
 
 <script src="../assets/doc.js"></script>
+<script>
+document.querySelectorAll('.media video').forEach(function (v) {
+  var probe = new Image();
+  probe.onerror = function () { v.parentNode.classList.add('is-empty'); };
+  probe.src = v.getAttribute('poster');
+});
+</script>
 </body>
 </html>
