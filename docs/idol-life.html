@@ -50,7 +50,7 @@
   border:1px solid #f4d9e2;
   border-left:4px solid #e79bb8;
   border-radius:0 18px 18px 0;
-  max-width:min(720px,100%);
+  max-width:none;
 }
 .thesis b{color:#b8517a}
 .doc h2 span{color:#b8517a}
@@ -103,6 +103,10 @@ figure.art figcaption strong{color:var(--text)}
       <div><dt>最后更新</dt><dd>2026-09 · v2 稳定性改造</dd></div>
     </dl>
 
+    <p class="doc-links">
+      <a href="https://idol-tomodachi-lifev2.vercel.app" target="_blank" rel="noopener">试玩 →</a>
+    </p>
+
   </div>
 </header>
 
@@ -125,19 +129,6 @@ figure.art figcaption strong{color:var(--text)}
   </nav>
 
   <article class="doc">
-
-    <div class="callout risk">
-      <span class="label">文档口径</span>
-      <p>
-        本文描述<strong>已实现的系统</strong>，按代码核对
-        （<code>src/needs.ts</code>、<code>calendar.ts</code>、<code>relations.ts</code>、
-        <code>geminiService.ts</code>、<code>milestones.ts</code>、<code>endings.ts</code>、<code>api/chat.ts</code>）。
-      </p>
-      <p>
-        仓库里另有一份 <code>玩法设计笔记.md</code>，开头写明「设计讨论中，尚未实现」——
-        那是待办清单，<strong>本文不引用其中未落地的内容</strong>。
-      </p>
-    </div>
 
     <section id="line">
       <h2><span>01</span>分工线</h2>
@@ -531,8 +522,8 @@ figure.art figcaption strong{color:var(--text)}
             <td><code>api/chat.ts</code> 服务端转发</td>
             <td><b>密钥不进前端包</b>——服务端读 <code>DEEPSEEK_API_KEY</code> 后转发到 <code>api.deepseek.com</code></td>
           </tr>
-          <tr><td>美术</td><td>像素 tileset 素材包 + <b>Gemini 生成式插画</b></td><td>室内/室外分层，含大量家具、门、电视动图等；城市地图与场景背景为 Gemini 产出，见下</td></tr>
-          <tr><td>捏脸</td><td><code>FaceCustomizer.tsx</code> + 素材组合</td><td>基于分层素材的自定义外观</td></tr>
+          <tr><td>美术</td><td><b>Cozy People Asset Pack</b>（itch.io 付费授权）+ <b>Gemini 生成式插画</b></td><td>前者提供人物与室内外像素素材，室内/室外分层，含大量家具、门、电视动图等；城市地图与场景背景为 Gemini 产出，见下</td></tr>
+          <tr><td>捏脸</td><td><code>FaceCustomizer.tsx</code> + 素材组合</td><td>基于 Cozy People Asset Pack 的分层素材（发型、服装、配饰、五官分层）组合出自定义外观</td></tr>
           <tr><td>部署</td><td>含 Dockerfile 与国内直连部署说明</td><td>—</td></tr>
         </tbody>
       </table>
@@ -584,12 +575,6 @@ figure.art figcaption strong{color:var(--text)}
         </p>
       </div>
 
-      <p>
-        密钥处理这一点与同期的 AI 狼人杀项目形成对比：那个项目把 key 放在前端
-        （<code>dangerouslyAllowBrowser</code>），因此无法公开部署。
-        <strong>本项目加了一层服务端转发，才使公开试玩成为可能</strong>；
-        公开部署时必须在 Vercel 等平台配置 <code>DEEPSEEK_API_KEY</code>，否则接口会安全地返回 503。
-      </p>
     </section>
 
     <section id="next">
@@ -605,7 +590,6 @@ figure.art figcaption strong{color:var(--text)}
       </ul>
       <h3>仍需关注的问题</h3>
       <ul>
-        <li><strong>部署环境必须配置 <code>DEEPSEEK_API_KEY</code>。</strong>缺少服务端密钥时，<code>/api/chat</code> 会返回 503，这是部署配置错误而不是前端回退逻辑。</li>
         <li><strong>模型输出仍需观测。</strong>结构化块已经做了白名单与容错解析，但仍应持续记录异常格式、请求耗时和实际 token 消耗。</li>
         <li><strong>移动端地图与低带宽体验。</strong>城市插画需要进一步压缩与懒加载，避免首次打开地图时产生不必要的下载等待。</li>
       </ul>

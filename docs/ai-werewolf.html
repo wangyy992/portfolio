@@ -58,7 +58,7 @@
   border-left:3px solid #9c3b33;
   border-radius:0 16px 16px 0;
   color:#d6d1c8;
-  max-width:min(720px,100%);
+  max-width:none;
 }
 .doc-head .thesis strong{color:#f2efe9}
 .doc-head .thesis b{color:#cf8279}
@@ -119,6 +119,10 @@ code{background:#f1efe9;color:#7a2b25}
       <div><dt>技术</dt><dd>React · TypeScript · Vite · Vercel 函数</dd></div>
       <div><dt>文档更新</dt><dd>2026-09-10</dd></div>
     </dl>
+
+    <p class="doc-links">
+      <a href="https://werewollfaibattle.vercel.app" target="_blank" rel="noopener">试玩 →</a>
+    </p>
   </div>
 </header>
 
@@ -544,7 +548,7 @@ code{background:#f1efe9;color:#7a2b25}
           <tr><td>六段身份视频</td><td><span class="badge">播放验证通过</span></td><td>本地浏览器确认 3–4 秒视频可播放；重播弹窗可打开和关闭。</td></tr>
           <tr><td>构建与基础交互</td><td><span class="badge">已检查</span></td><td>生产构建、类型检查，以及使用模拟接口的投票和卷宗流程检查。</td></tr>
           <tr><td>AI 人味与事实一致性</td><td><span class="badge partial">初步修正</span></td><td>提示词与部分兜底已改，未完成真实模型批量评测。</td></tr>
-          <tr><td>线上部署</td><td><span class="badge partial">待线上核验</span></td><td>修改已合并 main；<b>不将 GitHub 合并等同于 Vercel 部署成功</b>。</td></tr>
+          <tr><td>线上部署</td><td><span class="badge">可公开访问</span></td><td>已实测 <code>werewollfaibattle.vercel.app</code> 返回正常页面、无登录墙（2026-09-10）。<b>但「可访问」不等于「整局可玩」</b>——接口连通性与完整对局流程仍需单独核验。</td></tr>
         </tbody>
       </table>
       </div>
