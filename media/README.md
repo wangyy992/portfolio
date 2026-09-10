@@ -70,7 +70,9 @@ meadow 无透明通道、为照片式背景，转 JPEG 1400×933 / 106 KB。合�
 
 ### AI 狼人杀 身份动画
 
-`werewolf-role-{seer,witch,wolf,hunter,idiot,villager}.mp4` —— 六段身份揭晓短视频，
+`werewolf-role-{seer,witch,wolf,hunter,idiot,villager}.mp4`
+同名 `.jpg` 为各段首帧封面（480×718，合计 282 KB），用作 `<video poster>`——
+视频设 `preload="none"`，点开前不产生视频流量。原视频 —— 六段身份揭晓短视频，
 竖版 784×1172 / H.264，时长 3.1–4.1 秒，合计约 15 MB。
 
 原文件名为中文（预言家.mp4 等），已改为 ASCII 并与游戏仓库
